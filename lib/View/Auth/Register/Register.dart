@@ -317,7 +317,6 @@ class _RegisterState extends State<Register> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               child: Stack(
-                overflow: Overflow.visible,
                 children: [
                   Container(
                       height: 200,

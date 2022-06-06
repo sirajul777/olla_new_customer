@@ -666,8 +666,8 @@ class _HomeState extends State<Home> {
                                                           PageRouteBuilder(
                                                               transitionDuration:
                                                                   Duration(
-                                                                      seconds:
-                                                                          1),
+                                                                      milliseconds:
+                                                                          500),
                                                               transitionsBuilder:
                                                                   (context,
                                                                       animation,

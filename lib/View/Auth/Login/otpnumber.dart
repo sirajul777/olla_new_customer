@@ -217,7 +217,6 @@ class _OtpNumberState extends State<OtpNumber> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               child: Stack(
-                overflow: Overflow.visible,
                 children: [
                   Container(
                       height: 200,

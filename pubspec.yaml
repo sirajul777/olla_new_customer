@@ -68,6 +68,7 @@ dependencies:
   flutter_screenutil: ^5.1.1
   introduction_screen: ^3.0.0
   flutter_svg: ^1.0.3
+  money2: ^3.1.2
 
 dev_dependencies:
   flutter_test:
