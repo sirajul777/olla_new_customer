@@ -15,6 +15,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class Aturjadwal extends StatefulWidget {
   List? datahalaman;
   List? iddata;
@@ -24,22 +25,21 @@ class Aturjadwal extends StatefulWidget {
   String? longitude;
   String? latitude;
   String? id;
-  String? koment;
-  int? angka;
-  int? serviceid;
+  String? totalharga;
+  List? quantity;
+
   Aturjadwal(
       {Key? key,
       this.iddnama,
       this.iddharga,
       this.iddata,
       this.datahalaman,
-      this.angka,
       this.alamat,
       this.longitude,
       this.latitude,
       this.id,
-      this.koment,
-      this.serviceid})
+      this.quantity,
+      this.totalharga})
       : super(key: key);
 
   @override
@@ -77,106 +77,154 @@ class _AturjadwalState extends State<Aturjadwal> {
   var kaki;
   final GlobalKey<AnimatedListState> _key = GlobalKey();
 
-  Widget _buildItem(String item, Animation<double> animation, int index) {
-    return SizeTransition(
-        sizeFactor: animation,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Container(
-            height: MediaQuery.of(context).size.height / 5,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[200]!),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Center(
-              child: ListTile(
-                title: Text('${widget.datahalaman![index]['name']}',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        'gambar/rupiah.png',
-                        width: 25,
-                        height: 25,
+  Widget? _buildItem(String item, Animation<double> animation, int index) {
+    if (item != 0 || datahalaman![index] != 0) {
+      return SizeTransition(
+          sizeFactor: animation,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Container(
+              height: MediaQuery.of(context).size.height / 5,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[200]!),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: ListTile(
+                  title: Text('${datahalaman![index]['name']}',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'gambar/rupiah.png',
+                          width: 25,
+                          height: 25,
+                          fit: BoxFit.fill,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                            NumberFormat.currency(
+                                    locale: 'id',
+                                    symbol: 'Rp',
+                                    decimalDigits: 0)
+                                .format(int.parse('${item}')),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.yellow[800])),
+                      ],
+                    ),
+                  ),
+                  trailing: IconButton(
+                      icon: Image.asset(
+                        'gambar/Delete.png',
+                        width: 20,
+                        height: 20,
                         fit: BoxFit.fill,
                       ),
-                      SizedBox(width: 10),
-                      Text(
-                          NumberFormat.currency(
-                                  locale: 'id', symbol: 'Rp', decimalDigits: 0)
-                              .format(int.parse('${item}')),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.yellow[800])),
-                    ],
-                  ),
+                      onPressed: () async {
+                        iddharga!.length == 1
+                            ? showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: SpinKitPouringHourGlassRefined(
+                                      color: Colors.blue,
+                                      size: 50.0,
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () {
+                                            // _dismissDialog();
+                                          },
+                                          child: Center(
+                                              child: Text(
+                                                  'tidak boleh kosong!!!'))),
+                                    ],
+                                  );
+                                })
+                            : _removeItem(index);
+                        // getdata();
+                        setState(() {
+                          hargatotal = iddharga!.reduce((a, b) => a + b);
+                        });
+                      }),
                 ),
-                trailing: IconButton(
-                    icon: Image.asset(
-                      'gambar/Delete.png',
-                      width: 20,
-                      height: 20,
-                      fit: BoxFit.fill,
-                    ),
-                    onPressed: () {
-                      widget.iddharga!.length == 1
-                          ? showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: SpinKitPouringHourGlassRefined(
-                                    color: Colors.blue,
-                                    size: 50.0,
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                        onPressed: () {
-                                          // _dismissDialog();
-                                        },
-                                        child: Center(
-                                            child:
-                                                Text('tidak boleh kosong!!!'))),
-                                  ],
-                                );
-                              })
-                          : _removeItem(index);
-                      // getdata();
-                      setState(() {
-                        kaki =
-                            widget.iddharga!.reduce((a, b) => a + b).toString();
-                      });
-                    }),
               ),
             ),
-          ),
-        ));
+          ));
+    } else {
+      return null;
+    }
   }
 
   //
   void _removeItem(int i) {
-    int removedItem = widget.iddharga!.removeAt(i);
+    int removedItem = iddharga!.removeAt(i);
+    // iddata!.removeAt(i);
+    // iddnama!.removeAt(i);
+    // datahalaman!.elementAt(i);
     AnimatedListRemovedItemBuilder builder = (context, animation) {
-      return _buildItem(removedItem.toString(), animation, i);
+      return _buildItem(removedItem.toString(), animation, i)!;
     };
     _key.currentState!.removeItem(i, builder);
+  }
+
+  List? dataOrder = [];
+  void dataArray() {}
+
+  List? datahalaman;
+  List? iddata;
+  List? iddnama;
+  List<int>? iddharga;
+  List<int>? qty;
+  late int? hargatotal;
+
+  Future cleardata() async {
+    setState(() {
+      datahalaman = widget.datahalaman!;
+      iddata = widget.iddata!;
+      iddnama = widget.iddnama!;
+      iddharga = widget.iddharga!.cast<int>();
+      qty = widget.quantity!.cast<int>();
+      // hargatotal = iddharga!.cast();
+
+      // datahalaman!.removeWhere((element) => element == 0);
+      // iddata!.removeWhere((element) => element == 0);
+      // iddnama!.removeWhere((element) => element == 0);
+      // iddharga!.removeWhere((element) => element == 0);
+    });
+    for (var i = 0; i < iddata!.length; i++) {
+      if (iddata!.where((element) => element != 0) != 0) {
+        dataOrder!
+            .add({"id": iddata![i], "qty": qty![i], "comment": iddnama![i]});
+      }
+    }
+    var jumlah = iddharga!.reduce((a, b) => a + b).toString();
+    hargatotal = int.parse(jumlah);
+
+    print(iddharga);
+    print(jumlah);
+    // print(hargatotal);
   }
 
   @override
   void initState() {
     super.initState();
     getDataListHome();
+    cleardata();
     getDataDomisili();
     alamat();
+    dataArray();
     dateTime = getDateTime();
-    kaki;
-    Future.delayed(Duration(seconds: 2), () {
+    kaki = 0;
+    Future.delayed(Duration(seconds: 3), () {
       setState(() {
-        // isloading = true;
+        isloading = true;
       });
     });
 
@@ -203,8 +251,8 @@ class _AturjadwalState extends State<Aturjadwal> {
   int id = 1;
   var result;
   var result1;
-  late int idapartement;
-  late int? idrumah;
+  // late int? idapartement;
+  late int? idalamat;
   getDataListHome() async {
     var response = await http.get(
         Uri.parse(Uri.encodeFull(
@@ -241,7 +289,7 @@ class _AturjadwalState extends State<Aturjadwal> {
   late String apartement = '';
   late String rumah = '';
   late int apartmentid;
-  late int rumahid;
+  late int? rumahid;
   int _groupValue = -1;
 
   getDataDomisili() async {
@@ -263,12 +311,13 @@ class _AturjadwalState extends State<Aturjadwal> {
       // print(domisili);
       print(apartement);
       print(rumah);
+      print(rumahid);
     });
     return "Success";
   }
 
   String location = 'Null, Press Button';
-  TextEditingController domisiliproblem = TextEditingController();
+  TextEditingController address_note = TextEditingController();
 
   String Address = 'search';
   void alamat() async {
@@ -324,449 +373,445 @@ class _AturjadwalState extends State<Aturjadwal> {
     setState(() {});
   }
 
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: null,
-      backgroundColor: white,
-      body: SafeArea(
-          top: false,
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(
-                  statusBarColor: white,
-                  statusBarIconBrightness: Brightness.light,
-                  statusBarBrightness: Brightness.dark),
-              child: SingleChildScrollView(
-                  clipBehavior: Clip.none,
-                  child: Column(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.only(top: 20.w, left: 20.w, right: 20.w),
-                        height: ScreenUtil().setHeight(75.h),
-                        color: white,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                // ignore: avoid_unnecessary_containers
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 25,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(3),
-                                    // color: Colors.blue[50],
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.arrow_back_ios_outlined,
-                                      // color: Colors.black,
-                                      size: 20,
+    if (!isloading) {
+      return Scaffold(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          // color: Colors.red,
+          child: const Center(
+            child: SpinKitFadingCircle(
+              color: Colors.blue,
+              size: 60.0,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: null,
+        backgroundColor: white,
+        body: SafeArea(
+            top: false,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                    statusBarColor: white,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.dark),
+                child: SingleChildScrollView(
+                    clipBehavior: Clip.none,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                              top: 20.w, left: 20.w, right: 20.w),
+                          height: ScreenUtil().setHeight(75.h),
+                          color: white,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  // ignore: avoid_unnecessary_containers
+                                  child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      // color: Colors.blue[50],
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.arrow_back_ios_outlined,
+                                        // color: Colors.black,
+                                        size: 20,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Center(
-                                child: Text(
-                                  'Atur Jadwal',
-                                  style: TextStyle(
-                                    color: blackBlue,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.w,
+                                Center(
+                                  child: Text(
+                                    'Atur Jadwal',
+                                    style: TextStyle(
+                                      color: blackBlue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.w,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox()
-                            ]),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(10.w),
-                        margin: EdgeInsets.only(bottom: 10.w, top: 10.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              child: Row(children: [
-                                SizedBox(
-                                    width: 35.w,
-                                    height: 35.w,
-                                    child: SvgPicture.asset(
-                                        'image/navigation.svg')),
-                                Text(
-                                  ' Pengiriman',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    color: blackBlue,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.w,
-                                  ),
-                                )
+                                SizedBox()
                               ]),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  // tampil2 = !tampil2;
-                                });
-                              },
-                              child: Text(
-                                'Sesuaikan',
-                                style: TextStyle(
-                                    color: ligthgreen,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.w,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(15.0),
-                          width: MediaQuery.of(context).size.width - 60,
-                          // height: MediaQuery.of(context).size.height / 15,
-                          decoration: BoxDecoration(
-                              color: Colors.blue[50],
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Center(
-                              child: Text(
-                            Address,
-                            style: TextStyle(fontSize: 12),
-                          ))),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Text(
-                        'Tipe Domisili',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      //
-                      Row(
-                        children: [
-                          Expanded(
-                            child: RadioListTile(
-                              title: Text('${apartement}'),
-                              value: 0,
-                              groupValue: _groupValue,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  _groupValue = value!;
-                                  result = apartement;
-                                  idapartement = apartmentid;
-                                  getDataDomisili();
-                                  print(idapartement);
-                                  print(result);
-                                });
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: RadioListTile(
-                              title: Text('${rumah}'),
-                              value: 1,
-                              groupValue: _groupValue,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  getDataDomisili();
-                                  _groupValue = value!;
-                                  result1 = rumah;
-                                  idrumah = rumahid;
-                                  print(result1);
-                                  print(idrumah);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        'Tambahkan Catatan Alamat',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(15.0),
-                        width: MediaQuery.of(context).size.width - 30,
-                        decoration: BoxDecoration(
-                            // color: Colors.blue[50],
-                            borderRadius: BorderRadius.circular(25)),
-                        child: TextField(
-                          controller: domisiliproblem,
-                          // textAlign: TextAlign.left,
-                          // ignore: unnecessary_new
-                          decoration: new InputDecoration(
-                            fillColor: Colors.blue[50],
-                            filled: true,
-                            contentPadding:
-                                EdgeInsets.only(left: 20, right: 20, top: 20),
-                            hintText: 'Tulis catatan disini',
-                            // prefixIcon: Padding(
-                            //   padding: const EdgeInsets.all(20.0),
-                            //   child: Image.asset(
-                            //     'gambar/email.png',
-                            //     width: 25,
-                            //     height: 25,
-                            //     fit: BoxFit.fill,
-                            //   ),
-                            // ),
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10.0),
-                                ),
-                                borderSide: BorderSide.none),
-                          ),
-                        ),
-                      ),
-                      //
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      SizedBox(
-                        width: 300.w,
-                        child: Container(
-                          padding: EdgeInsets.all(20.w),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: softGrey, width: 0.5),
-                              borderRadius: BorderRadius.circular(20.w)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        Container(
+                          padding: EdgeInsets.all(10.w),
+                          margin: EdgeInsets.only(bottom: 10.w, top: 10.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // buildDatePicker(),
-                              // Text('Setup Date'),
-
+                              Container(
+                                child: Row(children: [
+                                  SizedBox(
+                                      width: 35.w,
+                                      height: 35.w,
+                                      child: SvgPicture.asset(
+                                          'image/navigation.svg')),
+                                  Text(
+                                    ' Pengiriman',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: blackBlue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.w,
+                                    ),
+                                  )
+                                ]),
+                              ),
                               GestureDetector(
-                                  onTap: () {
-                                    Utils.showSheet(
-                                      context,
-                                      child: buildDatePicker(),
-                                      onClicked: () {
-                                        // Utils.showSheet(context, 'Selected "$value"');
-
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                      padding: EdgeInsets.all(20.w),
-                                      decoration: BoxDecoration(
-                                          color: lightBlue,
-                                          borderRadius:
-                                              BorderRadius.circular(20.w)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            '${dateTime.day}',
-                                            style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            '${_month[dateTime.month - 1]}',
-                                            style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            '${dateTime.year}',
-                                            style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ))),
-                              const SizedBox(height: 24),
-
-                              GestureDetector(
-                                  onTap: () {
-                                    Utils.showSheet(
-                                      context,
-                                      child: buildTimePicker(),
-                                      onClicked: () {
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                      padding: EdgeInsets.all(20.w),
-                                      decoration: BoxDecoration(
-                                          color: lightBlue,
-                                          borderRadius:
-                                              BorderRadius.circular(20.w)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            'Pukul ',
-                                            style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          dateTime.minute != 0
-                                              ? Text(
-                                                  '${dateTime.hour}:${dateTime.minute}',
-                                                  style: TextStyle(
-                                                      fontSize: 18.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                )
-                                              : Text(
-                                                  '${dateTime.hour}:${dateTime.minute}0',
-                                                  style: TextStyle(
-                                                      fontSize: 18.sp,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                          // Text(''),
-                                        ],
-                                      ))),
+                                onTap: () {
+                                  setState(() {
+                                    // tampil2 = !tampil2;
+                                  });
+                                },
+                                child: Text(
+                                  'Sesuaikan',
+                                  style: TextStyle(
+                                      color: ligthgreen,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.w,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(30.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Container(
+                            padding: const EdgeInsets.all(15.0),
+                            width: MediaQuery.of(context).size.width - 60,
+                            // height: MediaQuery.of(context).size.height / 15,
+                            decoration: BoxDecoration(
+                                color: Colors.blue[50],
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Center(
+                                child: Text(
+                              Address,
+                              style: TextStyle(fontSize: 12),
+                            ))),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Text(
+                          'Tipe Domisili',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        //
+                        Row(
                           children: [
-                            Text(
-                              'Layanan yang dipilih',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                            kaki == null
-                                ? Text(
-                                    NumberFormat.currency(
-                                            locale: 'id',
-                                            symbol: 'Rp',
-                                            decimalDigits: 0)
-                                        .format(int.parse(widget.iddharga!
-                                            .reduce((a, b) => a + b)
-                                            .toString())),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.green))
-                                : Text(
-                                    NumberFormat.currency(
-                                            locale: 'id',
-                                            symbol: 'Rp',
-                                            decimalDigits: 0)
-                                        .format(int.parse(kaki)),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.green)),
-                          ],
-                        ),
-                      ),
-
-                      //
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width - 30,
-
-                        padding: EdgeInsets.only(left: 20.w, right: 20.w),
-                        child: AnimatedList(
-                          key: _key,
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          initialItemCount: widget.datahalaman!.length,
-                          itemBuilder: (context, index, animation) {
-                            return _buildItem(
-                                '${widget.iddharga![index]}', animation, index);
-                          },
-                        ),
-                        //
-                        //
-
-                        //                 child:  ListView.builder(
-                        //                                     shrinkWrap: true,
-                        //                                           itemCount: widget.iddharga == null ? 0 : widget.iddharga.length,
-                        //                                     itemBuilder: (BuildContext context, index) {
-                        //                                        final item = widget.iddharga[index];
-                        //                                       return GestureDetector(
-                        //                                         onTap:(){
-                        //                                           setState(() {
-                        //                                    item.removeAt(index);
-
-                        //                                           });
-
-                        //                                         },
-                        //                                         child: Text(NumberFormat.currency(locale:'id',symbol:'Rp' ,decimalDigits:0).format(int.parse('${widget.iddharga[index]}'))));
-                        //                                     }
-                        // )
-                      ),
-                      //
-                      //
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: GestureDetector(
-                            onTap: () {
-                              semuajadwal();
-                              print(jadwal);
-
-                              Future.delayed(Duration(seconds: 3), () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            LanjutPembayaran(
-                                                longitude: widget.longitude!,
-                                                latitude: widget.latitude!,
-                                                harga: widget.iddharga!,
-                                                nama: widget.datahalaman!,
-                                                alamat: widget.alamat!,
-                                                jadwal: jadwal,
-                                                jam: jam,
-                                                menit: menit,
-                                                domisiliproblem:
-                                                    domisiliproblem.text,
-                                                apartement: idapartement,
-                                                rumah: idrumah!,
-                                                iddata: widget.iddata!,
-                                                id: widget.id!)));
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.08,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(25)),
-                                child: Center(
-                                    child: Text('Lanjut Pembayaran',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ))),
+                            Expanded(
+                              child: RadioListTile(
+                                title: Text('${apartement}'),
+                                value: 0,
+                                groupValue: _groupValue,
+                                onChanged: (int? value) {
+                                  setState(() {
+                                    _groupValue = value!;
+                                    result = apartement;
+                                    idalamat = apartmentid;
+                                    getDataDomisili();
+                                    print(idalamat);
+                                    print(result);
+                                  });
+                                },
                               ),
                             ),
-                          )),
-                    ],
-                  )))),
-    );
+                            Expanded(
+                              child: RadioListTile(
+                                title: Text('${rumah}'),
+                                value: 1,
+                                groupValue: _groupValue,
+                                onChanged: (int? value) {
+                                  setState(() {
+                                    getDataDomisili();
+                                    _groupValue = value!;
+                                    result1 = rumah;
+                                    idalamat = rumahid;
+                                    print(result1);
+                                    print(idalamat);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'Tambahkan Catatan Alamat',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(15.0),
+                          width: MediaQuery.of(context).size.width - 30,
+                          decoration: BoxDecoration(
+                              // color: Colors.blue[50],
+                              borderRadius: BorderRadius.circular(25)),
+                          child: TextField(
+                            controller: address_note,
+                            // textAlign: TextAlign.left,
+                            // ignore: unnecessary_new
+                            decoration: new InputDecoration(
+                              fillColor: Colors.blue[50],
+                              filled: true,
+                              contentPadding:
+                                  EdgeInsets.only(left: 20, right: 20, top: 20),
+                              hintText: 'Tulis catatan disini',
+                              // prefixIcon: Padding(
+                              //   padding: const EdgeInsets.all(20.0),
+                              //   child: Image.asset(
+                              //     'gambar/email.png',
+                              //     width: 25,
+                              //     height: 25,
+                              //     fit: BoxFit.fill,
+                              //   ),
+                              // ),
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                  borderSide: BorderSide.none),
+                            ),
+                          ),
+                        ),
+                        //
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        SizedBox(
+                          width: 300.w,
+                          child: Container(
+                            padding: EdgeInsets.all(20.w),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: softGrey, width: 0.5),
+                                borderRadius: BorderRadius.circular(20.w)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // buildDatePicker(),
+                                // Text('Setup Date'),
+
+                                GestureDetector(
+                                    onTap: () {
+                                      Utils.showSheet(
+                                        context,
+                                        child: buildDatePicker(),
+                                        onClicked: () {
+                                          // Utils.showSheet(context, 'Selected "$value"');
+
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                        padding: EdgeInsets.all(20.w),
+                                        decoration: BoxDecoration(
+                                            color: lightBlue,
+                                            borderRadius:
+                                                BorderRadius.circular(20.w)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Text(
+                                              '${dateTime.day}',
+                                              style: TextStyle(
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              '${_month[dateTime.month - 1]}',
+                                              style: TextStyle(
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              '${dateTime.year}',
+                                              style: TextStyle(
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ))),
+                                const SizedBox(height: 24),
+
+                                GestureDetector(
+                                    onTap: () {
+                                      Utils.showSheet(
+                                        context,
+                                        child: buildTimePicker(),
+                                        onClicked: () {
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                        padding: EdgeInsets.all(20.w),
+                                        decoration: BoxDecoration(
+                                            color: lightBlue,
+                                            borderRadius:
+                                                BorderRadius.circular(20.w)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Text(
+                                              'Pukul ',
+                                              style: TextStyle(
+                                                  fontSize: 18.sp,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            dateTime.minute != 0
+                                                ? Text(
+                                                    '${dateTime.hour}:${dateTime.minute}',
+                                                    style: TextStyle(
+                                                        fontSize: 18.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  )
+                                                : Text(
+                                                    '${dateTime.hour}:${dateTime.minute}0',
+                                                    style: TextStyle(
+                                                        fontSize: 18.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                            // Text(''),
+                                          ],
+                                        ))),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(30.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Layanan yang dipilih',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                              hargatotal != 0
+                                  ? Text(
+                                      NumberFormat.currency(
+                                              locale: 'id',
+                                              symbol: 'Rp',
+                                              decimalDigits: 0)
+                                          .format(hargatotal),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.green))
+                                  : Text(
+                                      NumberFormat.currency(
+                                              locale: 'id',
+                                              symbol: 'Rp',
+                                              decimalDigits: 0)
+                                          .format(hargatotal!),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.green)),
+                            ],
+                          ),
+                        ),
+
+                        //
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width - 30,
+                          padding: EdgeInsets.only(left: 20.w, right: 20.w),
+                          child: AnimatedList(
+                            key: _key,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            initialItemCount: datahalaman!.length,
+                            itemBuilder: (context, index, animation) {
+                              return _buildItem(
+                                  '${iddharga![index]}', animation, index)!;
+                            },
+                          ),
+                        ),
+                        //
+                        //
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Align(
+                            alignment: Alignment.bottomCenter,
+                            child: GestureDetector(
+                              onTap: () {
+                                semuajadwal();
+                                print(jadwal);
+
+                                Future.delayed(Duration(seconds: 3), () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              LanjutPembayaran(
+                                                  longitude: widget.longitude!,
+                                                  latitude: widget.latitude!,
+                                                  harga: hargatotal!,
+                                                  nama: datahalaman!,
+                                                  alamat: widget.alamat!,
+                                                  jadwal: jadwal,
+                                                  jam: jam,
+                                                  menit: menit,
+                                                  domisiliproblem:
+                                                      address_note.text,
+                                                  // apartement: idapartement!,
+                                                  // rumah: idrumah ,
+                                                  idalamat: idalamat!,
+                                                  iddata: dataOrder!,
+                                                  id: iddata!)));
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.08,
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: Center(
+                                      child: Text('Lanjut Pembayaran',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                          ))),
+                                ),
+                              ),
+                            )),
+                      ],
+                    )))),
+      );
+    }
   }
 
   Widget buildDatePicker() => SizedBox(

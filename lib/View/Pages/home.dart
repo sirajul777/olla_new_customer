@@ -362,6 +362,7 @@ class _HomeState extends State<Home> {
                                     ],
                                   ),
                                   Container(
+                                    width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
                                       border: Border.all(color: Colors.white),
@@ -401,6 +402,7 @@ class _HomeState extends State<Home> {
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         fontSize: 15),
+                                                    overflow: TextOverflow.clip,
                                                   ),
                                                   //
                                                   Row(
