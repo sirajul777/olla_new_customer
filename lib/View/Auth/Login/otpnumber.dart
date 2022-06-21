@@ -148,6 +148,8 @@ class _OtpNumberState extends State<OtpNumber> {
       "otp": otp.text,
     }).then((response) async {
       var jsonObj = json.decode(response.body);
+      print(gambar);
+
 
       // customerid = jsonObj['customer_data']['customers_id'];
       sukses = jsonObj['code'];

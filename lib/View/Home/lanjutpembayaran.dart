@@ -64,11 +64,6 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   }
 
   addData() async {
-    // Map<String, dynamic> jsonn = {
-    //   "partner_packages": jsonEncode(widget.datahalaman)
-    // };
-// String kriss = json.encode(jsonn);
-
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('secret_code')!;
     String myUrl = '${KEY.BASE_URL}/v1/order-post';
