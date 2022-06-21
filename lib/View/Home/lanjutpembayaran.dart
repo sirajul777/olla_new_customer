@@ -73,10 +73,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   }
 
   addData() async {
-<<<<<<< HEAD
-=======
     String? secreat_code;
->>>>>>> 67aa9eb8f08fec0fb0f6178c4a287ad33c58ea12
     final prefs1 = await SharedPreferences.getInstance();
     secreat_code = prefs1.getString('customer');
     String myUrl = '${KEY.BASE_URL}/v1/order-post';
