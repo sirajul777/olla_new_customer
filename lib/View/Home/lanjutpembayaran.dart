@@ -1,17 +1,26 @@
 import 'dart:convert';
 
 import 'package:customer/Service/API/api.dart';
+import 'package:customer/View/Home/detailpembayaran.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'detailpembayaran.dart';
+class CarJson {
+  String OptionID;
+  CarJson(this.OptionID);
+  Map<String, dynamic> TojsonData() {
+    var map = new Map<String, dynamic>();
+    map["OptionID"] = OptionID;
+    return map;
+  }
+}
 
 class LanjutPembayaran extends StatefulWidget {
   List nama;
-  List harga;
+  int harga;
   String alamat;
   String longitude;
   String latitude;
@@ -19,11 +28,11 @@ class LanjutPembayaran extends StatefulWidget {
   String jam;
   String menit;
   String domisiliproblem;
-  int rumah;
-  int apartement;
+  // int? rumah;
+  int? idalamat;
   List iddata;
 
-  String id;
+  List? id;
   // String koment;
 // Get Key Data
   LanjutPembayaran(
@@ -32,8 +41,9 @@ class LanjutPembayaran extends StatefulWidget {
       required this.latitude,
       required this.id,
       required this.iddata,
-      required this.rumah,
-      required this.apartement,
+      // required this.rumah,
+      // required this.apartement,
+      required this.idalamat,
       required this.nama,
       required this.harga,
       required this.alamat,
@@ -47,7 +57,6 @@ class LanjutPembayaran extends StatefulWidget {
 }
 
 class _LanjutPembayaranState extends State<LanjutPembayaran> {
-  int admin = 5000;
   late int methodpayment;
   bool tampil = false;
   bool pembayaran = false;
@@ -64,43 +73,55 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   }
 
   addData() async {
-    // Map<String, dynamic> jsonn = {
-    //   "partner_packages": jsonEncode(widget.datahalaman)
-    // };
-// String kriss = json.encode(jsonn);
-
+    String? secreat_code;
     final prefs1 = await SharedPreferences.getInstance();
-    customer = prefs1.getString('secret_code')!;
+    secreat_code = prefs1.getString('customer');
     String myUrl = '${KEY.BASE_URL}/v1/order-post';
-    http.post(Uri.parse(Uri.encodeFull(myUrl)), headers: {
-      'Accept': 'application/json',
-      "x-token-olla": KEY.APIKEY,
-      "Authorization": "Bearer $customer",
-      // "imei": "123456"
-    }, body: {
-      // "customer_id": '${service}',
-      "working_date": '${widget.jadwal}',
-      "working_time": '${widget.jam}',
-      "description": '${widget.domisiliproblem}',
-      "method_payment_id": '${1}',
-      "longitude": '${widget.longitude}',
-      "latitude": '${widget.latitude}',
+    // String receivedJson = "${widget.iddata}";
+    // List<dynamic> listdata = json.decode(receivedJson);
+
+    var body = json.encode({
+      "working_date": widget.jadwal,
+      "working_time": widget.jam,
+      "description": widget.domisiliproblem,
+      "method_payment_id": "${methodpayment}",
+      "longitude": widget.longitude,
+      "latitude": widget.latitude,
       "domisili_id":
-          '${widget.apartement != null ? widget.apartement : widget.rumah}',
-      "address_note": '${widget.domisiliproblem}',
-      "partner_packages[0][id]": '${widget.id}',
-      "partner_packages[0][qty]": '3',
-      "partner_packages[0][comment]": 'ff',
-      "partner_packages[1][id]": '${widget.iddata}',
-      "partner_packages[1][qty]": '4',
-      "partner_packages[1][comment]": 'ii',
-      "address": "${widget.alamat}"
-    }).then((response) async {
+          // ignore: unnecessary_null_comparison
+          widget.idalamat!,
+      "address_note": widget.domisiliproblem,
+      "partner_packages": widget.iddata,
+      "address": widget.alamat
+    });
+    print(body);
+
+    print(widget.iddata);
+    await http
+        .post(Uri.parse(Uri.encodeFull(myUrl)),
+            headers: {
+              'Accept': 'application/json',
+              "x-token-olla": KEY.APIKEY,
+              "Authorization": 'Bearer ${secreat_code}',
+              'Content-type': 'application/json'
+              // "imei": "123456"
+            },
+            body: body)
+        .then((response) async {
       var jsonObj = json.decode(response.body);
-      print(response);
+      print(response.body);
       if (response.statusCode == 200) {
         setState(() {
-          order_id = jsonObj['data'][0]['order_id'];
+          order_id = jsonObj['data']['order_id'];
+        });
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => DetailPembayaran(
+                      orderid: order_id,
+                      harga: widget.harga,
+                      seluruh: widget.nama)));
         });
       } else {
         showDialog(
@@ -247,13 +268,13 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
     return "Success";
   }
 
-  void coba() async {
-    List list = widget.iddata;
-    Map map1 = list.asMap();
-    print(widget.apartement);
-    final prefs1 = await SharedPreferences.getInstance();
-    customer = prefs1.getString('customer')!;
-  }
+  // void coba() async {
+  //   List list = widget.iddata;
+  //   Map map1 = list.asMap();
+  //   print(widget.apartement!);
+  //   final prefs1 = await SharedPreferences.getInstance();
+  //   customer = prefs1.getString('customer')!;
+  // }
 
   //
   Dio dio = Dio();
@@ -286,20 +307,22 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
           "Accept": "application/json",
           "x-token-olla": KEY.APIKEY,
         });
-    //
+    print(widget.id);
     setState(() {
       var converDataToJson = json.decode(response.body);
       datalist = converDataToJson['data'];
-
-      service = converDataToJson['data'][0]['service_id'];
-      print(service);
+      print(datalist);
+      // service = converDataToJson['data'][0]['service_id'];
+      // print(service);
     });
+    print(widget.iddata);
     return "Success";
   }
 
   @override
   Widget build(BuildContext context) {
-    List jumlah = widget.harga + [admin];
+    // String jumlah =
+    //     widget.harga.reduce((value, element) => value + element + admin);
     // feedmin.insert(1,5000);
     return WillPopScope(
       onWillPop: () async {
@@ -725,9 +748,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                       locale: 'id',
                                       symbol: 'Rp',
                                       decimalDigits: 0)
-                                  .format(int.parse(widget.harga
-                                      .reduce((a, b) => a + b)
-                                      .toString())),
+                                  .format(widget.harga),
                               style: TextStyle(
                                   // fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -749,9 +770,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                       locale: 'id',
                                       symbol: 'Rp',
                                       decimalDigits: 0)
-                                  .format(int.parse(widget.harga
-                                      .reduce((a, b) => a + b)
-                                      .toString())),
+                                  .format(widget.harga),
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -937,16 +956,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
               padding: const EdgeInsets.only(left: 20.0, right: 20, top: 18),
               child: GestureDetector(
                 onTap: () async {
-                  addData();
-                  Future.delayed(Duration(seconds: 3), () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => DetailPembayaran(
-                                orderid: '${order_id}',
-                                harga: widget.harga,
-                                seluruh: widget.nama)));
-                  });
+                  await addData();
                 },
                 child: Container(
                   decoration: BoxDecoration(

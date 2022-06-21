@@ -4,20 +4,21 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:customer/Service/API/api.dart';
+import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Router/dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class StepOrder extends StatefulWidget {
   String? invoice;
-  String? orderid;
+  int? orderid;
   List? seluruhdata;
   // String koment;
 // Get Key Data
@@ -29,1214 +30,887 @@ class StepOrder extends StatefulWidget {
 
 class _StepOrderState extends State<StepOrder> {
   bool tampil = false;
-  late int _selectedIndex;
+  late List<bool> _selectedIndex;
   late Timer timer;
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
-        children: [
-          Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                title: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        // Navigator.pop(context);
-                        getDataListorderStep();
-                        // getDataListRate();
-                      },
-                      // ignore: avoid_unnecessary_containers
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 25,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          color: Colors.blue[50],
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.arrow_back_ios_outlined,
-                            color: Colors.black,
-                            size: 20,
+    if (!isloading) {
+      return Scaffold(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          // color: Colors.red,
+          child: const Center(
+            child: SpinKitFadingCircle(
+              color: Colors.blue,
+              size: 60.0,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return SafeArea(
+          top: false,
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(
+                statusBarColor: white,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.dark),
+            child: Stack(
+              children: [
+                Scaffold(
+                    backgroundColor: white,
+                    appBar: AppBar(
+                      elevation: 0,
+                      backgroundColor: Colors.transparent,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     // Navigator.pop(context);
+                          //     // getDataListorderStep();
+                          //     // getDataListRate();
+                          //   },
+                          //   // ignore: avoid_unnecessary_containers
+                          //   child: Container(
+                          //     height: MediaQuery.of(context).size.height / 25,
+                          //     decoration: BoxDecoration(
+                          //       borderRadius: BorderRadius.circular(3),
+                          //       color: Colors.blue[50],
+                          //     ),
+                          //     child: Center(
+                          //       child: Icon(
+                          //         Icons.arrow_back_ios_outlined,
+                          //         color: Colors.black,
+                          //         size: 20,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   width: 80,
+                          // ),
+                          GestureDetector(
+                            onTap: () async {
+                              getDataListHome();
+                            },
+                            child: Text(widget.invoice!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.green.withOpacity(0.7),
+                                )),
                           ),
-                        ),
+                        ],
                       ),
+                      automaticallyImplyLeading: false,
+                      // backgroundColor: Colors.transparent,
+                      // shape:
+                      //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                     ),
-                    SizedBox(
-                      width: 80,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        getDataListHome();
-                        // Position position = await _getGeoLocationPosition();
-                        // GetAddressFromLatLong(position);
-                        // print('$Address');
-                        // 3.572688, 98.687194
-                        // print(  3.572688);
-                        // print( 98.687194);
-                      },
-                      child: Text(widget.invoice!,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.green.withOpacity(0.7),
-                          )),
-                    ),
-                    //
-                    // SizedBox(
-                    //   width: 130,
-                    // ),
-                    //
-                    // Column(
-                    //   // ignore: prefer_const_literals_to_create_immutables
-                    //   children: [
-                    //     Icon(
-                    //       Icons.add_alert_rounded,
-                    //       color: Colors.white,
-                    //     ),
-                    //   ],
-                    // )
-                  ],
-                ),
-                automaticallyImplyLeading: false,
-                // backgroundColor: Colors.transparent,
-                // shape:
-                //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage('gambar/image3.png'),
-                            fit: BoxFit.fitHeight),
-                      ),
-                    ),
-                    //
-                    partner != null
-                        ? Padding(
-                            padding:
-                                const EdgeInsets.only(left: 20.0, right: 20),
+                    body: SingleChildScrollView(
+                        child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Center(
                             child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    border:
-                                        Border.all(color: Colors.blue[100]!)),
-                                child: ListTile(
-                                  leading: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image:
-                                              AssetImage('gambar/partner.png'),
-                                          fit: BoxFit.fitHeight),
-                                    ),
-                                  ),
-                                  title: Text(
-                                    '${partner}',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  subtitle: Text(
-                                    '03/01/2022 - 11.45',
-                                    style: TextStyle(
-                                        fontSize: 13, color: Colors.grey),
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                              margin: EdgeInsets.only(right: 10.w),
+                              width: 200,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                // color: blackBlue,
+                                image: DecorationImage(
+                                    image: AssetImage('gambar/image3.png'),
+                                    fit: BoxFit.fitHeight),
+                              ),
+                            ),
+                          ),
+                          partner == null
+                              ? Container(
+                                  child: Column(
                                     children: [
-                                      Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  'gambar/pesanpartner.png'),
-                                              fit: BoxFit.fitHeight),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 8,
-                                      ),
-                                      Container(
-                                        width: 40,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  'gambar/telponpartner.png'),
-                                              fit: BoxFit.fitHeight),
+                                      Center(
+                                          child: Container(
+                                        margin: EdgeInsets.only(top: 20.w),
+                                        // decoration: BoxDecoration(
+                                        //     borderRadius: BorderRadius.circular(10),
+                                        //     color: blackBlue),
+
+                                        child: Text('Sedang mencari Teknisi',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: primary,
+                                                fontWeight: FontWeight.w600)),
+                                      )),
+                                      Center(
+                                        child: Container(
+                                          // height: MediaQuery.of(context).size.height,
+                                          padding: EdgeInsets.only(top: 20.w),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          // color: Colors.red,
+                                          child: const Center(
+                                            child: SpinKitFadingCircle(
+                                              color: Colors.blue,
+                                              size: 60.0,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                )),
-                          )
-                        : Padding(
-                            padding:
-                                const EdgeInsets.only(left: 30.0, right: 30),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.lightBlue.withOpacity(0.8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                )
+                              : Column(
                                   children: [
-                                    Loading(
-                                      indicator: BallPulseIndicator(),
-                                      size: 30,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 24),
-                                    Text('Sedang Mencari Tukang ...',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                    //
-                    partner != null
-                        ? Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  //  width: 100,
-                                  //  height: 100,
-                                  child: TimelineTile(
-                                    afterLineStyle: LineStyle(
-                                        color: isdone == 1
-                                            ? Colors.green
-                                            : Colors.yellow,
-                                        thickness: 3),
-                                    indicatorStyle: IndicatorStyle(
-                                        color: isdone == 1
-                                            ? Colors.green
-                                            : Colors.yellow,
-                                        width: 15),
-                                    isFirst: true,
-                                    endChild: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            awal,
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                          SizedBox(
-                                            height: 3,
-                                          ),
-                                          Text(
-                                            'tukang telah mengambil order',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                //
-                                SizedBox(
-                                  //  width: 100,
-                                  //  height: 50,
-                                  child: TimelineTile(
-                                    isLast: true,
-                                    beforeLineStyle: LineStyle(
-                                        color: isdone == 1
-                                            ? Colors.green
-                                            : Colors.yellow,
-                                        thickness: 3),
-                                    afterLineStyle: LineStyle(
-                                        color: isdonekedua == 1
-                                            ? Colors.green
-                                            : Colors.yellow,
-                                        thickness: 3),
-                                    indicatorStyle: IndicatorStyle(
-                                        color: isdonekedua == 1
-                                            ? Colors.green
-                                            : Colors.yellow,
-                                        width: 15),
-                                    endChild: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${kedua}',
-                                            style: TextStyle(fontSize: 12),
-                                          ),
-                                          SizedBox(
-                                            height: 3,
-                                          ),
-                                          isdonekedua == 1
-                                              ? Text(
-                                                  Address,
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey),
-                                                )
-                                              : Text(
-                                                  'menunggu tukang sampai lokasi anda',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey),
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20),
+                                      child: Container(
+                                          margin: EdgeInsets.only(top: 10.w),
+                                          padding: EdgeInsets.all(15.w),
+                                          decoration: BoxDecoration(
+                                            color: white,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: softGrey,
+                                                blurRadius: 15.0,
+                                                // has the effect of softening the shadow
+//                    spreadRadius: 2.0,
+                                                // has the effect of extending the shadow
+                                                offset: Offset(
+                                                  1.0, // horizontal, move right 10
+                                                  5.0, // vertical, move down 10
                                                 ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : SizedBox(),
-                    //
-                    //
-                    partner != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: Container(
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: orderansemua == null
-                                      ? 0
-                                      : orderansemua.length,
-                                  itemBuilder: (BuildContext context, i) {
-                                    return Column(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
+                                              )
+                                            ],
+                                          ),
                                           child: Row(
-                                            // mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Container(
-                                                width: 15,
-                                                height: 15,
+                                                margin:
+                                                    EdgeInsets.only(right: 10),
+                                                width: 40,
+                                                height: 40,
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
                                                       image: AssetImage(
-                                                          'gambar/pesanan.png'),
+                                                          'gambar/partner.png'),
                                                       fit: BoxFit.fitHeight),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 2,
-                                              ),
-                                              Icon(
-                                                Icons.circle,
-                                                size: 5,
-                                                color: Colors.grey,
-                                              ),
-                                              SizedBox(
-                                                width: 2,
-                                              ),
-                                              Flexible(
-                                                  child: Text(
-                                                orderansemua[i]['service_name'],
-                                                style: TextStyle(fontSize: 13),
-                                              )),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    _selectedIndex = i;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                      border: Border.all(
-                                                          color: Colors.blue)),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            2.0),
-                                                    child: Text(
-                                                      'Timeline',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          color: Colors.blue),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        _selectedIndex == i
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 40.0, top: 10),
+                                              Expanded(
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    // SizedBox(
-                                                    //   //  width: 100,
-                                                    //   //  height: 100,
-                                                    //   child: TimelineTile(
-                                                    //     afterLineStyle: LineStyle(
-                                                    //         color: isdone == 1
-                                                    //             ? Colors.green
-                                                    //             : Colors.yellow,
-                                                    //         thickness: 3),
-                                                    //     indicatorStyle: IndicatorStyle(
-                                                    //         color: isdone == 1
-                                                    //             ? Colors.green
-                                                    //             : Colors.yellow,
-                                                    //         width: 25),
-                                                    //     isFirst: true,
-                                                    //     endChild: Padding(
-                                                    //       padding: const EdgeInsets.all(25.0),
-                                                    //       child: Column(
-                                                    //         crossAxisAlignment:
-                                                    //             CrossAxisAlignment.start,
-                                                    //         children: [
-                                                    //           Text(awal),
-                                                    //           SizedBox(
-                                                    //             height: 3,
-                                                    //           ),
-                                                    //           Text('tukang telah mengambil order',style: TextStyle(fontSize: 12,color:Colors.grey),),
-                                                    //         ],
-                                                    //       ),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
-                                                    // SizedBox(
-                                                    //   //  width: 100,
-                                                    //   //  height: 50,
-                                                    //   child: TimelineTile(
-                                                    //     beforeLineStyle: LineStyle(
-                                                    //         color: isdone == 1
-                                                    //             ? Colors.green
-                                                    //             : Colors.yellow,
-                                                    //         thickness: 3),
-                                                    //     afterLineStyle: LineStyle(
-                                                    //         color: isdonekedua == 1
-                                                    //             ? Colors.green
-                                                    //             : Colors.yellow,
-                                                    //         thickness: 3),
-                                                    //     indicatorStyle: IndicatorStyle(
-                                                    //         color: isdonekedua == 1
-                                                    //             ? Colors.green
-                                                    //             : Colors.yellow,
-                                                    //         width: 25),
-                                                    //     endChild: Padding(
-                                                    //       padding: const EdgeInsets.all(25.0),
-                                                    //       child: Column(
-                                                    //         crossAxisAlignment:
-                                                    //             CrossAxisAlignment.start,
-                                                    //         children: [
-                                                    //           Text('${kedua}'),
-                                                    //           SizedBox(
-                                                    //             height: 3,
-                                                    //           ),
-                                                    //          isdonekedua == 1? Text(Address,style: TextStyle(fontSize: 12,color:Colors.grey),):Text('menunggu tukang sampai lokasi anda',style: TextStyle(fontSize: 12,color:Colors.grey),),
-                                                    //         ],
-                                                    //       ),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
-                                                    //
-                                                    SizedBox(
-                                                      //  width: 100,
-                                                      //  height: 50,
-                                                      child: TimelineTile(
-                                                        isFirst: true,
-                                                        beforeLineStyle: LineStyle(
-                                                            color:
-                                                                isdonekedua == 1
-                                                                    ? Colors
-                                                                        .green
-                                                                    : Colors
-                                                                        .yellow,
-                                                            thickness: 3),
-                                                        afterLineStyle: LineStyle(
-                                                            color: orderansemua[i]
-                                                                            [
-                                                                            'steps'][0]
-                                                                        [
-                                                                        'is_done'] ==
-                                                                    1
-                                                                ? Colors.green
-                                                                : Colors.yellow,
-                                                            thickness: 3),
-                                                        indicatorStyle: IndicatorStyle(
-                                                            color: orderansemua[i]
-                                                                            [
-                                                                            'steps'][0]
-                                                                        [
-                                                                        'is_done'] ==
-                                                                    1
-                                                                ? Colors.green
-                                                                : Colors.yellow,
-                                                            width: 15),
-                                                        endChild: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(10.0),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                orderansemua[i][
-                                                                        'steps'][0]
-                                                                    [
-                                                                    'step_name'],
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 4,
-                                                              ),
-                                                              orderansemua[i]['steps']
-                                                                              [
-                                                                              0]
-                                                                          [
-                                                                          'is_done'] ==
-                                                                      1
-                                                                  ? Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(5),
-                                                                        image: DecorationImage(
-                                                                            image:
-                                                                                NetworkImage(orderansemua[i]['steps'][0]['images']),
-                                                                            fit: BoxFit.cover),
-                                                                      ),
-                                                                    )
-                                                                  : Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      child: Image
-                                                                          .asset(
-                                                                        'gambar/foto.png',
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
-                                                                    ),
-                                                            ],
-                                                          ),
-                                                        ),
+                                                    Container(
+                                                      child: Text(
+                                                        partner != null
+                                                            ? partner!['name']
+                                                            : '',
+                                                        style: TextStyle(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .clip,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
                                                       ),
                                                     ),
-                                                    //
-                                                    SizedBox(
-                                                      //  width: 100,
-                                                      //  height: 50,
-                                                      child: TimelineTile(
-                                                        isLast: true,
-                                                        beforeLineStyle: LineStyle(
-                                                            color: orderansemua[i]
-                                                                            [
-                                                                            'steps'][0]
-                                                                        [
-                                                                        'is_done'] ==
-                                                                    1
-                                                                ? Colors.green
-                                                                : Colors.yellow,
-                                                            thickness: 3),
-                                                        afterLineStyle:
-                                                            LineStyle(
-                                                          color: orderansemua[i]
-                                                                          [
-                                                                          'steps'][1]
-                                                                      [
-                                                                      'is_done'] ==
-                                                                  1
-                                                              ? Colors.green
-                                                              : Colors.yellow,
-                                                        ),
-                                                        indicatorStyle: IndicatorStyle(
-                                                            color: orderansemua[i]
-                                                                            [
-                                                                            'steps'][1]
-                                                                        [
-                                                                        'is_done'] ==
-                                                                    1
-                                                                ? Colors.green
-                                                                : Colors.yellow,
-                                                            width: 15),
-                                                        endChild: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(10.0),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                orderansemua[i][
-                                                                        'steps'][1]
-                                                                    [
-                                                                    'step_name'],
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12),
-                                                              ),
-                                                              SizedBox(
-                                                                height: 4,
-                                                              ),
-                                                              orderansemua[i]['steps']
-                                                                              [
-                                                                              1]
-                                                                          [
-                                                                          'is_done'] ==
-                                                                      1
-                                                                  ? Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(5),
-                                                                        image: DecorationImage(
-                                                                            image:
-                                                                                NetworkImage(orderansemua[i]['steps'][1]['images']),
-                                                                            fit: BoxFit.cover),
-                                                                      ),
-                                                                    )
-                                                                  : Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      child: Image
-                                                                          .asset(
-                                                                        'gambar/foto.png',
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
-                                                                    ),
-                                                            ],
-                                                          ),
-                                                        ),
+                                                    Container(
+                                                      child: Text(
+                                                        '${workingdate!} - ${workingtime!}',
+                                                        style: TextStyle(
+                                                            fontSize: 13,
+                                                            color: Colors.grey),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: AssetImage(
+                                                                'gambar/pesanpartner.png'),
+                                                            fit: BoxFit
+                                                                .fitHeight),
                                                       ),
                                                     ),
-                                                    //
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: AssetImage(
+                                                                'gambar/telponpartner.png'),
+                                                            fit: BoxFit
+                                                                .fitHeight),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               )
-                                            : SizedBox(),
-                                        //
-                                        Divider(
-                                          thickness: 1,
-                                        ),
-                                        //
-                                        //                          SizedBox(
-                                        //   //  width: 100,
-                                        //   //  height: 50,
-                                        //   child: TimelineTile(
-                                        //     isFirst: true,
-                                        //     isLast: true,
-                                        //     beforeLineStyle: LineStyle(
-                                        //         color: isdoneterakhir == 1
-                                        //             ? Colors.green
-                                        //             : Colors.yellow,
-                                        //         thickness: 3),
-                                        //     afterLineStyle: LineStyle(
-                                        //       color: isdoneterakhir == 1
-                                        //           ? Colors.green
-                                        //           : Colors.yellow,
-                                        //     ),
-                                        //     indicatorStyle: IndicatorStyle(
-                                        //         color: isdoneterakhir == 1
-                                        //             ? Colors.green
-                                        //             : Colors.yellow,
-                                        //         width: 15),
-                                        //     endChild: Padding(
-                                        //       padding: const EdgeInsets.all(10.0),
-                                        //       child: Text(
-                                        //         terakhir,
-                                        //         style: TextStyle(fontSize: 12),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                      ],
-                                    );
-                                    // return Column(
-                                    //   children: [
-                                    //     Padding(
-                                    //       padding: const EdgeInsets.only(left:40.0,right: 40,top:8),
-                                    //       child: Row(
-                                    //         children: [
-                                    //           Container(
-                                    //             width: 20,
-                                    //             height: 20,
-                                    //             decoration: BoxDecoration(
-                                    //               image: DecorationImage(
-                                    //                   image: AssetImage('gambar/pesanan.png'),
-                                    //                   fit: BoxFit.fitHeight),
-                                    //             ),
-                                    //           ),
-                                    //           SizedBox(width: 4,),
-                                    //           Icon(
-                                    //             Icons.circle,
-                                    //             size: 5,
-                                    //             color: Colors.grey,
-                                    //           ),
-                                    //           SizedBox(
-                                    //             width: 4,
-                                    //           ),
-                                    //           Flexible(
-                                    //             child: Text(
-                                    //               widget.seluruhdata[i]['name'].toString(),
-                                    //               style: TextStyle(fontSize: 12),
-                                    //             ),
-                                    //           ),
-                                    //           SizedBox(width: 4,),
-                                    //           Container(
-                                    //            decoration: BoxDecoration(border: Border.all(color: Colors.blue),
-                                    //            borderRadius: BorderRadius.circular(5)
-                                    //            ),
-                                    //             child: Padding(
-                                    //               padding: const EdgeInsets.all(3.0),
-                                    //               child: Text('Timeline',style: TextStyle(fontSize: 10),),
-                                    //             ),
-                                    //           )
-                                    //         ],
-                                    //       ),
-                                    //     ),
-                                    //     SizedBox(height: 10,),
-                                    //     Padding(
-                                    //       padding: const EdgeInsets.only(left:18.0,right: 18),
-                                    //       child: Container(
-                                    //         height: 10,
-                                    //         color: Colors.red,
-                                    //       ),
-                                    //     )
-                                    //   ],
-                                    // );
-                                  }),
-                            ),
-                          )
-                        : SizedBox(),
-                    // Container(
-                    //   width: 20,
-                    //   height: 30,
-                    //   decoration: BoxDecoration(
-                    // image: DecorationImage(
-                    //   image: AssetImage('gambar/pesanan.png'),fit: BoxFit.fitHeight
-                    // ),
-                    //   ),
-                    // ),
-                    //
-                    partner != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: SizedBox(
-                              //  width: 100,
-                              //  height: 50,
-                              child: TimelineTile(
-                                isFirst: true,
-                                isLast: true,
-                                beforeLineStyle: LineStyle(
-                                    color: isdoneterakhir == 1
-                                        ? Colors.green
-                                        : Colors.yellow,
-                                    thickness: 3),
-                                afterLineStyle: LineStyle(
-                                  color: isdoneterakhir == 1
-                                      ? Colors.green
-                                      : Colors.yellow,
-                                ),
-                                indicatorStyle: IndicatorStyle(
-                                    color: isdoneterakhir == 1
-                                        ? Colors.green
-                                        : Colors.yellow,
-                                    width: 15),
-                                endChild: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    terakhir,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : SizedBox(),
-                    //
-                    SizedBox(
-                      height: 8,
-                    ),
-                    statusorder == 3
-                        ? GestureDetector(
-                            onTap: () {
-//                       showDialog(
-//   context: context,
-//   builder: (context) => AlertDialog(
-//       shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
-//     title: Text('Result'),
-//     content:   Row(
-//                           mainAxisAlignment: MainAxisAlignment.center,
-//                           children: [
-//                             RatingBar.builder(
-//    initialRating: 0,
-//    minRating: 0,
-//    direction: Axis.horizontal,
-
-//   //  allowHalfRating: true,
-//   //  unratedColor: Colors.grey,
-//   //  glowColor: Colors.red,
-//    itemCount: 5,
-//    itemPadding: EdgeInsets.symmetric(horizontal: 3),
-//    itemBuilder: (context, _) => Icon(
-//      Icons.star,
-//      color: Colors.amber,
-//    ),
-//    onRatingUpdate: (rating) {
-//      setState(() {
-//        bintang = rating;
-//      });
-//      print(bintang);
-//    },
-// ),
-// // Text('${bintang}'.replaceAll('.0', ''))
-//                           ],
-//                         ),
-//     actions: [
-//       ElevatedButton(
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           child: Text('Go Back'))
-//     ],
-//   ),
-// );
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              15.0)), //this right here
-                                      child: Container(
-                                        height: 230,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Beri Review',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                              SizedBox(
-                                                height: 8,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  RatingBar.builder(
-                                                    initialRating: 0,
-                                                    minRating: 0,
-                                                    direction: Axis.horizontal,
-
-                                                    //  allowHalfRating: true,
-                                                    //  unratedColor: Colors.grey,
-                                                    //  glowColor: Colors.red,
-                                                    itemCount: 5,
-                                                    itemPadding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 4.0),
-                                                    itemBuilder: (context, _) =>
-                                                        Icon(
-                                                      Icons.star,
-                                                      color: Colors.amber,
-                                                    ),
-                                                    onRatingUpdate: (rating) {
-                                                      setState(() {
-                                                        bintang = rating;
-                                                      });
-                                                      //  print(bintang);
-                                                    },
-                                                  ),
-// Text('${bintang}'.replaceAll('.0', ''))
-                                                ],
-                                              ),
-//
-                                              Container(
-                                                // width: MediaQuery.of(context).size.width,
-                                                // height: MediaQuery.of(context).size.height / 10,
-                                                decoration: BoxDecoration(
-                                                    // color: Colors.blue[50],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            25)),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 10.0,
-                                                          right: 10,
-                                                          top: 15),
-                                                  child: TextField(
-                                                    // controller: email,
-                                                    // textAlign: TextAlign.left,
-                                                    // ignore: unnecessary_new
-                                                    decoration:
-                                                        new InputDecoration(
-                                                      fillColor:
-                                                          Colors.blue[50],
-                                                      filled: true,
-                                                      contentPadding:
-                                                          EdgeInsets.only(
-                                                              left: 10,
-                                                              right: 0,
-                                                              top: 20),
-                                                      hintText:
-                                                          'Tulis review disini',
-                                                      //        prefixIcon:  Padding(
-                                                      //   padding: const EdgeInsets.all(20.0),
-                                                      //   child: Image.asset(
-                                                      //     'gambar/email.png',
-                                                      //     width: 25,
-                                                      //     height: 25,
-                                                      //     fit: BoxFit.fill,
-                                                      //   ),
-                                                      // ),
-                                                      hintStyle: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12),
-                                                      border:
-                                                          OutlineInputBorder(
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                      .all(
-                                                                Radius.circular(
-                                                                    10.0),
-                                                              ),
-                                                              borderSide:
-                                                                  BorderSide
-                                                                      .none),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  addData();
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 150.0,
-                                                          right: 10,
-                                                          top: 10),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        color:
-                                                            Colors.blue[300]),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 0,
-                                                              right: 0,
-                                                              top: 12,
-                                                              bottom: 12),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Container(
-                                                            width: 20,
-                                                            height: 20,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              image: DecorationImage(
-                                                                  image: AssetImage(
-                                                                      'gambar/simpan.png'),
-                                                                  fit: BoxFit
-                                                                      .fitHeight),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 15,
-                                                          ),
-                                                          Text(
-                                                            'simpan',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 14),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
                                             ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  });
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 15.0, right: 15),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Colors.blue,
-                                  ),
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Center(
-                                      child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Text(
-                                      'Beri Review',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500),
+                                          )),
                                     ),
-                                  ))),
-                            ),
-                          )
-                        : SizedBox(),
-                    //
-                    statusorder == 3
-                        ? Padding(
-                            padding: const EdgeInsets.only(
-                                left: 15.0, right: 15, top: 8),
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  color: Colors.red,
-                                ),
-                                width: MediaQuery.of(context).size.width,
-                                child: Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Text(
-                                    'Kirim Laporan',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ))),
-                          )
-                        : SizedBox(),
-                    //
-                    SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
-              )),
-//            statusorder==3?
-//               Container(
-//                 height: MediaQuery.of(context).size.height,
-//                 width: MediaQuery.of(context).size.width,
-//                 color:Colors.grey.withOpacity(0.3),
-//                 child: Center(
-//                   child: Container(
-//                     height: MediaQuery.of(context).size.height/3.3,
-//                     width: MediaQuery.of(context).size.width/1.1,
-//                     decoration: BoxDecoration(
-//                       borderRadius: BorderRadius.circular(20),
-//                       color: Colors.white
-//                     ),
-//                     child:Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         SizedBox(height:20),
-//                         Padding(
-//                           padding: const EdgeInsets.only(left:25.0),
-//                           child: Text('Beri Review',style: TextStyle(color: Colors.grey),),
-//                         ),
-//                         SizedBox(height: 8,),
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.center,
-//                           children: [
-//                             RatingBar.builder(
-//    initialRating: 0,
-//    minRating: 0,
-//    direction: Axis.horizontal,
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                          left: 20.w, right: 20.w),
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20),
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            //  width: 100,
+                                            //  height: 100,
+                                            child: TimelineTile(
+                                              afterLineStyle: LineStyle(
+                                                  color: isdone == 1
+                                                      ? Colors.green
+                                                      : softGrey,
+                                                  thickness: 3),
+                                              indicatorStyle: IndicatorStyle(
+                                                  color: isdone == 1
+                                                      ? Colors.green
+                                                      : softGrey,
+                                                  width: 15),
+                                              isFirst: true,
+                                              endChild: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      awal,
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Text(
+                                                      'tukang telah mengambil order',
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.grey),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          //
+                                          SizedBox(
+                                            child: TimelineTile(
+                                              isLast: true,
+                                              beforeLineStyle: LineStyle(
+                                                  color: isdone == 1
+                                                      ? Colors.green
+                                                      : softGrey,
+                                                  thickness: 3),
+                                              afterLineStyle: LineStyle(
+                                                  color: isdonekedua == 1
+                                                      ? Colors.green
+                                                      : softGrey,
+                                                  thickness: 3),
+                                              indicatorStyle: IndicatorStyle(
+                                                  color: isdonekedua == 1
+                                                      ? Colors.green
+                                                      : softGrey,
+                                                  width: 15),
+                                              endChild: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '${kedua}',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    isdonekedua == 1
+                                                        ? Text(
+                                                            Address,
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .grey),
+                                                          )
+                                                        : Text(
+                                                            'menunggu tukang sampai lokasi anda',
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    isdonekedua == 1
+                                        ? Container(
+                                            child: Column(
+                                            children: [
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      showWork = !showWork;
+                                                    });
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 20.w,
+                                                                right: 20.w,
+                                                                top: 20.w,
+                                                                bottom: 10.w),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Container(
+                                                                child: Text(
+                                                              'Pekerjaan',
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      blackBlue,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )),
+                                                            Icon(
+                                                              Icons.expand_more,
+                                                              color: blackBlue,
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Divider(
+                                                        thickness: 1,
+                                                      ),
+                                                    ],
+                                                  )),
+                                              showWork
+                                                  ? Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 30.w),
+                                                      child: Container(
+                                                        child: ListView.builder(
+                                                            shrinkWrap: true,
+                                                            physics:
+                                                                NeverScrollableScrollPhysics(),
+                                                            itemCount:
+                                                                orderansemua ==
+                                                                        null
+                                                                    ? 0
+                                                                    : orderansemua
+                                                                        .length,
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    i) {
+                                                              return Column(
+                                                                children: [
+                                                                  GestureDetector(
+                                                                    onTap: () {
+                                                                      setState(
+                                                                          () {
+                                                                        _selectedIndex[i] =
+                                                                            !_selectedIndex[i];
+                                                                      });
+                                                                      print(i);
+                                                                      print(
+                                                                          _selectedIndex);
+                                                                    },
+                                                                    child: Row(
+                                                                      // mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Container(
+                                                                          width:
+                                                                              15,
+                                                                          height:
+                                                                              15,
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            image:
+                                                                                DecorationImage(image: AssetImage('gambar/pesanan.png'), fit: BoxFit.fitHeight),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              2,
+                                                                        ),
+                                                                        Icon(
+                                                                          Icons
+                                                                              .circle,
+                                                                          size:
+                                                                              5,
+                                                                          color:
+                                                                              Colors.grey,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              2,
+                                                                        ),
+                                                                        Flexible(
+                                                                            child:
+                                                                                Text(
+                                                                          orderansemua[i]
+                                                                              [
+                                                                              'service_name'],
+                                                                          style:
+                                                                              TextStyle(fontSize: 13),
+                                                                        )),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              3,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            40.0,
+                                                                        top:
+                                                                            10),
+                                                                    child:
+                                                                        Column(
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          //  width: 100,
+                                                                          //  height: 50,
+                                                                          child:
+                                                                              TimelineTile(
+                                                                            isFirst:
+                                                                                true,
+                                                                            beforeLineStyle:
+                                                                                LineStyle(color: isdonekedua == 1 ? Colors.green : softGrey, thickness: 3),
+                                                                            afterLineStyle:
+                                                                                LineStyle(color: orderansemua[i]['steps'][0]['is_done'] == 1 ? Colors.green : softGrey, thickness: 3),
+                                                                            indicatorStyle:
+                                                                                IndicatorStyle(color: orderansemua[i]['steps'][0]['is_done'] == 1 ? Colors.green : softGrey, width: 15),
+                                                                            endChild:
+                                                                                Padding(
+                                                                              padding: const EdgeInsets.all(10.0),
+                                                                              child: Column(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    orderansemua[i]['steps'][0]['step_name'],
+                                                                                    style: TextStyle(fontSize: 12),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 4,
+                                                                                  ),
+                                                                                  orderansemua[i]['steps'][0]['is_done'] == 1
+                                                                                      ? Container(
+                                                                                          width: 40,
+                                                                                          height: 40,
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius: BorderRadius.circular(5),
+                                                                                            image: DecorationImage(image: NetworkImage(orderansemua[i]['steps'][0]['images']), fit: BoxFit.cover),
+                                                                                          ),
+                                                                                        )
+                                                                                      : Container(
+                                                                                          width: 40,
+                                                                                          height: 40,
+                                                                                          child: Image.asset(
+                                                                                            'gambar/foto.png',
+                                                                                            fit: BoxFit.cover,
+                                                                                          ),
+                                                                                        ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        //
+                                                                        Container(
+                                                                          child:
+                                                                              Text(
+                                                                            orderansemua[i]['is_done'] == 1
+                                                                                ? '${orderansemua[i]['time']}'
+                                                                                : '',
+                                                                            style:
+                                                                                TextStyle(color: primary),
+                                                                          ),
+                                                                        )
 
-//   //  allowHalfRating: true,
-//   //  unratedColor: Colors.grey,
-//   //  glowColor: Colors.red,
-//    itemCount: 5,
-//    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-//    itemBuilder: (context, _) => Icon(
-//      Icons.star,
-//      color: Colors.amber,
-//    ),
-//    onRatingUpdate: (rating) {
-//      setState(() {
-//        bintang = rating;
-//      });
-//     //  print(bintang);
-//    },
-// ),
-// // Text('${bintang}'.replaceAll('.0', ''))
-//                           ],
-//                         ),
-//                           Container(
-//                               // width: MediaQuery.of(context).size.width,
-//                               // height: MediaQuery.of(context).size.height / 10,
-//                               decoration: BoxDecoration(
-//                                   // color: Colors.blue[50],
-//                                   borderRadius: BorderRadius.circular(25)),
-//                               child: Padding(
-//                                 padding: const EdgeInsets.only(left:20.0,right: 20,top:20),
-//                                 child: TextField(
-//                                   // controller: email,
-//                                   // textAlign: TextAlign.left,
-//                                   // ignore: unnecessary_new
-//                                   decoration: new InputDecoration(
-//                                     fillColor: Colors.blue[50],
-//                                     filled: true,
-//                                     contentPadding:
-//                                         EdgeInsets.only(left: 10, right: 0, top: 20),
-//                                     hintText: 'Tulis review disini',
-//                             //        prefixIcon:  Padding(
-//                             //   padding: const EdgeInsets.all(20.0),
-//                             //   child: Image.asset(
-//                             //     'gambar/email.png',
-//                             //     width: 25,
-//                             //     height: 25,
-//                             //     fit: BoxFit.fill,
-//                             //   ),
-//                             // ),
-//                                     hintStyle: TextStyle(color: Colors.grey,fontSize: 12),
-//                                     border: OutlineInputBorder(
-//                                         borderRadius: const BorderRadius.all(
-//                                           Radius.circular(10.0),
-//                                         ),
-//                                         borderSide: BorderSide.none),
+                                                                        //
+                                                                      ],
+                                                                    ),
+                                                                  ),
+
+                                                                  //
+                                                                  Divider(
+                                                                    thickness:
+                                                                        1,
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            }),
+                                                      ),
+                                                    )
+                                                  : SizedBox()
+                                            ],
+                                          ))
+                                        : SizedBox(),
+                                  ],
+                                )
+
+//
+//
+//                       partner != null
+//                           ?
+
+//                       partner != null
+//                           ? Padding(
+//                               padding: const EdgeInsets.only(left: 10.0),
+//                               child: SizedBox(
+//                                 //  width: 100,
+//                                 //  height: 50,
+//                                 child: TimelineTile(
+//                                   isFirst: true,
+//                                   isLast: true,
+//                                   beforeLineStyle: LineStyle(
+//                                       color: isdoneterakhir == 1
+//                                           ? Colors.green
+//                                           : softGrey,
+//                                       thickness: 3),
+//                                   afterLineStyle: LineStyle(
+//                                     color: isdoneterakhir == 1
+//                                         ? Colors.green
+//                                         : Colors.yellow,
 //                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                             //
-//                             GestureDetector(
-//                               onTap: (){
-//                                 addData();
-//                               },
-//                               child: Padding(
-//                                 padding: const EdgeInsets.only(left: 180.0,right: 20  ,top: 10),
-//                                 child: Container(
-//                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-//                                 color: Colors.blue[300]
-//                                 ),
-//                                   child:   Padding(
-//                                     padding: const EdgeInsets.only(left:0,right:0,top:12,bottom:12  ),
-//                                     child: Row(
-//                                       mainAxisAlignment: MainAxisAlignment.center,
-//                                       children: [
-//                                         Container(
-//                       width: 20,
-//                       height: 20,
-//                       decoration: BoxDecoration(
-//                     image: DecorationImage(
-//                       image: AssetImage('gambar/simpan.png'),fit: BoxFit.fitHeight
-//                     ),
-//                       ),
-//                     ),
-//                     SizedBox(width: 15,),
-//                     Text('simpan',style: TextStyle(color: Colors.white,fontSize: 14),)
-//                                       ],
+//                                   indicatorStyle: IndicatorStyle(
+//                                       color: isdoneterakhir == 1
+//                                           ? Colors.green
+//                                           : Colors.yellow,
+//                                       width: 15),
+//                                   endChild: Padding(
+//                                     padding: const EdgeInsets.all(10.0),
+//                                     child: Text(
+//                                       terakhir,
+//                                       style: TextStyle(fontSize: 12),
 //                                     ),
 //                                   ),
 //                                 ),
 //                               ),
 //                             )
-//                       ],
-//                     )
-//                   ),
-//                 ),
-//               )
-//           :SizedBox()
-        ],
-      ),
-    );
+//                           : SizedBox(),
+//                       //
+//                       SizedBox(
+//                         height: 8,
+//                       ),
+//                       statusorder == 3
+//                           ? GestureDetector(
+//                               onTap: () {
+//                                 showDialog(
+//                                     context: context,
+//                                     builder: (BuildContext context) {
+//                                       return Dialog(
+//                                         shape: RoundedRectangleBorder(
+//                                             borderRadius: BorderRadius.circular(
+//                                                 15.0)), //this right here
+//                                         child: Container(
+//                                           height: 230,
+//                                           child: Padding(
+//                                             padding: const EdgeInsets.all(10.0),
+//                                             child: Column(
+//                                               mainAxisAlignment:
+//                                                   MainAxisAlignment.center,
+//                                               crossAxisAlignment:
+//                                                   CrossAxisAlignment.start,
+//                                               children: [
+//                                                 Text(
+//                                                   'Beri Review',
+//                                                   style: TextStyle(
+//                                                       color: Colors.grey),
+//                                                 ),
+//                                                 SizedBox(
+//                                                   height: 8,
+//                                                 ),
+//                                                 Row(
+//                                                   mainAxisAlignment:
+//                                                       MainAxisAlignment.center,
+//                                                   children: [
+//                                                     RatingBar.builder(
+//                                                       initialRating: 0,
+//                                                       minRating: 0,
+//                                                       direction:
+//                                                           Axis.horizontal,
+
+//                                                       //  allowHalfRating: true,
+//                                                       //  unratedColor: Colors.grey,
+//                                                       //  glowColor: Colors.red,
+//                                                       itemCount: 5,
+//                                                       itemPadding:
+//                                                           EdgeInsets.symmetric(
+//                                                               horizontal: 4.0),
+//                                                       itemBuilder:
+//                                                           (context, _) => Icon(
+//                                                         Icons.star,
+//                                                         color: Colors.amber,
+//                                                       ),
+//                                                       onRatingUpdate: (rating) {
+//                                                         setState(() {
+//                                                           bintang = rating;
+//                                                         });
+//                                                         //  print(bintang);
+//                                                       },
+//                                                     ),
+// // Text('${bintang}'.replaceAll('.0', ''))
+//                                                   ],
+//                                                 ),
+// //
+//                                                 Container(
+//                                                   // width: MediaQuery.of(context).size.width,
+//                                                   // height: MediaQuery.of(context).size.height / 10,
+//                                                   decoration: BoxDecoration(
+//                                                       // color: Colors.blue[50],
+//                                                       borderRadius:
+//                                                           BorderRadius.circular(
+//                                                               25)),
+//                                                   child: Padding(
+//                                                     padding:
+//                                                         const EdgeInsets.only(
+//                                                             left: 10.0,
+//                                                             right: 10,
+//                                                             top: 15),
+//                                                     child: TextField(
+//                                                       // controller: email,
+//                                                       // textAlign: TextAlign.left,
+//                                                       // ignore: unnecessary_new
+//                                                       decoration:
+//                                                           new InputDecoration(
+//                                                         fillColor:
+//                                                             Colors.blue[50],
+//                                                         filled: true,
+//                                                         contentPadding:
+//                                                             EdgeInsets.only(
+//                                                                 left: 10,
+//                                                                 right: 0,
+//                                                                 top: 20),
+//                                                         hintText:
+//                                                             'Tulis review disini',
+//                                                         //        prefixIcon:  Padding(
+//                                                         //   padding: const EdgeInsets.all(20.0),
+//                                                         //   child: Image.asset(
+//                                                         //     'gambar/email.png',
+//                                                         //     width: 25,
+//                                                         //     height: 25,
+//                                                         //     fit: BoxFit.fill,
+//                                                         //   ),
+//                                                         // ),
+//                                                         hintStyle: TextStyle(
+//                                                             color: Colors.grey,
+//                                                             fontSize: 12),
+//                                                         border:
+//                                                             OutlineInputBorder(
+//                                                                 borderRadius:
+//                                                                     const BorderRadius
+//                                                                         .all(
+//                                                                   Radius
+//                                                                       .circular(
+//                                                                           10.0),
+//                                                                 ),
+//                                                                 borderSide:
+//                                                                     BorderSide
+//                                                                         .none),
+//                                                       ),
+//                                                     ),
+//                                                   ),
+//                                                 ),
+//                                                 GestureDetector(
+//                                                   onTap: () {
+//                                                     addData();
+//                                                   },
+//                                                   child: Padding(
+//                                                     padding:
+//                                                         const EdgeInsets.only(
+//                                                             left: 150.0,
+//                                                             right: 10,
+//                                                             top: 10),
+//                                                     child: Container(
+//                                                       decoration: BoxDecoration(
+//                                                           borderRadius:
+//                                                               BorderRadius
+//                                                                   .circular(15),
+//                                                           color:
+//                                                               Colors.blue[300]),
+//                                                       child: Padding(
+//                                                         padding:
+//                                                             const EdgeInsets
+//                                                                     .only(
+//                                                                 left: 0,
+//                                                                 right: 0,
+//                                                                 top: 12,
+//                                                                 bottom: 12),
+//                                                         child: Row(
+//                                                           mainAxisAlignment:
+//                                                               MainAxisAlignment
+//                                                                   .center,
+//                                                           children: [
+//                                                             Container(
+//                                                               width: 20,
+//                                                               height: 20,
+//                                                               decoration:
+//                                                                   BoxDecoration(
+//                                                                 image: DecorationImage(
+//                                                                     image: AssetImage(
+//                                                                         'gambar/simpan.png'),
+//                                                                     fit: BoxFit
+//                                                                         .fitHeight),
+//                                                               ),
+//                                                             ),
+//                                                             SizedBox(
+//                                                               width: 15,
+//                                                             ),
+//                                                             Text(
+//                                                               'simpan',
+//                                                               style: TextStyle(
+//                                                                   color: Colors
+//                                                                       .white,
+//                                                                   fontSize: 14),
+//                                                             )
+//                                                           ],
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                   ),
+//                                                 )
+//                                               ],
+//                                             ),
+//                                           ),
+//                                         ),
+//                                       );
+//                                     });
+//                               },
+//                               child: Padding(
+//                                 padding: const EdgeInsets.only(
+//                                     left: 15.0, right: 15),
+//                                 child: Container(
+//                                     decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(25),
+//                                       color: Colors.blue,
+//                                     ),
+//                                     width: MediaQuery.of(context).size.width,
+//                                     child: Center(
+//                                         child: Padding(
+//                                       padding: const EdgeInsets.all(15.0),
+//                                       child: Text(
+//                                         'Beri Review',
+//                                         style: TextStyle(
+//                                             color: Colors.white,
+//                                             fontSize: 14,
+//                                             fontWeight: FontWeight.w500),
+//                                       ),
+//                                     ))),
+//                               ),
+//                             )
+//                           : SizedBox(),
+//                       //
+//                       statusorder == 3
+//                           ? Padding(
+//                               padding: const EdgeInsets.only(
+//                                   left: 15.0, right: 15, top: 8),
+//                               child: Container(
+//                                   decoration: BoxDecoration(
+//                                     borderRadius: BorderRadius.circular(25),
+//                                     color: Colors.red,
+//                                   ),
+//                                   width: MediaQuery.of(context).size.width,
+//                                   child: Center(
+//                                       child: Padding(
+//                                     padding: const EdgeInsets.all(15.0),
+//                                     child: Text(
+//                                       'Kirim Laporan',
+//                                       style: TextStyle(
+//                                           color: Colors.white,
+//                                           fontSize: 14,
+//                                           fontWeight: FontWeight.w500),
+//                                     ),
+//                                   ))),
+//                             )
+//                           : SizedBox(),
+//                       //
+//                       SizedBox(
+//                         height: 5,
+//                       ),
+                        ],
+                      ),
+                      // Positioned(
+                      //     // top: 10.h,
+                      //     top: MediaQuery.of(context).size.height,
+                      //     bottom: 0,
+                      //     left: 0,
+                      //     right: 0,
+                      //     child: Text('batal order')),
+                    ))),
+              ],
+            ),
+          ));
+    }
   }
 
   var bintang;
 //   //
+  bool showWork = false;
+  bool isloading = false;
   @override
   void initState() {
-    super.initState();
     getDataListHome();
-    getDataListorderStep();
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (statusorder == 3) {
-        //Stop if has status PENDING
-        timer.cancel();
-        //       Future.delayed(const Duration(seconds: 4), () {
-        //   setState(() {
-        //    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>StepOrder(invoice:invoice,orderid:widget.orderid)));
-        //   });
-        // });
-      }
-      setState(() async {
-        getDataListHome();
-        getDataListorderStep();
-        Position position = await _getGeoLocationPosition();
-        GetAddressFromLatLong(position);
-        print('$Address');
+    Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        isloading = !isloading;
       });
+    });
+    Timer.periodic(Duration(seconds: 50), (timer) {
+      var data = getDataListHome();
+      print(data);
+      if (statusorder == 3) {
+        timer.cancel();
+      }
+      getDataListHome();
     });
     //
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      timer.cancel();
-      setState(() async {
-        getDataListHome();
-        // getDataListorderStep();
-        //  Position position = await _getGeoLocationPosition();
-        //           GetAddressFromLatLong(position);
-        //           print('$Address');
-      });
-    });
+    super.initState();
+
+    // getDataListHome();
   }
 
 //
@@ -1247,15 +921,17 @@ class _StepOrderState extends State<StepOrder> {
   }
 
   //
-  late String partner;
+  var partner;
   late String customer;
   late int statusorder;
+  late String? workingdate;
+  late String? workingtime;
   getDataListHome() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
     var response = await http.get(
         Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')),
+            'https://olla.ws/api/customer/v1/order-detail/${988}')),
         headers: {
           "Accept": "application/json",
           "x-token-olla": KEY.APIKEY,
@@ -1267,23 +943,31 @@ class _StepOrderState extends State<StepOrder> {
     // }else{
     //   print('ada');
     // }
-    setState(() {
-      var converDataToJson = json.decode(response.body);
 
-      statusorder = converDataToJson['status_order'];
-      // status = converDataToJson['payments']['status'];
-      // gambar = converDataToJson['payments']['image'];
-      // grandtotal = converDataToJson['grand_total'];
-      partner = converDataToJson['partner']['name'];
-      // datalist = converDataToJson;
+    var converDataToJson = json.decode(response.body);
+    print(converDataToJson);
+    var order_summary = converDataToJson['order_summary'];
+    if (converDataToJson['partner'] != null) {
+      setState(() {
+        statusorder = converDataToJson['status_order'];
+        // status = converDataToJson['payments']['status'];
+        // gambar = converDataToJson['payments']['image'];
+        // grandtotal = converDataToJson['grand_total'];
+        workingdate = order_summary['schedule']['working_date'];
+        workingtime = order_summary['schedule']['working_time'];
+        partner = converDataToJson['partner'];
+        // datalist = converDataToJson;
 
-      // ignore: avoid_print
-      // print(converDataToJson['payments']['status']);
-      print(partner);
-      // print(converDataToJson);
-      print(statusorder);
-    });
-    return "Success";
+        // ignore: avoid_print
+        // print(converDataToJson['payments']['status']);
+        print(partner);
+        // print(converDataToJson);
+        print(statusorder);
+      });
+      getDataListorderStep();
+    }
+
+    return converDataToJson;
   }
 
   //
@@ -1307,7 +991,7 @@ class _StepOrderState extends State<StepOrder> {
     customer = prefs1.getString('customer')!;
     var response = await http.get(
         Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/v1/order-step/${widget.orderid}')),
+            'https://olla.ws/api/customer/v1/order-step/${988}')),
         headers: {
           "Accept": "application/json",
           "x-token-olla": KEY.APIKEY,
@@ -1319,9 +1003,12 @@ class _StepOrderState extends State<StepOrder> {
     // }else{
     //   print('ada');
     // }
+    var converDataToJsonsteporder = json.decode(response.body);
+    orderansemua = converDataToJsonsteporder['stepMiddle'];
+    _selectedIndex =
+        List<bool>.filled(orderansemua.length, false, growable: true);
     setState(() {
-      var converDataToJsonsteporder = json.decode(response.body);
-      orderansemua = converDataToJsonsteporder['stepMiddle'];
+      print(orderansemua);
       awal =
           converDataToJsonsteporder['stepStart'][0]['step_name']; //ambil order
       isdone = converDataToJsonsteporder['stepStart'][0]
@@ -1356,7 +1043,6 @@ class _StepOrderState extends State<StepOrder> {
       // print(converDataToJsonsteporder);
       // print(awal);
     });
-    return "Success";
   }
 
   String location = 'Null, Press Button';
