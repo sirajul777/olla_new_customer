@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         builder: (context,Widget) => GetMaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Localizations Sample App',
-              localizationsDelegates: const [
+              localizationsDelegates: [
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
