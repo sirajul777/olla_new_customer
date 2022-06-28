@@ -93,8 +93,7 @@ class _AturjadwalState extends State<Aturjadwal> {
               child: Center(
                 child: ListTile(
                   title: Text('${datahalaman![index]['name']}',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   subtitle: Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -107,15 +106,9 @@ class _AturjadwalState extends State<Aturjadwal> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                            NumberFormat.currency(
-                                    locale: 'id',
-                                    symbol: 'Rp',
-                                    decimalDigits: 0)
+                            NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
                                 .format(int.parse('${item}')),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.yellow[800])),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.yellow[800])),
                       ],
                     ),
                   ),
@@ -141,9 +134,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                                           onPressed: () {
                                             // _dismissDialog();
                                           },
-                                          child: Center(
-                                              child: Text(
-                                                  'tidak boleh kosong!!!'))),
+                                          child: Center(child: Text('tidak boleh kosong!!!'))),
                                     ],
                                   );
                                 })
@@ -200,8 +191,7 @@ class _AturjadwalState extends State<Aturjadwal> {
     });
     for (var i = 0; i < iddata!.length; i++) {
       if (iddata!.where((element) => element != 0) != 0) {
-        dataOrder!
-            .add({"id": iddata![i], "qty": qty![i], "comment": iddnama![i]});
+        dataOrder!.add({"id": iddata![i], "qty": qty![i], "comment": iddnama![i]});
       }
     }
     var jumlah = iddharga!.reduce((a, b) => a + b).toString();
@@ -233,17 +223,17 @@ class _AturjadwalState extends State<Aturjadwal> {
   }
 
   late String jadwal;
-  late String jam;
-  late String menit;
+  late String waktu;
 
   semuajadwal() async {
 // print(months[current_mon-1]);
 
     setState(() {
-      jam = ("${dateTime.hour}");
-      menit = ("${dateTime.minute}");
+      final value = DateFormat('HH:mm').format(dateTime);
+      waktu = value;
       // tanggalstack = ("$_selectedLocationstack");
-      jadwal = ("${Address} ? ${dateTime.day} ? ${Address} : ${dateTime.year}");
+      final value2 = DateFormat('MM/dd/yyyy').format(dateTime);
+      jadwal = value2;
       print(jadwal);
     });
   }
@@ -254,13 +244,11 @@ class _AturjadwalState extends State<Aturjadwal> {
   // late int? idapartement;
   late int? idalamat;
   getDataListHome() async {
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/packages-list?service_id=${widget.id}')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-        });
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/packages-list?service_id=${widget.id}')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+    });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -293,12 +281,10 @@ class _AturjadwalState extends State<Aturjadwal> {
   int _groupValue = -1;
 
   getDataDomisili() async {
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/domisili')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-        });
+    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/domisili')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+    });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -354,22 +340,18 @@ class _AturjadwalState extends State<Aturjadwal> {
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     print(placemarks);
     Placemark place = placemarks[0];
-    Address =
-        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
   }
 
@@ -406,46 +388,42 @@ class _AturjadwalState extends State<Aturjadwal> {
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.only(
-                              top: 20.w, left: 20.w, right: 20.w),
+                          padding: EdgeInsets.only(top: 20.w, left: 20.w, right: 20.w),
                           height: ScreenUtil().setHeight(75.h),
                           color: white,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context, true);
-                                  },
-                                  // ignore: avoid_unnecessary_containers
-                                  child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      // color: Colors.blue[50],
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.arrow_back_ios_outlined,
-                                        // color: Colors.black,
-                                        size: 20,
-                                      ),
-                                    ),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context, true);
+                              },
+                              // ignore: avoid_unnecessary_containers
+                              child: Container(
+                                height: MediaQuery.of(context).size.height / 25,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  // color: Colors.blue[50],
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_back_ios_outlined,
+                                    // color: Colors.black,
+                                    size: 20,
                                   ),
                                 ),
-                                Center(
-                                  child: Text(
-                                    'Atur Jadwal',
-                                    style: TextStyle(
-                                      color: blackBlue,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.w,
-                                    ),
-                                  ),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                'Atur Jadwal',
+                                style: TextStyle(
+                                  color: blackBlue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.w,
                                 ),
-                                SizedBox()
-                              ]),
+                              ),
+                            ),
+                            SizedBox()
+                          ]),
                         ),
                         Container(
                           padding: EdgeInsets.all(10.w),
@@ -455,11 +433,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                             children: [
                               Container(
                                 child: Row(children: [
-                                  SizedBox(
-                                      width: 35.w,
-                                      height: 35.w,
-                                      child: SvgPicture.asset(
-                                          'image/navigation.svg')),
+                                  SizedBox(width: 35.w, height: 35.w, child: SvgPicture.asset('image/navigation.svg')),
                                   Text(
                                     ' Pengiriman',
                                     textAlign: TextAlign.left,
@@ -493,9 +467,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                             padding: const EdgeInsets.all(15.0),
                             width: MediaQuery.of(context).size.width - 60,
                             // height: MediaQuery.of(context).size.height / 15,
-                            decoration: BoxDecoration(
-                                color: Colors.blue[50],
-                                borderRadius: BorderRadius.circular(8)),
+                            decoration: BoxDecoration(color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
                             child: Center(
                                 child: Text(
                               Address,
@@ -506,8 +478,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                         ),
                         Text(
                           'Tipe Domisili',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                         //
                         Row(
@@ -550,8 +521,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                         ),
                         Text(
                           'Tambahkan Catatan Alamat',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                         SizedBox(
                           height: 10,
@@ -569,8 +539,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                             decoration: new InputDecoration(
                               fillColor: Colors.blue[50],
                               filled: true,
-                              contentPadding:
-                                  EdgeInsets.only(left: 20, right: 20, top: 20),
+                              contentPadding: EdgeInsets.only(left: 20, right: 20, top: 20),
                               hintText: 'Tulis catatan disini',
                               // prefixIcon: Padding(
                               //   padding: const EdgeInsets.all(20.0),
@@ -621,31 +590,22 @@ class _AturjadwalState extends State<Aturjadwal> {
                                     },
                                     child: Container(
                                         padding: EdgeInsets.all(20.w),
-                                        decoration: BoxDecoration(
-                                            color: lightBlue,
-                                            borderRadius:
-                                                BorderRadius.circular(20.w)),
+                                        decoration:
+                                            BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(20.w)),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
                                             Text(
                                               '${dateTime.day}',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp,
-                                                  fontWeight: FontWeight.bold),
+                                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                                             ),
                                             Text(
                                               '${_month[dateTime.month - 1]}',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp,
-                                                  fontWeight: FontWeight.bold),
+                                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                                             ),
                                             Text(
                                               '${dateTime.year}',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp,
-                                                  fontWeight: FontWeight.bold),
+                                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                                             ),
                                           ],
                                         ))),
@@ -663,34 +623,23 @@ class _AturjadwalState extends State<Aturjadwal> {
                                     },
                                     child: Container(
                                         padding: EdgeInsets.all(20.w),
-                                        decoration: BoxDecoration(
-                                            color: lightBlue,
-                                            borderRadius:
-                                                BorderRadius.circular(20.w)),
+                                        decoration:
+                                            BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(20.w)),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
                                             Text(
                                               'Pukul ',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp,
-                                                  fontWeight: FontWeight.w600),
+                                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                                             ),
                                             dateTime.minute != 0
                                                 ? Text(
                                                     '${dateTime.hour}:${dateTime.minute}',
-                                                    style: TextStyle(
-                                                        fontSize: 18.sp,
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                                                   )
                                                 : Text(
                                                     '${dateTime.hour}:${dateTime.minute}0',
-                                                    style: TextStyle(
-                                                        fontSize: 18.sp,
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                                                   ),
                                             // Text(''),
                                           ],
@@ -709,30 +658,17 @@ class _AturjadwalState extends State<Aturjadwal> {
                             children: [
                               Text(
                                 'Layanan yang dipilih',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                               ),
                               hargatotal != 0
                                   ? Text(
-                                      NumberFormat.currency(
-                                              locale: 'id',
-                                              symbol: 'Rp',
-                                              decimalDigits: 0)
+                                      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
                                           .format(hargatotal),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.green))
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.green))
                                   : Text(
-                                      NumberFormat.currency(
-                                              locale: 'id',
-                                              symbol: 'Rp',
-                                              decimalDigits: 0)
+                                      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
                                           .format(hargatotal!),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.green)),
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.green)),
                             ],
                           ),
                         ),
@@ -750,8 +686,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                             shrinkWrap: true,
                             initialItemCount: datahalaman!.length,
                             itemBuilder: (context, index, animation) {
-                              return _buildItem(
-                                  '${iddharga![index]}', animation, index)!;
+                              return _buildItem('${iddharga![index]}', animation, index)!;
                             },
                           ),
                         ),
@@ -771,34 +706,29 @@ class _AturjadwalState extends State<Aturjadwal> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              LanjutPembayaran(
-                                                  longitude: widget.longitude!,
-                                                  latitude: widget.latitude!,
-                                                  harga: hargatotal!,
-                                                  nama: datahalaman!,
-                                                  alamat: widget.alamat!,
-                                                  jadwal: jadwal,
-                                                  jam: jam,
-                                                  menit: menit,
-                                                  domisiliproblem:
-                                                      address_note.text,
-                                                  // apartement: idapartement!,
-                                                  // rumah: idrumah ,
-                                                  idalamat: idalamat!,
-                                                  iddata: dataOrder!,
-                                                  id: iddata!)));
+                                          builder: (BuildContext context) => LanjutPembayaran(
+                                              longitude: widget.longitude!,
+                                              latitude: widget.latitude!,
+                                              harga: hargatotal!,
+                                              nama: datahalaman!,
+                                              alamat: widget.alamat!,
+                                              jadwal: jadwal,
+                                             waktu: waktu,
+                                              domisiliproblem: address_note.text,
+                                              // apartement: idapartement!,
+                                              // rumah: idrumah ,
+                                              idalamat: idalamat!,
+                                              iddata: dataOrder!,
+                                              id: iddata!)));
                                 });
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.08,
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(25)),
+                                  height: MediaQuery.of(context).size.height * 0.08,
+                                  decoration:
+                                      BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(25)),
                                   child: Center(
                                       child: Text('Lanjut Pembayaran',
                                           style: TextStyle(

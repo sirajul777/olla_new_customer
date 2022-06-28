@@ -148,8 +148,6 @@ class _OtpNumberState extends State<OtpNumber> {
       "otp": otp.text,
     }).then((response) async {
       var jsonObj = json.decode(response.body);
-      print(gambar);
-
 
       // customerid = jsonObj['customer_data']['customers_id'];
       sukses = jsonObj['code'];
@@ -185,29 +183,13 @@ class _OtpNumberState extends State<OtpNumber> {
           var auth = jsonObj['data']['token'];
           nama = jsonObj['data']['customer']['name'];
           gambar = jsonObj['data']['customer']['images'];
-          setState(() {
-            // customer = jsonObj['data']['customer'][0]['customer_id'];
-            // customername = jsonObj['data']['customer'][0]['name'];
-            // customeremail = jsonObj['data']['customer'][0]['email'];
-            // customerphone = jsonObj['data']['customer'][0]['mobile_phone'];
-            // customerimage = jsonObj['data']['customer'][0]['images'];
-            isLoading = true;
-          });
+         
           isLoading = true;
         });
         // ignore: avoid_print
         print(jsonObj);
 
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(builder: (BuildContext context) => SendOtpNumber()),
-        //     (Route<dynamic> route) => false);
-        // setState(() {
-        //   data = '${jsonObj['data']['verification_code']}';
-        //   statusinactive = '${jsonObj['data']['status']}';
-        //   namauser = '${jsonObj['data']['user_name']}';
-        //   emailuser = '${jsonObj['data']['email']}';
-        // });
+       
       } else {
         showDialog(
           context: context,

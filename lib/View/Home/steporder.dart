@@ -22,8 +22,7 @@ class StepOrder extends StatefulWidget {
   List? seluruhdata;
   // String koment;
 // Get Key Data
-  StepOrder({Key? key, this.invoice, this.orderid, this.seluruhdata})
-      : super(key: key);
+  StepOrder({Key? key, this.invoice, this.orderid, this.seluruhdata}) : super(key: key);
   @override
   State<StepOrder> createState() => _StepOrderState();
 }
@@ -32,6 +31,7 @@ class _StepOrderState extends State<StepOrder> {
   bool tampil = false;
   late List<bool> _selectedIndex;
   late Timer timer;
+  
   @override
   Widget build(BuildContext context) {
     if (!isloading) {
@@ -53,9 +53,7 @@ class _StepOrderState extends State<StepOrder> {
           top: false,
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
-                statusBarColor: white,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.dark),
+                statusBarColor: white, statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.dark),
             child: Stack(
               children: [
                 Scaffold(
@@ -121,9 +119,7 @@ class _StepOrderState extends State<StepOrder> {
                               height: 200,
                               decoration: BoxDecoration(
                                 // color: blackBlue,
-                                image: DecorationImage(
-                                    image: AssetImage('gambar/image3.png'),
-                                    fit: BoxFit.fitHeight),
+                                image: DecorationImage(image: AssetImage('gambar/image3.png'), fit: BoxFit.fitHeight),
                               ),
                             ),
                           ),
@@ -139,17 +135,14 @@ class _StepOrderState extends State<StepOrder> {
                                         //     color: blackBlue),
 
                                         child: Text('Sedang mencari Teknisi',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: primary,
-                                                fontWeight: FontWeight.w600)),
+                                            style:
+                                                TextStyle(fontSize: 16, color: primary, fontWeight: FontWeight.w600)),
                                       )),
                                       Center(
                                         child: Container(
                                           // height: MediaQuery.of(context).size.height,
                                           padding: EdgeInsets.only(top: 20.w),
-                                          width:
-                                              MediaQuery.of(context).size.width,
+                                          width: MediaQuery.of(context).size.width,
                                           // color: Colors.red,
                                           child: const Center(
                                             child: SpinKitFadingCircle(
@@ -165,15 +158,13 @@ class _StepOrderState extends State<StepOrder> {
                               : Column(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20),
+                                      padding: const EdgeInsets.only(left: 20.0, right: 20),
                                       child: Container(
                                           margin: EdgeInsets.only(top: 10.w),
                                           padding: EdgeInsets.all(15.w),
                                           decoration: BoxDecoration(
                                             color: white,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(12),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: softGrey,
@@ -189,47 +180,34 @@ class _StepOrderState extends State<StepOrder> {
                                             ],
                                           ),
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Container(
-                                                margin:
-                                                    EdgeInsets.only(right: 10),
+                                                margin: EdgeInsets.only(right: 10),
                                                 width: 40,
                                                 height: 40,
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                      image: AssetImage(
-                                                          'gambar/partner.png'),
-                                                      fit: BoxFit.fitHeight),
+                                                      image: AssetImage('gambar/partner.png'), fit: BoxFit.fitHeight),
                                                 ),
                                               ),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Container(
                                                       child: Text(
-                                                        partner != null
-                                                            ? partner!['name']
-                                                            : '',
+                                                        partner != null ? partner!['name'] : '',
                                                         style: TextStyle(
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .clip,
+                                                            overflow: TextOverflow.clip,
                                                             fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                            fontWeight: FontWeight.w500),
                                                       ),
                                                     ),
                                                     Container(
                                                       child: Text(
                                                         '${workingdate!} - ${workingtime!}',
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors.grey),
+                                                        style: TextStyle(fontSize: 13, color: Colors.grey),
                                                       ),
                                                     )
                                                   ],
@@ -237,18 +215,15 @@ class _StepOrderState extends State<StepOrder> {
                                               ),
                                               Container(
                                                 child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
+                                                  mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Container(
                                                       width: 40,
                                                       height: 40,
                                                       decoration: BoxDecoration(
                                                         image: DecorationImage(
-                                                            image: AssetImage(
-                                                                'gambar/pesanpartner.png'),
-                                                            fit: BoxFit
-                                                                .fitHeight),
+                                                            image: AssetImage('gambar/pesanpartner.png'),
+                                                            fit: BoxFit.fitHeight),
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -259,10 +234,8 @@ class _StepOrderState extends State<StepOrder> {
                                                       height: 40,
                                                       decoration: BoxDecoration(
                                                         image: DecorationImage(
-                                                            image: AssetImage(
-                                                                'gambar/telponpartner.png'),
-                                                            fit: BoxFit
-                                                                .fitHeight),
+                                                            image: AssetImage('gambar/telponpartner.png'),
+                                                            fit: BoxFit.fitHeight),
                                                       ),
                                                     ),
                                                   ],
@@ -272,47 +245,34 @@ class _StepOrderState extends State<StepOrder> {
                                           )),
                                     ),
                                     Container(
-                                      margin: EdgeInsets.only(
-                                          left: 20.w, right: 20.w),
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20),
+                                      margin: EdgeInsets.only(left: 20.w, right: 20.w),
+                                      padding: const EdgeInsets.only(left: 20.0, right: 20),
                                       child: Column(
                                         children: [
                                           SizedBox(
                                             //  width: 100,
                                             //  height: 100,
                                             child: TimelineTile(
-                                              afterLineStyle: LineStyle(
-                                                  color: isdone == 1
-                                                      ? Colors.green
-                                                      : softGrey,
-                                                  thickness: 3),
+                                              afterLineStyle:
+                                                  LineStyle(color: isdone == 1 ? Colors.green : softGrey, thickness: 3),
                                               indicatorStyle: IndicatorStyle(
-                                                  color: isdone == 1
-                                                      ? Colors.green
-                                                      : softGrey,
-                                                  width: 15),
+                                                  color: isdone == 1 ? Colors.green : softGrey, width: 15),
                                               isFirst: true,
                                               endChild: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
+                                                padding: const EdgeInsets.all(10.0),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       awal,
-                                                      style: TextStyle(
-                                                          fontSize: 12),
+                                                      style: TextStyle(fontSize: 12),
                                                     ),
                                                     SizedBox(
                                                       height: 3,
                                                     ),
                                                     Text(
                                                       'tukang telah mengambil order',
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors.grey),
+                                                      style: TextStyle(fontSize: 12, color: Colors.grey),
                                                     ),
                                                   ],
                                                 ),
@@ -323,32 +283,20 @@ class _StepOrderState extends State<StepOrder> {
                                           SizedBox(
                                             child: TimelineTile(
                                               isLast: true,
-                                              beforeLineStyle: LineStyle(
-                                                  color: isdone == 1
-                                                      ? Colors.green
-                                                      : softGrey,
-                                                  thickness: 3),
+                                              beforeLineStyle:
+                                                  LineStyle(color: isdone == 1 ? Colors.green : softGrey, thickness: 3),
                                               afterLineStyle: LineStyle(
-                                                  color: isdonekedua == 1
-                                                      ? Colors.green
-                                                      : softGrey,
-                                                  thickness: 3),
+                                                  color: isdonekedua == 1 ? Colors.green : softGrey, thickness: 3),
                                               indicatorStyle: IndicatorStyle(
-                                                  color: isdonekedua == 1
-                                                      ? Colors.green
-                                                      : softGrey,
-                                                  width: 15),
+                                                  color: isdonekedua == 1 ? Colors.green : softGrey, width: 15),
                                               endChild: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
+                                                padding: const EdgeInsets.all(10.0),
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       '${kedua}',
-                                                      style: TextStyle(
-                                                          fontSize: 12),
+                                                      style: TextStyle(fontSize: 12),
                                                     ),
                                                     SizedBox(
                                                       height: 3,
@@ -356,17 +304,11 @@ class _StepOrderState extends State<StepOrder> {
                                                     isdonekedua == 1
                                                         ? Text(
                                                             Address,
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Colors
-                                                                    .grey),
+                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
                                                           )
                                                         : Text(
                                                             'menunggu tukang sampai lokasi anda',
-                                                            style: TextStyle(
-                                                                fontSize: 12,
-                                                                color: Colors
-                                                                    .grey),
+                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
                                                           ),
                                                   ],
                                                 ),
@@ -389,26 +331,16 @@ class _StepOrderState extends State<StepOrder> {
                                                   child: Column(
                                                     children: [
                                                       Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 20.w,
-                                                                right: 20.w,
-                                                                top: 20.w,
-                                                                bottom: 10.w),
+                                                        padding: EdgeInsets.only(
+                                                            left: 20.w, right: 20.w, top: 20.w, bottom: 10.w),
                                                         child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Container(
                                                                 child: Text(
                                                               'Pekerjaan',
                                                               style: TextStyle(
-                                                                  color:
-                                                                      blackBlue,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                                  color: blackBlue, fontWeight: FontWeight.bold),
                                                             )),
                                                             Icon(
                                                               Icons.expand_more,
@@ -424,125 +356,115 @@ class _StepOrderState extends State<StepOrder> {
                                                   )),
                                               showWork
                                                   ? Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 30.w),
+                                                      padding: EdgeInsets.only(left: 30.w),
                                                       child: Container(
                                                         child: ListView.builder(
                                                             shrinkWrap: true,
-                                                            physics:
-                                                                NeverScrollableScrollPhysics(),
-                                                            itemCount:
-                                                                orderansemua ==
-                                                                        null
-                                                                    ? 0
-                                                                    : orderansemua
-                                                                        .length,
-                                                            itemBuilder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    i) {
+                                                            physics: NeverScrollableScrollPhysics(),
+                                                            itemCount: orderansemua == null ? 0 : orderansemua.length,
+                                                            itemBuilder: (BuildContext context, i) {
                                                               return Column(
                                                                 children: [
                                                                   GestureDetector(
                                                                     onTap: () {
-                                                                      setState(
-                                                                          () {
-                                                                        _selectedIndex[i] =
-                                                                            !_selectedIndex[i];
+                                                                      setState(() {
+                                                                        _selectedIndex[i] = !_selectedIndex[i];
                                                                       });
                                                                       print(i);
-                                                                      print(
-                                                                          _selectedIndex);
+                                                                      print(_selectedIndex);
                                                                     },
                                                                     child: Row(
                                                                       // mainAxisAlignment: MainAxisAlignment.center,
                                                                       children: [
                                                                         Container(
-                                                                          width:
-                                                                              15,
-                                                                          height:
-                                                                              15,
-                                                                          decoration:
-                                                                              BoxDecoration(
-                                                                            image:
-                                                                                DecorationImage(image: AssetImage('gambar/pesanan.png'), fit: BoxFit.fitHeight),
+                                                                          width: 15,
+                                                                          height: 15,
+                                                                          decoration: BoxDecoration(
+                                                                            image: DecorationImage(
+                                                                                image: AssetImage('gambar/pesanan.png'),
+                                                                                fit: BoxFit.fitHeight),
                                                                           ),
                                                                         ),
                                                                         SizedBox(
-                                                                          width:
-                                                                              2,
+                                                                          width: 2,
                                                                         ),
                                                                         Icon(
-                                                                          Icons
-                                                                              .circle,
-                                                                          size:
-                                                                              5,
-                                                                          color:
-                                                                              Colors.grey,
+                                                                          Icons.circle,
+                                                                          size: 5,
+                                                                          color: Colors.grey,
                                                                         ),
                                                                         SizedBox(
-                                                                          width:
-                                                                              2,
+                                                                          width: 2,
                                                                         ),
                                                                         Flexible(
-                                                                            child:
-                                                                                Text(
-                                                                          orderansemua[i]
-                                                                              [
-                                                                              'service_name'],
-                                                                          style:
-                                                                              TextStyle(fontSize: 13),
+                                                                            child: Text(
+                                                                          orderansemua[i]['service_name'],
+                                                                          style: TextStyle(fontSize: 13),
                                                                         )),
                                                                         SizedBox(
-                                                                          width:
-                                                                              3,
+                                                                          width: 3,
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
                                                                   Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            40.0,
-                                                                        top:
-                                                                            10),
-                                                                    child:
-                                                                        Column(
+                                                                    padding: const EdgeInsets.only(left: 40.0, top: 10),
+                                                                    child: Column(
                                                                       children: [
                                                                         SizedBox(
                                                                           //  width: 100,
                                                                           //  height: 50,
-                                                                          child:
-                                                                              TimelineTile(
-                                                                            isFirst:
-                                                                                true,
-                                                                            beforeLineStyle:
-                                                                                LineStyle(color: isdonekedua == 1 ? Colors.green : softGrey, thickness: 3),
-                                                                            afterLineStyle:
-                                                                                LineStyle(color: orderansemua[i]['steps'][0]['is_done'] == 1 ? Colors.green : softGrey, thickness: 3),
-                                                                            indicatorStyle:
-                                                                                IndicatorStyle(color: orderansemua[i]['steps'][0]['is_done'] == 1 ? Colors.green : softGrey, width: 15),
-                                                                            endChild:
-                                                                                Padding(
+                                                                          child: TimelineTile(
+                                                                            isFirst: true,
+                                                                            beforeLineStyle: LineStyle(
+                                                                                color: isdonekedua == 1
+                                                                                    ? Colors.green
+                                                                                    : softGrey,
+                                                                                thickness: 3),
+                                                                            afterLineStyle: LineStyle(
+                                                                                color: orderansemua[i]['steps'][0]
+                                                                                            ['is_done'] ==
+                                                                                        1
+                                                                                    ? Colors.green
+                                                                                    : softGrey,
+                                                                                thickness: 3),
+                                                                            indicatorStyle: IndicatorStyle(
+                                                                                color: orderansemua[i]['steps'][0]
+                                                                                            ['is_done'] ==
+                                                                                        1
+                                                                                    ? Colors.green
+                                                                                    : softGrey,
+                                                                                width: 15),
+                                                                            endChild: Padding(
                                                                               padding: const EdgeInsets.all(10.0),
                                                                               child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                crossAxisAlignment:
+                                                                                    CrossAxisAlignment.start,
                                                                                 children: [
                                                                                   Text(
-                                                                                    orderansemua[i]['steps'][0]['step_name'],
+                                                                                    orderansemua[i]['steps'][0]
+                                                                                        ['step_name'],
                                                                                     style: TextStyle(fontSize: 12),
                                                                                   ),
                                                                                   SizedBox(
                                                                                     height: 4,
                                                                                   ),
-                                                                                  orderansemua[i]['steps'][0]['is_done'] == 1
+                                                                                  orderansemua[i]['steps'][0]
+                                                                                              ['is_done'] ==
+                                                                                          1
                                                                                       ? Container(
                                                                                           width: 40,
                                                                                           height: 40,
                                                                                           decoration: BoxDecoration(
-                                                                                            borderRadius: BorderRadius.circular(5),
-                                                                                            image: DecorationImage(image: NetworkImage(orderansemua[i]['steps'][0]['images']), fit: BoxFit.cover),
+                                                                                            borderRadius:
+                                                                                                BorderRadius.circular(
+                                                                                                    5),
+                                                                                            image: DecorationImage(
+                                                                                                image: NetworkImage(
+                                                                                                    orderansemua[i]
+                                                                                                            ['steps'][0]
+                                                                                                        ['images']),
+                                                                                                fit: BoxFit.cover),
                                                                                           ),
                                                                                         )
                                                                                       : Container(
@@ -560,13 +482,11 @@ class _StepOrderState extends State<StepOrder> {
                                                                         ),
                                                                         //
                                                                         Container(
-                                                                          child:
-                                                                              Text(
+                                                                          child: Text(
                                                                             orderansemua[i]['is_done'] == 1
                                                                                 ? '${orderansemua[i]['time']}'
                                                                                 : '',
-                                                                            style:
-                                                                                TextStyle(color: primary),
+                                                                            style: TextStyle(color: primary),
                                                                           ),
                                                                         )
 
@@ -577,8 +497,7 @@ class _StepOrderState extends State<StepOrder> {
 
                                                                   //
                                                                   Divider(
-                                                                    thickness:
-                                                                        1,
+                                                                    thickness: 1,
                                                                   ),
                                                                 ],
                                                               );
@@ -929,14 +848,12 @@ class _StepOrderState extends State<StepOrder> {
   getDataListHome() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/v1/order-detail/${988}')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-          "Authorization": "Bearer $customer",
-        });
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer $customer",
+    });
     //
     // if(converDataToJson=='null'){
     //   print('tidak ada');
@@ -989,14 +906,12 @@ class _StepOrderState extends State<StepOrder> {
   getDataListorderStep() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/v1/order-step/${988}')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-          "Authorization": "Bearer $customer",
-        });
+    var response =
+        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${988}')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer $customer",
+    });
     //
     // if(converDataToJson=='null'){
     //   print('tidak ada');
@@ -1005,26 +920,17 @@ class _StepOrderState extends State<StepOrder> {
     // }
     var converDataToJsonsteporder = json.decode(response.body);
     orderansemua = converDataToJsonsteporder['stepMiddle'];
-    _selectedIndex =
-        List<bool>.filled(orderansemua.length, false, growable: true);
+    _selectedIndex = List<bool>.filled(orderansemua.length, false, growable: true);
     setState(() {
       print(orderansemua);
-      awal =
-          converDataToJsonsteporder['stepStart'][0]['step_name']; //ambil order
-      isdone = converDataToJsonsteporder['stepStart'][0]
-          ['is_done']; //isdone ambil order
-      latitude = converDataToJsonsteporder['stepStart'][0]
-          ['latitude']; //latitude ambil order
-      longitude = converDataToJsonsteporder['stepStart'][0]
-          ['longitude']; //longitude ambil order
-      kedua = converDataToJsonsteporder['stepStart'][1]
-          ['step_name']; //sampai rumah pelanggan
-      isdonekedua = converDataToJsonsteporder['stepStart'][1]
-          ['is_done']; //isdone sampai rumah pelanggan
-      latitudekedua = converDataToJsonsteporder['stepStart'][1]
-          ['latitude']; //latitude sampai rumah
-      longitudekedua = converDataToJsonsteporder['stepStart'][1]
-          ['longitude']; //longitude sampai rumah
+      awal = converDataToJsonsteporder['stepStart'][0]['step_name']; //ambil order
+      isdone = converDataToJsonsteporder['stepStart'][0]['is_done']; //isdone ambil order
+      latitude = converDataToJsonsteporder['stepStart'][0]['latitude']; //latitude ambil order
+      longitude = converDataToJsonsteporder['stepStart'][0]['longitude']; //longitude ambil order
+      kedua = converDataToJsonsteporder['stepStart'][1]['step_name']; //sampai rumah pelanggan
+      isdonekedua = converDataToJsonsteporder['stepStart'][1]['is_done']; //isdone sampai rumah pelanggan
+      latitudekedua = converDataToJsonsteporder['stepStart'][1]['latitude']; //latitude sampai rumah
+      longitudekedua = converDataToJsonsteporder['stepStart'][1]['longitude']; //longitude sampai rumah
       terakhir = converDataToJsonsteporder['stepEnd'][0]['step_name'];
       isdoneterakhir = converDataToJsonsteporder['stepEnd'][0]['is_done'];
       //  orderan=orderansemua['service_name'];
@@ -1073,18 +979,16 @@ class _StepOrderState extends State<StepOrder> {
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        double.parse(latitudekedua), double.parse(longitudekedua));
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(double.parse(latitudekedua), double.parse(longitudekedua));
     print(placemarks);
     Placemark place = placemarks[0];
     Address = '${place.street},';
@@ -1102,13 +1006,11 @@ class _StepOrderState extends State<StepOrder> {
   getDataListRate() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/rate/25')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-          "Authorization": "Bearer $customer",
-        });
+    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/rate/25')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer $customer",
+    });
     //
     // if(converDataToJson=='null'){
     //   print('tidak ada');
@@ -1142,9 +1044,7 @@ class _StepOrderState extends State<StepOrder> {
       var jsonObj = json.decode(response.body);
       print(jsonObj);
       Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
-          (Route<dynamic> route) => false);
+          context, MaterialPageRoute(builder: (BuildContext context) => Dashboard()), (Route<dynamic> route) => false);
       //   if (response.statusCode == 200) {
       //     // print(jsonObj['customer_id']);
       //     setState(() {

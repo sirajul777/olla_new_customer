@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:customer/Service/API/api.dart';
+import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/detailpembayaran.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,8 +28,7 @@ class LanjutPembayaran extends StatefulWidget {
   String longitude;
   String latitude;
   String jadwal;
-  String jam;
-  String menit;
+  String waktu;
   String domisiliproblem;
   // int? rumah;
   int? idalamat;
@@ -35,23 +37,22 @@ class LanjutPembayaran extends StatefulWidget {
   List? id;
   // String koment;
 // Get Key Data
-  LanjutPembayaran(
-      {Key? key,
-      required this.longitude,
-      required this.latitude,
-      required this.id,
-      required this.iddata,
-      // required this.rumah,
-      // required this.apartement,
-      required this.idalamat,
-      required this.nama,
-      required this.harga,
-      required this.alamat,
-      required this.jadwal,
-      required this.jam,
-      required this.domisiliproblem,
-      required this.menit})
-      : super(key: key);
+  LanjutPembayaran({
+    Key? key,
+    required this.longitude,
+    required this.latitude,
+    required this.id,
+    required this.iddata,
+    // required this.rumah,
+    // required this.apartement,
+    required this.idalamat,
+    required this.nama,
+    required this.harga,
+    required this.alamat,
+    required this.jadwal,
+    required this.waktu,
+    required this.domisiliproblem,
+  }) : super(key: key);
   @override
   State<LanjutPembayaran> createState() => _LanjutPembayaranState();
 }
@@ -62,7 +63,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   bool pembayaran = false;
 
   late int order_id;
-  bool pressed = false;
+  late List<bool>? pressed;
   bool _selected = false;
   @override
   void initState() {
@@ -82,7 +83,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
 
     var body = json.encode({
       "working_date": widget.jadwal,
-      "working_time": widget.jam,
+      "working_time": widget.waktu,
       "description": widget.domisiliproblem,
       "method_payment_id": "${methodpayment}",
       "longitude": widget.longitude,
@@ -118,10 +119,8 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => DetailPembayaran(
-                      orderid: order_id,
-                      harga: widget.harga,
-                      seluruh: widget.nama)));
+                  builder: (BuildContext context) =>
+                      DetailPembayaran(orderid: order_id, harga: widget.harga, seluruh: widget.nama)));
         });
       } else {
         showDialog(
@@ -162,18 +161,12 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                               height: 10,
                             ),
                             Text('Maaf!!!',
-                                style: TextStyle(
-                                    fontFamily: 'Comfortaa',
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w900)),
+                                style: TextStyle(fontFamily: 'Comfortaa', fontSize: 13, fontWeight: FontWeight.w900)),
                             SizedBox(
                               height: 10,
                             ),
                             Text('Masukkan Data Anda Dengan Benar',
-                                style: TextStyle(
-                                    fontFamily: 'Comfortaa',
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w900)),
+                                style: TextStyle(fontFamily: 'Comfortaa', fontSize: 13, fontWeight: FontWeight.w900)),
                           ],
                         ),
                       )),
@@ -183,10 +176,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                     left: 16,
                     right: 16,
                     // ignore: sized_box_for_whitespace
-                    child: Container(
-                        height: 80,
-                        width: 80,
-                        child: Image.asset('gambar/login.png')),
+                    child: Container(height: 80, width: 80, child: Image.asset('gambar/login.png')),
                   )
                 ],
               ),
@@ -250,19 +240,19 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   //
   late List payment;
   getDataPembayaran() async {
-    var response = await http.get(
-        Uri.parse(
-            Uri.encodeFull('https://olla.ws/api/customer/v1/method-payments')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-        });
+    var response =
+        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/method-payments')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+    });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
       payment = converDataToJson['data'];
       // ignore: avoid_print
       // print(converDataToJson);
+      pressed = List<bool>.filled(payment.length, false, growable: true);
+
       print(payment);
     });
     return "Success";
@@ -300,13 +290,11 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   // int dataid4;
   late List datalist;
   getDataListHome() async {
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/packages-list?service_id=${widget.id}')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-        });
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/packages-list?service_id=${widget.id}')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+    });
     print(widget.id);
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -331,68 +319,57 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
       },
       child: Scaffold(
         // backgroundColor: Colors.red,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          title: Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                // ignore: avoid_unnecessary_containers
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 25,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: Colors.blue[50],
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.arrow_back_ios_outlined,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 90,
-              ),
-              GestureDetector(
-                onTap: () {
-                  // print(datalist);
-                },
-                child: Text(
-                  "Pembayaran",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'comfortaa',
-                  ),
-                ),
-              ),
-              //
-              //
-              // Column(
-              //   // ignore: prefer_const_literals_to_create_immutables
-              //   children: [
-              //     Icon(
-              //       Icons.add_alert_rounded,
-              //       color: Colors.white,
-              //     ),
-              //   ],
-              // )
-            ],
-          ),
-          automaticallyImplyLeading: false,
-          // backgroundColor: Colors.transparent,
-          // shape:
-          //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-        ),
-        body: ListView(
-          children: [
+     backgroundColor: white,
+        body:  SafeArea(
+            top: false,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                    statusBarColor: white,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.dark),
+                child:  SingleChildScrollView(
+                    clipBehavior: Clip.none,
+                    child: Column(
+                      children: [
+                         Container(
+                          padding: EdgeInsets.only(top: 20.w, left: 20.w, right: 20.w),
+                          height: ScreenUtil().setHeight(75.h),
+                          color: white,
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context, true);
+                              },
+                              // ignore: avoid_unnecessary_containers
+                              child: Container(
+                                height: MediaQuery.of(context).size.height / 25,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(3),
+                                  // color: Colors.blue[50],
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_back_ios_outlined,
+                                    // color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                'Pembayaran',
+                                style: TextStyle(
+                                  color: blackBlue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.w,
+                                ),
+                              ),
+                            ),
+                            SizedBox()
+                          ]),
+                        ),
+         
             // Text('${widget.id}'),
             Padding(
               padding: const EdgeInsets.only(left: 20.0, right: 20),
@@ -459,8 +436,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                     itemCount: widget.nama == null ? 0 : widget.nama.length,
                     itemBuilder: (BuildContext context, i) {
                       return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20.0, right: 20, top: 10),
+                        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -471,8 +447,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                 color: Colors.grey.withOpacity(0.1),
                                 spreadRadius: 1,
                                 blurRadius: 5,
-                                offset:
-                                    Offset(0, 5), // changes position of shadow
+                                offset: Offset(0, 5), // changes position of shadow
                               ),
                             ],
                           ),
@@ -489,10 +464,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                 Text(
                                   'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      height: 1.5,
-                                      color: Colors.grey,
-                                      fontSize: 12),
+                                  style: TextStyle(height: 1.5, color: Colors.grey, fontSize: 12),
                                 ),
                                 SizedBox(
                                   height: 5,
@@ -507,8 +479,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                       height: 30,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                          image:
-                                              AssetImage('gambar/rupiah.png'),
+                                          image: AssetImage('gambar/rupiah.png'),
                                         ),
                                       ),
                                     ),
@@ -517,16 +488,9 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                       width: 5,
                                     ),
                                     Text(
-                                      NumberFormat.currency(
-                                              locale: 'id',
-                                              symbol: 'Rp ',
-                                              decimalDigits: 0)
-                                          .format(int.parse(widget.nama[i]
-                                                  ['price_min']
-                                              .toString())),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.yellow[600]),
+                                      NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+                                          .format(int.parse(widget.nama[i]['price_min'].toString())),
+                                      style: TextStyle(fontWeight: FontWeight.w700, color: Colors.yellow[600]),
                                     ),
                                   ],
                                 ),
@@ -541,8 +505,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
             //
             tampil
                 ? Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20.0, right: 20, top: 20),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20, top: 20),
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -588,9 +551,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                 SizedBox(
                                   width: 3,
                                 ),
-                                Text(widget.jam),
-                                Text(':'),
-                                Text(widget.menit)
+                                Text(widget.waktu),
                               ],
                             ),
                             SizedBox(
@@ -743,12 +704,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                           Text(
                             'Pembayaran',
                           ),
-                          Text(
-                              NumberFormat.currency(
-                                      locale: 'id',
-                                      symbol: 'Rp',
-                                      decimalDigits: 0)
-                                  .format(widget.harga),
+                          Text(NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(widget.harga),
                               style: TextStyle(
                                   // fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -760,21 +716,10 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Subtottal',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey)),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
                           SizedBox(width: 5),
-                          Text(
-                              NumberFormat.currency(
-                                      locale: 'id',
-                                      symbol: 'Rp',
-                                      decimalDigits: 0)
-                                  .format(widget.harga),
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey)),
+                          Text(NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(widget.harga),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
                         ],
                       ),
                       SizedBox(
@@ -785,23 +730,13 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Biaya Admin',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey)),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
                           // SizedBox(width: 5),
                           Text(
-                              NumberFormat.currency(
-                                      locale: 'id',
-                                      symbol: 'Rp',
-                                      decimalDigits: 0)
-                                  .format(
+                              NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(
                                 int.parse('0'),
                               ),
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey)),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
                         ],
                       ),
                       //
@@ -813,21 +748,10 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Potongan',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey)),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
                           SizedBox(width: 5),
-                          Text(
-                              NumberFormat.currency(
-                                      locale: 'id',
-                                      symbol: 'Rp',
-                                      decimalDigits: 0)
-                                  .format(0),
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey)),
+                          Text(NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(0),
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
                         ],
                       ),
                     ],
@@ -854,10 +778,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('e-Wallet / QRIS',
-                            style: TextStyle(
-                                color: Colors.blue[300],
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold)),
+                            style: TextStyle(color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
                         GestureDetector(
                             onTap: () {
                               setState(() {
@@ -870,8 +791,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                     height: 40,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image:
-                                            AssetImage('gambar/pembayaran.png'),
+                                        image: AssetImage('gambar/pembayaran.png'),
                                       ),
                                     ),
                                   )
@@ -880,8 +800,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                     height: 40,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: AssetImage(
-                                            'gambar/pembayaran1.png'),
+                                        image: AssetImage('gambar/pembayaran1.png'),
                                       ),
                                     ),
                                   )),
@@ -901,23 +820,22 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                           print(payment[i]['id']);
                           setState(() {
                             methodpayment = payment[i]['id'];
-                            pressed = true;
-                            _selected = !_selected;
+                            for (var index = 0; index < payment.length; index++) {
+                              pressed![index] = false;
+                            }
+                            pressed![i] = !pressed![i];
                           });
                           //  getDataPembayaran();
                         },
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20.0, right: 20, top: 8),
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8),
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color:
-                                    _selected ? Colors.blue[100] : Colors.white,
+                                color: pressed![i] ? Colors.blue[100] : Colors.white,
                                 border: Border.all(color: Colors.blue[100]!)),
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 10, top: 2),
+                              padding: const EdgeInsets.only(left: 20, right: 10, top: 2),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 2),
                                 child: Row(
@@ -928,8 +846,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                       height: 40,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                          image:
-                                              NetworkImage(payment[i]['image']),
+                                          image: NetworkImage(payment[i]['image']),
                                         ),
                                       ),
                                     ),
@@ -938,9 +855,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                     ),
                                     Text(
                                       payment[i]['name'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 15),
+                                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
                                     ),
                                   ],
                                 ),
@@ -986,7 +901,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
             // Text(widget.jadwal)
           ],
         ),
-      ),
-    );
+      ),))
+     ) );
   }
 }

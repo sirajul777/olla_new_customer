@@ -69,13 +69,14 @@ dependencies:
   introduction_screen: ^3.0.0
   flutter_svg: ^1.0.3
   money2: ^3.1.2
+  flutter_launcher_icons: ^0.9.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter_icons:
-  android: "gambar/login.png"
+  android: true
   ios: true
   image_path: "gambar/login.png"
 

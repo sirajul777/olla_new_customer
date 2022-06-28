@@ -20,9 +20,7 @@ class ListHome extends StatefulWidget {
   String nama;
   String gambar;
 // Get Key Data
-  ListHome(
-      {Key? key, required this.id, required this.nama, required this.gambar})
-      : super(key: key);
+  ListHome({Key? key, required this.id, required this.nama, required this.gambar}) : super(key: key);
   @override
   State<ListHome> createState() => _ListHomeState();
 }
@@ -46,10 +44,11 @@ class _ListHomeState extends State<ListHome> {
   //   {"name": "Surfling The Internet", "isChecked": false}
 
   // ];
-  Future<bool> showButtonLanjut() async {
+  showButtonLanjut() {
     if (idharga!.length != 0 ||
-        idharga!.isNotEmpty ||
-        selectData!.length != 0) {
+        idharga!.length !=0 ||
+        selectData!.length != 0 ||
+        isChecked!.any((element) => element != false)) {
       setState(() {
         _showLanjutButton = true;
       });
@@ -58,7 +57,6 @@ class _ListHomeState extends State<ListHome> {
         _showLanjutButton = false;
       });
     }
-    return true;
   }
 
   List? selectData = [];
@@ -77,9 +75,7 @@ class _ListHomeState extends State<ListHome> {
         top: false,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
-              statusBarColor: white,
-              statusBarIconBrightness: Brightness.light,
-              statusBarBrightness: Brightness.dark),
+              statusBarColor: white, statusBarIconBrightness: Brightness.light, statusBarBrightness: Brightness.dark),
           child: Stack(
             children: [
               Scaffold(
@@ -149,8 +145,7 @@ class _ListHomeState extends State<ListHome> {
                     // shape:
                     //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                   ),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerDocked,
+                  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                   floatingActionButton: _showLanjutButton
                       ? Align(
                           alignment: Alignment.bottomCenter,
@@ -167,8 +162,7 @@ class _ListHomeState extends State<ListHome> {
                               //     _data[index] = controller.text;
                               //   });
                               // });
-                              Position position =
-                                  await _getGeoLocationPosition();
+                              Position position = await _getGeoLocationPosition();
                               GetAddressFromLatLong(position);
                               print('$Address');
                               print('${position.latitude}');
@@ -176,8 +170,7 @@ class _ListHomeState extends State<ListHome> {
                               await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Aturjadwal(
+                                      builder: (BuildContext context) => Aturjadwal(
                                             alamat: '$Address',
                                             longitude: '${position.longitude}',
                                             latitude: '${position.latitude}',
@@ -195,17 +188,12 @@ class _ListHomeState extends State<ListHome> {
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.08,
-                                decoration: BoxDecoration(
-                                    color: primary,
-                                    borderRadius: BorderRadius.circular(25)),
+                                height: MediaQuery.of(context).size.height * 0.08,
+                                decoration: BoxDecoration(color: primary, borderRadius: BorderRadius.circular(25)),
                                 child: Center(
                                     child: Text('Selanjutnya',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500))),
+                                        style:
+                                            TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500))),
                               ),
                             ),
                           ),
@@ -217,8 +205,7 @@ class _ListHomeState extends State<ListHome> {
                       Stack(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 23.0, left: 20, right: 20),
+                            padding: const EdgeInsets.only(top: 23.0, left: 20, right: 20),
                             child: loading
                                 ? Container(
                                     decoration: BoxDecoration(
@@ -230,31 +217,25 @@ class _ListHomeState extends State<ListHome> {
                                           color: Colors.grey.withOpacity(0.1),
                                           spreadRadius: 1,
                                           blurRadius: 5,
-                                          offset: Offset(0,
-                                              5), // changes position of shadow
+                                          offset: Offset(0, 5), // changes position of shadow
                                         ),
                                       ],
                                     ),
-                                    height:
-                                        MediaQuery.of(context).size.height / 5,
+                                    height: MediaQuery.of(context).size.height / 5,
                                     width: double.infinity,
                                     child: Center(
                                         child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10, left: 30.0, right: 30),
+                                      padding: const EdgeInsets.only(top: 10, left: 30.0, right: 30),
                                       child: Text(
                                         'Demi memelihara unit pendingin ruangan diharapkan dilakukan pemeliharaan dalam jangka waktu 14 hari, sehingga unit pendingin ruangan tidak kotor karena debu dan kotoran, dan terhindar dari kerusakan yang diinginkan.',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 13, color: Colors.grey),
+                                        style: TextStyle(fontSize: 13, color: Colors.grey),
                                       ),
                                     )),
                                   )
                                 : Shimmer.fromColors(
                                     child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              5,
+                                      height: MediaQuery.of(context).size.height / 5,
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         color: Colors.grey[500],
@@ -269,31 +250,23 @@ class _ListHomeState extends State<ListHome> {
 
                           //
                           Padding(
-                            padding:
-                                const EdgeInsets.only(left: 80.0, right: 80),
+                            padding: const EdgeInsets.only(left: 80.0, right: 80),
                             child: loading
                                 ? Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 16,
-                                    decoration: BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
+                                    height: MediaQuery.of(context).size.height / 16,
+                                    decoration:
+                                        BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(15)),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 30,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(35),
+                                            borderRadius: BorderRadius.circular(35),
                                             color: Colors.white,
                                             image: DecorationImage(
-                                                image: NetworkImage(
-                                                    '${widget.gambar}'),
-                                                fit: BoxFit.cover),
+                                                image: NetworkImage('${widget.gambar}'), fit: BoxFit.cover),
                                           ),
                                         ),
                                         SizedBox(
@@ -303,9 +276,7 @@ class _ListHomeState extends State<ListHome> {
                                           child: Text(
                                             widget.nama,
                                             style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500),
+                                                fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
                                           ),
                                         ),
                                       ],
@@ -313,13 +284,9 @@ class _ListHomeState extends State<ListHome> {
                                   )
                                 : Shimmer.fromColors(
                                     child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              16,
+                                      height: MediaQuery.of(context).size.height / 16,
                                       decoration: BoxDecoration(
-                                          color: Colors.grey[500],
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
+                                          color: Colors.grey[500], borderRadius: BorderRadius.circular(20)),
                                     ),
                                     baseColor: Colors.grey[100]!,
                                     highlightColor: Colors.grey[300]!,
@@ -332,14 +299,12 @@ class _ListHomeState extends State<ListHome> {
                         height: 8,
                       ),
                       //
-                      Padding(
+                      Container(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Pilih Tindakan',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500)),
+                            Text('Pilih Tindakan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                             //    const SizedBox(height: 10),
                             // const Divider(),
                             // const SizedBox(height: 10),
@@ -347,28 +312,22 @@ class _ListHomeState extends State<ListHome> {
                                 controller: _controller,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount:
-                                    datalist == null ? 0 : datalist!.length,
+                                itemCount: datalist == null ? 0 : datalist!.length,
                                 itemBuilder: (context, index) {
                                   return loading
                                       ? Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 10.0, right: 10, top: 20),
+                                          padding: const EdgeInsets.only(left: 10.0, right: 10, top: 20),
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              border: Border.all(
-                                                  color: Colors.blue[100]!),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
+                                              border: Border.all(color: Colors.blue[100]!),
+                                              borderRadius: BorderRadius.circular(20),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.1),
+                                                  color: Colors.grey.withOpacity(0.1),
                                                   spreadRadius: 1,
                                                   blurRadius: 5,
-                                                  offset: Offset(0,
-                                                      5), // changes position of shadow
+                                                  offset: Offset(0, 5), // changes position of shadow
                                                 ),
                                               ],
                                             ),
@@ -376,107 +335,85 @@ class _ListHomeState extends State<ListHome> {
                                               clipBehavior: Clip.none,
                                               children: [
                                                 Theme(
-                                                  data: ThemeData(
-                                                      unselectedWidgetColor:
-                                                          Colors.blue[200]),
+                                                  data: ThemeData(unselectedWidgetColor: Colors.blue[200]),
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                    padding: const EdgeInsets.all(8.0),
                                                     child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         SizedBox(
                                                           width: 10,
                                                         ),
-                                                        Flexible(
+                                                        Expanded(
                                                           child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                            // crossAxisAlignment: CrossAxisAlignment.start,
+                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                             children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(datalist![
-                                                                          index]
-                                                                      ['name']),
-                                                                  GestureDetector(
+                                                              SizedBox(child:  Row(    
+                                                                                                                      
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children:<Widget> [
+                                                                  Flexible(
+                                                                  child:Text(datalist![index]['name'],style: TextStyle(overflow: TextOverflow.clip,),)
+                                                                     ,
+                                                                  ),
+                                                                  Container(
+                                                                    child: GestureDetector(
                                                                     onTap: () {
-                                                                      checked(
-                                                                          index:
-                                                                              index);
-                                                                      finalharga(
-                                                                          indexs:
-                                                                              index);
+                                                                      checked(index: index);
+                                                                      finalharga(indexs: index);
                                                                     },
-                                                                    child:
-                                                                        Container(
-                                                                      height:
-                                                                          22.h,
-                                                                      width:
-                                                                          22.w,
+                                                                    child: Container(
+                                                                      height: 22.h,
+                                                                      width: 22.w,
                                                                       decoration: BoxDecoration(
-                                                                          color: isChecked![index]
-                                                                              ? primary
-                                                                              : transparent,
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              5),
-                                                                          border: Border.all(
-                                                                              color: primary,
-                                                                              width: 2.w)),
+                                                                          color:
+                                                                              isChecked![index] ? primary : transparent,
+                                                                          borderRadius: BorderRadius.circular(5),
+                                                                          border:
+                                                                              Border.all(color: primary, width: 2.w)),
                                                                       child: Center(
                                                                           child: isChecked![index]
                                                                               ? Icon(
                                                                                   Icons.done,
                                                                                   size: 20,
-                                                                                  color: isChecked![index] ? white : primary,
+                                                                                  color: isChecked![index]
+                                                                                      ? white
+                                                                                      : primary,
                                                                                 )
                                                                               : const SizedBox()),
                                                                     ),
                                                                   ),
+                                                                  )
+                                                                  
                                                                 ],
                                                               ),
+                                                              ),
+                                                             
                                                               SizedBox(
                                                                 height: 5,
                                                               ),
                                                               Text(
                                                                 'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
+                                                                textAlign: TextAlign.left,
                                                                 style: TextStyle(
-                                                                    height: 1.5,
-                                                                    color: Colors
-                                                                        .grey,
-                                                                    fontSize:
-                                                                        12),
+                                                                    height: 1.5, color: Colors.grey, fontSize: 12),
                                                               ),
                                                               SizedBox(
                                                                 height: 5,
                                                               ),
                                                               Center(
                                                                 child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                                   children: [
                                                                     Container(
                                                                       // margin: EdgeInsets.only(
                                                                       //     top: MediaQuery.of(context).size.height / 20),
                                                                       width: 30,
-                                                                      height:
-                                                                          30,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        image:
-                                                                            DecorationImage(
-                                                                          image:
-                                                                              AssetImage('gambar/rupiah.png'),
+                                                                      height: 30,
+                                                                      decoration: BoxDecoration(
+                                                                        image: DecorationImage(
+                                                                          image: AssetImage('gambar/rupiah.png'),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -502,12 +439,11 @@ class _ListHomeState extends State<ListHome> {
                                                                               locale: 'id',
                                                                               symbol: 'Rp ',
                                                                               decimalDigits: 0)
-                                                                          .format(int.parse(datalist![index]['price_min'])),
+                                                                          .format(
+                                                                              int.parse(datalist![index]['price_min'])),
                                                                       style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .w700,
-                                                                          color:
-                                                                              Colors.yellow[600]),
+                                                                          fontWeight: FontWeight.w700,
+                                                                          color: Colors.yellow[600]),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -528,14 +464,9 @@ class _ListHomeState extends State<ListHome> {
                                                     width: 90.w,
                                                     height: 30.h,
                                                     decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5.w),
-                                                        color: lightBlue),
+                                                        borderRadius: BorderRadius.circular(5.w), color: lightBlue),
                                                     child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                       children: [
                                                         GestureDetector(
                                                           onTap: () {
@@ -545,26 +476,16 @@ class _ListHomeState extends State<ListHome> {
                                                               width: 22.w,
                                                               height: 22.w,
                                                               decoration: BoxDecoration(
-                                                                  color:
-                                                                      primary,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(5
-                                                                              .w)),
-                                                              child:
-                                                                  const Center(
+                                                                  color: primary,
+                                                                  borderRadius: BorderRadius.circular(5.w)),
+                                                              child: const Center(
                                                                 child: Text(
                                                                   '-',
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          white),
+                                                                  style: TextStyle(color: white),
                                                                 ),
                                                               )),
                                                         ),
-                                                        Text('${qty[index]}',
-                                                            style: const TextStyle(
-                                                                color:
-                                                                    darkGrey)),
+                                                        Text('${qty[index]}', style: const TextStyle(color: darkGrey)),
                                                         GestureDetector(
                                                           onTap: () {
                                                             addQty(index);
@@ -573,19 +494,12 @@ class _ListHomeState extends State<ListHome> {
                                                               width: 22.w,
                                                               height: 22.w,
                                                               decoration: BoxDecoration(
-                                                                  color:
-                                                                      primary,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(5
-                                                                              .w)),
-                                                              child:
-                                                                  const Center(
+                                                                  color: primary,
+                                                                  borderRadius: BorderRadius.circular(5.w)),
+                                                              child: const Center(
                                                                 child: Text(
                                                                   '+',
-                                                                  style: TextStyle(
-                                                                      color:
-                                                                          white),
+                                                                  style: TextStyle(color: white),
                                                                 ),
                                                               )),
                                                         ),
@@ -601,15 +515,11 @@ class _ListHomeState extends State<ListHome> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Shimmer.fromColors(
                                             child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  4,
+                                              height: MediaQuery.of(context).size.height / 4,
                                               width: double.infinity,
                                               decoration: BoxDecoration(
                                                 color: Colors.grey[500],
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
+                                                borderRadius: BorderRadius.circular(20),
                                               ),
                                             ),
                                             baseColor: Colors.grey[100]!,
@@ -637,14 +547,12 @@ class _ListHomeState extends State<ListHome> {
   //
   late ScrollController _controller;
   _scrollListener() {
-    if (_controller.offset >= _controller.position.maxScrollExtent &&
-        !_controller.position.outOfRange) {
+    if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
       setState(() {
         //you can do anything here
       });
     }
-    if (_controller.offset <= _controller.position.minScrollExtent &&
-        !_controller.position.outOfRange) {
+    if (_controller.offset <= _controller.position.minScrollExtent && !_controller.position.outOfRange) {
       setState(() {
         //you can do anything here
       });
@@ -671,13 +579,11 @@ class _ListHomeState extends State<ListHome> {
   Future getDataListHome() async {
     final preff2 = await SharedPreferences.getInstance();
     preff2.setString('partnerdecline', 'saya');
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/packages-list?service_id=${widget.id}')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-        });
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/packages-list?service_id=${widget.id}')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+    });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -713,9 +619,7 @@ class _ListHomeState extends State<ListHome> {
                 child: ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: datalist! == null
-                        ? 0
-                        : (datalist!.length > 1 ? 1 : datalist!.length),
+                    itemCount: datalist! == null ? 0 : (datalist!.length > 1 ? 1 : datalist!.length),
                     itemBuilder: (BuildContext context, int i) {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(5),
@@ -757,18 +661,15 @@ class _ListHomeState extends State<ListHome> {
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     print(placemarks);
     Placemark place = placemarks[0];
     Address = '${place.street},';
@@ -835,41 +736,21 @@ class _ListHomeState extends State<ListHome> {
   void checked({int? index}) async {
     setState(() {
       isChecked![index!] = !isChecked![index];
-      isChecked!.length == 1 ? ceklist = !ceklist : null;
+      showButtonLanjut();
 
-      var valuetru = isChecked!.any((indexlement) => indexlement == true);
-      if (valuetru) {
-        setState(() {
-          ceklist = !ceklist;
-          _showLanjutButton = true;
-          selectData!.add(datalist![index]);
-          iddatta!.add(datalist![index]['id']);
-          idcomment!.add(datalist![index]['name']);
-          harga![index] = (int.parse(datalist![index]['price_min']));
-        });
-        print(selectData);
-        print(iddatta);
-        print(idcomment);
-        print(harga);
+      if (isChecked![index]) {
+        selectData!.add(datalist![index]);
+        iddatta!.add(datalist![index]['id']);
+        idcomment!.add(datalist![index]['name']);
+        harga![index] = (int.parse(datalist![index]['price_min']));
         addQty(index);
 
         finalharga(indexs: index);
       } else {
-        setState(() {
-          _showLanjutButton = false;
-          selectData!.removeWhere((element) => element == datalist![index]);
-          iddatta!.removeWhere((element) => element == datalist![index]['id']);
-          idcomment!
-              .removeWhere((element) => element == datalist![index]['name']);
-          idharga!.removeWhere(
-              (element) => element == int.parse(datalist![index]['price_min']));
-
-          ceklist = false;
-        });
-        print(selectData);
-        print(iddatta);
-        print(idcomment);
-        print(harga);
+        selectData!.removeWhere((element) => element == datalist![index]);
+        iddatta!.removeWhere((element) => element == datalist![index]['id']);
+        idcomment!.removeWhere((element) => element == datalist![index]['name']);
+        idharga!.removeWhere((element) => element == int.parse(datalist![index]['price_min']));
         minQty(index);
 
         finalharga(indexs: index);
@@ -944,37 +825,24 @@ class _ListHomeState extends State<ListHome> {
 
   late List<int> qty = [];
   // toto menambah jumlah
-  void addQty(int index) async {
+ void addQty(int index) async {
+   
     setState(() {
       qty[index] += 1;
-      _showLanjutButton = true;
-    });
-    setState(() {
       isChecked![index] = true;
-      isChecked!.length == 1 ? ceklist = !ceklist : null;
-      var valuetru = isChecked!.every((indexlement) => indexlement == true);
-      if (valuetru) {
-        setState(() {
-          ceklist = !ceklist;
-        });
-      } else {
-        setState(() {
-          ceklist = false;
-        });
-      }
     });
-
+ showButtonLanjut();
     finalharga(indexs: index);
   }
 
   // counter mengurangi jumlah
   void minQty(int index) async {
+    showButtonLanjut();
     if (qty[index] > 0) {
       if (qty[index] == 1) {
         setState(() {
           qty[index] -= 1;
           isChecked![index] = false;
-          _showLanjutButton = false;
         });
       } else {
         if (isChecked![index] == false) {
@@ -988,6 +856,7 @@ class _ListHomeState extends State<ListHome> {
         }
       }
     }
+    showButtonLanjut();
     finalharga(indexs: index);
   }
 
