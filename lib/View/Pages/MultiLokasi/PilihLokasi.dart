@@ -74,6 +74,7 @@ class _PilihLokasiState extends State<PilihLokasi> {
                     statusBarBrightness: Brightness.dark),
                 child: Stack(children: [
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                           color: null,
@@ -118,18 +119,70 @@ class _PilihLokasiState extends State<PilihLokasi> {
                                       });
                                 },
                               ))),
-                      Container(
+                    ],
+                  ),
+                  Positioned(
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
                         decoration: BoxDecoration(
+                            // backgroundBlendMode: BlendMode.overlay,
+                            color: white,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(40.w),
                                 topRight: Radius.circular(40.w))),
                         padding: EdgeInsets.all(20.w),
+                        margin: EdgeInsets.only(left: 0, right: 0),
                         width: MediaQuery.of(context).size.width,
-                        // height: MediaQuery.of(context).size.width / 1.2,
-                        child: Text('coba'),
-                      )
-                    ],
-                  )
+                        height: MediaQuery.of(context).size.width / 1.2,
+                        child: Column(children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 15.w, right: 15.w),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 15,
+                            decoration: BoxDecoration(
+                                // color: Colors.blue[50],
+                                borderRadius: BorderRadius.circular(25)),
+                            child: TextFormField(
+                              // controller: email,
+                              // onChanged: (vale) {
+                              //   if (vale.length == 0) {
+                              //     setState(() {
+                              //       canSubmit = false;
+                              //     });
+                              //   } else {
+                              //     setState(() {
+                              //       canSubmit = true;
+                              //     });
+                              //   }
+                              // },
+                              autocorrect: false,
+
+                              // textAlign: TextAlign.left,
+                              // ignore: unnecessary_new
+                              decoration: new InputDecoration(
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding: EdgeInsets.only(
+                                    left: 20, right: 20, top: 5),
+                                hintText: 'Pilih lokasi saat ini',
+                                hintStyle: TextStyle(color: softGrey),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  size: 30,
+                                  color: softGrey,
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(25.0),
+                                    ),
+                                    borderSide: BorderSide.none),
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ))
                 ]))));
   }
 }
