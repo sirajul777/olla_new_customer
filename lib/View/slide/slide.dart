@@ -1,9 +1,7 @@
 import 'package:customer/View/slide/daftar_masuk.dart';
 
 import 'package:flutter/material.dart';
-import 'package:intro_slider/dot_animation_enum.dart';
 import 'package:intro_slider/intro_slider.dart';
-import 'package:intro_slider/slide_object.dart';
 
 class HomeSlide extends StatefulWidget {
   @override
@@ -24,8 +22,7 @@ class _HomeSlideState extends State<HomeSlide> {
         //         fontSize: 30.0,
         //         fontWeight: FontWeight.bold,
         //         fontFamily: 'RobotoMono'),
-        description:
-            "Kami siap melayani dan datang kerumah Anda untuk memperbaiki kerusakan yang Ada ",
+        description: "Kami siap melayani dan datang kerumah Anda untuk memperbaiki kerusakan yang Ada ",
         // styleDescription: TextStyle(
         //         color: Colors.black,
         //         fontSize: 12.0,
@@ -35,8 +32,7 @@ class _HomeSlideState extends State<HomeSlide> {
         pathImage: 'gambar/image1.png'));
     slides.add(Slide(
         title: 'Cari Tukang Yang Jelas',
-        description:
-            "Pilih tukang rekomendasi kami untuk menyelesaikan masalah Anda",
+        description: "Pilih tukang rekomendasi kami untuk menyelesaikan masalah Anda",
         //      directionColorBegin: Alignment.topLeft,
         // directionColorEnd: Alignment.bottomRight,
         pathImage: 'gambar/image2.png'));
@@ -52,8 +48,7 @@ class _HomeSlideState extends State<HomeSlide> {
 //
   void onDonePress() {
     // Do what you want
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => DaftarMasuk()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => DaftarMasuk()));
     // );
   }
 
@@ -113,8 +108,7 @@ class _HomeSlideState extends State<HomeSlide> {
                   child: Text(
                     '${currentSlide.description}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 13, height: 2.0, color: Colors.black54),
+                    style: TextStyle(fontSize: 13, height: 2.0, color: Colors.black54),
                   ),
                 ),
               ),
@@ -135,8 +129,7 @@ class _HomeSlideState extends State<HomeSlide> {
       renderNextBtn: Container(
           height: 40,
           // width: 30,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.blue),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blue),
           child: Center(
               child: Text(
             "Lewati",
@@ -145,8 +138,7 @@ class _HomeSlideState extends State<HomeSlide> {
       renderDoneBtn: Container(
           height: 40,
           // width: 30,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.blue),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blue),
           child: Center(
               child: Text(
             "Lewati",
@@ -157,7 +149,7 @@ class _HomeSlideState extends State<HomeSlide> {
       showDotIndicator: true,
       colorDot: Colors.blue,
       sizeDot: 10,
-      typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
+      // typeDotAnimation: dotSliderAnimation.SIZE_TRANSITION,
       listCustomTabs: this.renderListCustomTabs(),
       scrollPhysics: BouncingScrollPhysics(),
       // showDoneBtn: false,
