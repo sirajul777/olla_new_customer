@@ -70,6 +70,8 @@ dependencies:
   flutter_svg: ^1.0.3
   money2: ^3.1.2
   flutter_launcher_icons: ^0.9.3
+  url_launcher: ^6.1.4
+  google_maps_flutter: ^2.1.8
 
 dev_dependencies:
   flutter_test:

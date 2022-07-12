@@ -87,7 +87,7 @@ class _BlogState extends State<Blog> {
   //
   Widget buildImage(String urlImage, int index) => loading
       ? Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8),
+          padding: const EdgeInsets.only(left: 8.0, right: 8,bottom: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -1,15 +1,15 @@
-import 'package:customer/View/TabDashboard/batal.dart';
-import 'package:customer/View/TabDashboard/berhasil.dart';
-import 'package:customer/View/TabDashboard/proses.dart';
+import 'package:customer/View/Components/Transaksi/batal.dart';
+import 'package:customer/View/Components/Transaksi/berhasil.dart';
+import 'package:customer/View/Components/Transaksi/proses.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Transaski extends StatefulWidget {
   @override
   State<Transaski> createState() => _TransaskiState();
 }
 
-class _TransaskiState extends State<Transaski>
-    with SingleTickerProviderStateMixin {
+class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -21,6 +21,12 @@ class _TransaskiState extends State<Transaski>
 
   void _handleTabSelection() {
     setState(() {});
+  }
+
+  late String dataorder;
+  Future getDataorder() async {
+    final pref1 = await SharedPreferences.getInstance();
+    dataorder = pref1.getString('order_id')!;
   }
 
   //
@@ -71,10 +77,7 @@ class _TransaskiState extends State<Transaski>
                     height: MediaQuery.of(context).size.height / 20,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: _tabController.index == 0
-                                ? Colors.blue
-                                : Colors.grey)),
+                        border: Border.all(color: _tabController.index == 0 ? Colors.blue : Colors.grey)),
                     child: Tab(
                       text: 'Proses',
                     )),
@@ -84,10 +87,7 @@ class _TransaskiState extends State<Transaski>
                     height: MediaQuery.of(context).size.height / 20,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: _tabController.index == 1
-                                ? Colors.blue
-                                : Colors.grey)),
+                        border: Border.all(color: _tabController.index == 1 ? Colors.blue : Colors.grey)),
                     child: Tab(
                       text: 'Berhasil',
                     )),
@@ -97,10 +97,7 @@ class _TransaskiState extends State<Transaski>
                     height: MediaQuery.of(context).size.height / 20,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: _tabController.index == 2
-                                ? Colors.blue
-                                : Colors.grey)),
+                        border: Border.all(color: _tabController.index == 2 ? Colors.blue : Colors.grey)),
                     child: Tab(
                       text: 'Batal',
                     )),
@@ -113,7 +110,9 @@ class _TransaskiState extends State<Transaski>
             child: TabBarView(
               controller: _tabController,
               children: [
-                Proses(),
+                Proses(
+                  dataorder: dataorder,
+                ),
                 Berhasil(),
                 Batal(),
               ],

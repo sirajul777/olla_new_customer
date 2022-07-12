@@ -1,7 +1,7 @@
 import 'package:customer/View/Home/keranjang.dart';
 import 'package:customer/View/Pages/home.dart';
 import 'package:customer/View/TabDashboard/profile.dart';
-import 'package:customer/View/TabDashboard/transaski.dart';
+import 'package:customer/View/Pages/transaski.dart';
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -186,7 +186,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                         Text(
-                          'Transaski',
+                          'Transaksi',
                           style: TextStyle(
                               color:
                                   currentTab == 2 ? Colors.blue : Colors.grey),

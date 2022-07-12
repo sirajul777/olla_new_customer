@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CarJson {
   String OptionID;
@@ -111,11 +112,22 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
         .then((response) async {
       var jsonObj = json.decode(response.body);
       print(response.body);
+      String? url_checkout;
       if (response.statusCode == 200) {
         setState(() {
           order_id = jsonObj['data']['order_id'];
+          url_checkout = jsonObj['data']['url_checkout'];
         });
+
+        final preff3 = await SharedPreferences.getInstance();
+        preff3.setString('order_id', '${order_id}');
+        final preff2 = await SharedPreferences.getInstance();
+        preff2.setString('order_id', '${jsonObj['data']['url_checkout']}');
+
         Future.delayed(Duration(seconds: 3), () {
+          if (url_checkout != null) {
+            _launchURLApp(url_checkout!);
+          }
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -237,6 +249,15 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
 //
   }
 
+  _launchURLApp(String url_checkout) async {
+    var url = Uri.parse(url_checkout);
+    if (await launchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   //
   late List payment;
   getDataPembayaran() async {
@@ -313,25 +334,25 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
     //     widget.harga.reduce((value, element) => value + element + admin);
     // feedmin.insert(1,5000);
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.pop(context);
-        return false;
-      },
-      child: Scaffold(
-        // backgroundColor: Colors.red,
-     backgroundColor: white,
-        body:  SafeArea(
-            top: false,
-            child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                    statusBarColor: white,
-                    statusBarIconBrightness: Brightness.dark,
-                    statusBarBrightness: Brightness.dark),
-                child:  SingleChildScrollView(
+        onWillPop: () async {
+          Navigator.pop(context);
+          return false;
+        },
+        child: Scaffold(
+            // backgroundColor: Colors.red,
+            backgroundColor: white,
+            body: SafeArea(
+                top: false,
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle(
+                      statusBarColor: white,
+                      statusBarIconBrightness: Brightness.dark,
+                      statusBarBrightness: Brightness.dark),
+                  child: SingleChildScrollView(
                     clipBehavior: Clip.none,
                     child: Column(
                       children: [
-                         Container(
+                        Container(
                           padding: EdgeInsets.only(top: 20.w, left: 20.w, right: 20.w),
                           height: ScreenUtil().setHeight(75.h),
                           color: white,
@@ -369,539 +390,733 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                             SizedBox()
                           ]),
                         ),
-         
-            // Text('${widget.id}'),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //
-                  Row(
-                    children: [
-                      Text(
-                        'Ringkasan Pesanan',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontFamily: 'comfortaa',
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        '(${widget.nama.length})',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 16,
-                          fontFamily: 'comfortaa',
-                        ),
-                      ),
-                    ],
-                  ),
-                  //
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        tampil = !tampil;
-                      });
-                    },
-                    child: !tampil
-                        ? Text('Tampilkan',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.greenAccent,
-                              decoration: TextDecoration.underline,
-                            ))
-                        : Text('Sembunyikan',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.greenAccent,
-                              decoration: TextDecoration.underline,
-                            )),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            tampil
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: widget.nama == null ? 0 : widget.nama.length,
-                    itemBuilder: (BuildContext context, i) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.blue[100]!),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: Offset(0, 5), // changes position of shadow
+
+                        // Text('${widget.id}'),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //
+                              Row(
+                                children: [
+                                  Text(
+                                    'Ringkasan Pesanan',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontFamily: 'comfortaa',
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    '(${widget.nama.length})',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 16,
+                                      fontFamily: 'comfortaa',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              //
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    tampil = !tampil;
+                                  });
+                                },
+                                child: !tampil
+                                    ? Text('Tampilkan',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.greenAccent,
+                                          decoration: TextDecoration.underline,
+                                        ))
+                                    : Text('Sembunyikan',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.greenAccent,
+                                          decoration: TextDecoration.underline,
+                                        )),
                               ),
                             ],
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(widget.nama[i]['name'].toString()),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(height: 1.5, color: Colors.grey, fontSize: 12),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      // margin: EdgeInsets.only(
-                                      //     top: MediaQuery.of(context).size.height / 20),
-                                      width: 30,
-                                      height: 30,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        tampil
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: widget.nama == null ? 0 : widget.nama.length,
+                                itemBuilder: (BuildContext context, i) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
+                                    child: Container(
                                       decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage('gambar/rupiah.png'),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.blue[100]!),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.1),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            offset: Offset(0, 5), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(18.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(widget.nama[i]['name'].toString()),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(height: 1.5, color: Colors.grey, fontSize: 12),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  // margin: EdgeInsets.only(
+                                                  //     top: MediaQuery.of(context).size.height / 20),
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage('gambar/rupiah.png'),
+                                                    ),
+                                                  ),
+                                                ),
+                                                //
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Text(
+                                                  NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+                                                      .format(int.parse(widget.nama[i]['price_min'].toString())),
+                                                  style:
+                                                      TextStyle(fontWeight: FontWeight.w700, color: Colors.yellow[600]),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    //
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-                                          .format(int.parse(widget.nama[i]['price_min'].toString())),
-                                      style: TextStyle(fontWeight: FontWeight.w700, color: Colors.yellow[600]),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : SizedBox(),
-            //
-            tampil
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20, top: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.blue[100]!),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: Offset(0, 5), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Jadwal',
-                            ),
-                            SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Container(
-                                  // margin: EdgeInsets.only(
-                                  //     top: MediaQuery.of(context).size.height / 20),
-                                  width: 30,
-                                  height: 30,
+                                  );
+                                },
+                              )
+                            : SizedBox(),
+                        //
+                        tampil
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 20.0, right: 20, top: 20),
+                                child: Container(
                                   decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage('gambar/jadwal.png'),
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                    border: Border.all(color: Colors.blue[100]!),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 5), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Jadwal',
+                                        ),
+                                        SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              // margin: EdgeInsets.only(
+                                              //     top: MediaQuery.of(context).size.height / 20),
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage('gambar/jadwal.png'),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(widget.jadwal),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text('-'),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text(widget.waktu),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        //
+                                        Row(
+                                          children: [
+                                            Container(
+                                              // margin: EdgeInsets.only(
+                                              //     top: MediaQuery.of(context).size.height / 20),
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage('gambar/alamat.png'),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Flexible(child: Text(widget.alamat))
+                                          ],
+                                        ),
+                                        //
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.blue[100],
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Text(widget.domisiliproblem),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 5),
-                                Text(widget.jadwal),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                                Text('-'),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                                Text(widget.waktu),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            //
-                            Row(
-                              children: [
-                                Container(
-                                  // margin: EdgeInsets.only(
-                                  //     top: MediaQuery.of(context).size.height / 20),
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage('gambar/alamat.png'),
+                              )
+                            : SizedBox(),
+                        //
+                        Padding(
+                          padding: const EdgeInsets.only(left: 1.0, right: 1, top: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width / 1.8,
+                                // height: MediaQuery.of(context).size.height / 5,
+                                decoration: BoxDecoration(
+                                    // color: Colors.blue[50],
+                                    borderRadius: BorderRadius.circular(25)),
+                                child: TextField(
+                                  // controller: domisiliproblem,
+                                  // textAlign: TextAlign.left,
+                                  // ignore: unnecessary_new
+                                  decoration: new InputDecoration(
+                                    fillColor: Colors.blue[50],
+                                    filled: true,
+                                    contentPadding: EdgeInsets.only(
+                                      left: 20,
+                                      right: 20,
                                     ),
+                                    hintText: 'Masukkan Kode Promo',
+                                    // prefixIcon: Padding(
+                                    //   padding: const EdgeInsets.all(20.0),
+                                    //   child: Image.asset(
+                                    //     'gambar/email.png',
+                                    //     width: 25,
+                                    //     height: 25,
+                                    //     fit: BoxFit.fill,
+                                    //   ),
+                                    // ),
+                                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                                    border: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                        borderSide: BorderSide.none),
                                   ),
                                 ),
-                                SizedBox(width: 5),
-                                Flexible(child: Text(widget.alamat))
-                              ],
-                            ),
-                            //
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.blue[100],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Text(widget.domisiliproblem),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                : SizedBox(),
-            //
-            Padding(
-              padding: const EdgeInsets.only(left: 1.0, right: 1, top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.8,
-                    // height: MediaQuery.of(context).size.height / 5,
-                    decoration: BoxDecoration(
-                        // color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(25)),
-                    child: TextField(
-                      // controller: domisiliproblem,
-                      // textAlign: TextAlign.left,
-                      // ignore: unnecessary_new
-                      decoration: new InputDecoration(
-                        fillColor: Colors.blue[50],
-                        filled: true,
-                        contentPadding: EdgeInsets.only(
-                          left: 20,
-                          right: 20,
-                        ),
-                        hintText: 'Masukkan Kode Promo',
-                        // prefixIcon: Padding(
-                        //   padding: const EdgeInsets.all(20.0),
-                        //   child: Image.asset(
-                        //     'gambar/email.png',
-                        //     width: 25,
-                        //     height: 25,
-                        //     fit: BoxFit.fill,
-                        //   ),
-                        // ),
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                        border: OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                            borderSide: BorderSide.none),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 3.5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      color: Colors.blue,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            // margin: EdgeInsets.only(
-                            //     top: MediaQuery.of(context).size.height / 20),
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('gambar/Discount.png'),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            'Pakai',
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            //
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 15),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                  border: Border.all(color: Colors.blue[100]!),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: Offset(0, 5), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Pembayaran',
-                          ),
-                          Text(NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(widget.harga),
-                              style: TextStyle(
-                                  // fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.blue))
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Subtottal',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
-                          SizedBox(width: 5),
-                          Text(NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(widget.harga),
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      //
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Biaya Admin',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
-                          // SizedBox(width: 5),
-                          Text(
-                              NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(
-                                int.parse('0'),
-                              ),
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
-                        ],
-                      ),
-                      //
-                      SizedBox(
-                        height: 5,
-                      ),
-                      //
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Potongan',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
-                          SizedBox(width: 5),
-                          Text(NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(0),
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            //
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text('Metode Pembayaran'),
-            ),
-            //
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
-              child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.blue),
-                      color: Colors.blue[50]),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 18.0, right: 18),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('e-Wallet / QRIS',
-                            style: TextStyle(color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
-                        GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                pembayaran = !pembayaran;
-                              });
-                            },
-                            child: !pembayaran
-                                ? Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('gambar/pembayaran.png'),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18),
+                                  color: Colors.blue,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10,
                                       ),
-                                    ),
-                                  )
-                                : Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('gambar/pembayaran1.png'),
+                                      Container(
+                                        // margin: EdgeInsets.only(
+                                        //     top: MediaQuery.of(context).size.height / 20),
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage('gambar/Discount.png'),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  )),
-                      ],
-                    ),
-                  )),
-            ),
-            //
-            pembayaran
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: payment == null ? 0 : payment.length,
-                    itemBuilder: (BuildContext context, i) {
-                      return GestureDetector(
-                        onTap: () {
-                          print(payment[i]['id']);
-                          setState(() {
-                            methodpayment = payment[i]['id'];
-                            for (var index = 0; index < payment.length; index++) {
-                              pressed![index] = false;
-                            }
-                            pressed![i] = !pressed![i];
-                          });
-                          //  getDataPembayaran();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        'Pakai',
+                                        style: TextStyle(color: Colors.white, fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        //
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 15),
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: pressed![i] ? Colors.blue[100] : Colors.white,
-                                border: Border.all(color: Colors.blue[100]!)),
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              border: Border.all(color: Colors.blue[100]!),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 5), // changes position of shadow
+                                ),
+                              ],
+                            ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 20, right: 10, top: 2),
+                              padding: const EdgeInsets.all(18.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Pembayaran',
+                                      ),
+                                      Text(
+                                          NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                                              .format(widget.harga),
+                                          style: TextStyle(
+                                              // fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.blue))
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Subtottal',
+                                          style:
+                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                      SizedBox(width: 5),
+                                      Text(
+                                          NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                                              .format(widget.harga),
+                                          style:
+                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  //
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Biaya Admin',
+                                          style:
+                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                      // SizedBox(width: 5),
+                                      Text(
+                                          NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(
+                                            int.parse('0'),
+                                          ),
+                                          style:
+                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                    ],
+                                  ),
+                                  //
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  //
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Potongan',
+                                          style:
+                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                      SizedBox(width: 5),
+                                      Text(
+                                          NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(0),
+                                          style:
+                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        //
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text('Metode Pembayaran'),
+                        ),
+                        // banking
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blue),
+                                  color: Colors.blue[50]),
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 2),
+                                padding: const EdgeInsets.only(left: 18.0, right: 18),
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // Text('${methodpayment}'),
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(payment[i]['image']),
+                                    Text('Virtual Account',
+                                        style: TextStyle(
+                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            pembayaran = !pembayaran;
+                                          });
+                                        },
+                                        child: !pembayaran
+                                            ? Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran.png'),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran1.png'),
+                                                  ),
+                                                ),
+                                              )),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        //Retail Outlet
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blue),
+                                  color: Colors.blue[50]),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Retail Outlet (OTC)',
+                                        style: TextStyle(
+                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            pembayaran = !pembayaran;
+                                          });
+                                        },
+                                        child: !pembayaran
+                                            ? Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran.png'),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran1.png'),
+                                                  ),
+                                                ),
+                                              )),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        // e-wallet
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blue),
+                                  color: Colors.blue[50]),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('e-Wallet',
+                                        style: TextStyle(
+                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            pembayaran = !pembayaran;
+                                          });
+                                        },
+                                        child: !pembayaran
+                                            ? Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran.png'),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran1.png'),
+                                                  ),
+                                                ),
+                                              )),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        //kartu
+
+                        pembayaran
+                            ? ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: payment == null ? 0 : payment.length,
+                                itemBuilder: (BuildContext context, i) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      print(payment[i]['id']);
+                                      setState(() {
+                                        methodpayment = payment[i]['id'];
+                                        for (var index = 0; index < payment.length; index++) {
+                                          pressed![index] = false;
+                                        }
+                                        pressed![i] = !pressed![i];
+                                      });
+                                      //  getDataPembayaran();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: pressed![i] ? Colors.blue[100] : Colors.white,
+                                            border: Border.all(color: Colors.blue[100]!)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 20, right: 10, top: 2),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 2),
+                                            child: Row(
+                                              children: [
+                                                // Text('${methodpayment}'),
+                                                Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(payment[i]['image']),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  payment[i]['name'],
+                                                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      payment[i]['name'],
-                                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-                                    ),
+                                  );
+                                })
+                            : SizedBox(),
+                        //
+                        // card
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blue),
+                                  color: Colors.blue[50]),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Credit / Debit',
+                                        style: TextStyle(
+                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            pembayaran = !pembayaran;
+                                          });
+                                        },
+                                        child: !pembayaran
+                                            ? Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran.png'),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran1.png'),
+                                                  ),
+                                                ),
+                                              )),
                                   ],
+                                ),
+                              )),
+                        ),
+                        // Qris
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.blue),
+                                  color: Colors.blue[50]),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('QRIS-PAY',
+                                        style: TextStyle(
+                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            pembayaran = !pembayaran;
+                                          });
+                                        },
+                                        child: !pembayaran
+                                            ? Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran.png'),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage('gambar/pembayaran1.png'),
+                                                  ),
+                                                ),
+                                              )),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 18),
+                          child: GestureDetector(
+                            onTap: () async {
+                              await addData();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.blue,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 18),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 17.0),
+                                  child: Center(
+                                    child: Text(
+                                      'Bayar Sekarang',
+                                      style: TextStyle(color: Colors.white, fontSize: 16),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      );
-                    })
-                : SizedBox(),
-            //
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 18),
-              child: GestureDetector(
-                onTap: () async {
-                  await addData();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.blue,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 18),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 17.0),
-                      child: Center(
-                        child: Text(
-                          'Bayar Sekarang',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        SizedBox(
+                          height: 5,
                         ),
-                      ),
+                        //  Text('${widget.apartement}'),
+                        // Text('${widget.apartement??''}'),
+                        // Text(widget.jadwal)
+                      ],
                     ),
                   ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            //  Text('${widget.apartement}'),
-            // Text('${widget.apartement??''}'),
-            // Text(widget.jadwal)
-          ],
-        ),
-      ),))
-     ) );
+                ))));
   }
 }

@@ -713,7 +713,7 @@ class _AturjadwalState extends State<Aturjadwal> {
                                               nama: datahalaman!,
                                               alamat: widget.alamat!,
                                               jadwal: jadwal,
-                                             waktu: waktu,
+                                              waktu: waktu,
                                               domisiliproblem: address_note.text,
                                               // apartement: idapartement!,
                                               // rumah: idrumah ,
