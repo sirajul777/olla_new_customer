@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/listhome.dart';
+import 'package:customer/View/Pages/MultiLokasi/PilihLokasi.dart';
 import 'package:customer/View/TabDashboard/blog.dart';
 import 'package:customer/View/TabDashboard/dibawabanner.dart';
 import 'package:customer/View/TabDashboard/slidebanneratas.dart';
@@ -57,10 +58,12 @@ class _HomeState extends State<Home> {
   //
   late List? data;
   getDataGrid() async {
-    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/icon')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-    });
+    var response = await http.get(
+        Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/icon')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla": KEY.APIKEY,
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -81,12 +84,14 @@ class _HomeState extends State<Home> {
   getDataCustomer() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response =
-        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/customer-profile')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-      "Authorization": 'Bearer {$customer}',
-    });
+    var response = await http.get(
+        Uri.parse(
+            Uri.encodeFull('https://olla.ws/api/customer/v1/customer-profile')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla": KEY.APIKEY,
+          "Authorization": 'Bearer {$customer}',
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -108,15 +113,19 @@ class _HomeState extends State<Home> {
   List gabung = [];
   List filter = [];
   getDataList() async {
-    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/service-list')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-    });
+    var response = await http.get(
+        Uri.parse(
+            Uri.encodeFull('https://olla.ws/api/customer/v1/service-list')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla": KEY.APIKEY,
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
       datalist = converDataToJson['data'];
-      filter.addAll(datalist.where((element) => element.containsValue("aktif")).toList());
+      filter.addAll(
+          datalist.where((element) => element.containsValue("aktif")).toList());
     });
     return "Success";
   }
@@ -159,18 +168,22 @@ class _HomeState extends State<Home> {
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     print(placemarks);
     Placemark place = placemarks[0];
-    Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    Address =
+        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
   }
 
@@ -208,22 +221,26 @@ class _HomeState extends State<Home> {
                       children: [
                         loading
                             ? Container(
-                                height: MediaQuery.of(context).size.height / 3.3,
+                                height:
+                                    MediaQuery.of(context).size.height / 3.3,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
                                   color: darkBlue,
                                   borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+                                      bottomLeft: Radius.circular(0),
+                                      bottomRight: Radius.circular(0)),
                                 ),
                               )
                             : Shimmer.fromColors(
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height / 3.5,
+                                  height:
+                                      MediaQuery.of(context).size.height / 3.5,
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
                                     color: Colors.grey[500],
                                     borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+                                        bottomLeft: Radius.circular(0),
+                                        bottomRight: Radius.circular(0)),
                                   ),
                                 ),
                                 baseColor: Colors.grey[100]!,
@@ -233,104 +250,162 @@ class _HomeState extends State<Home> {
                         Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 30.0, right: 30, top: 50),
+                              padding: const EdgeInsets.only(
+                                  left: 30.0, right: 30, top: 50),
                               child: Column(
                                 children: [
                                   Row(
                                     children: [
                                       Text(
                                         'Lokasi kamu:',
-                                        style: TextStyle(color: Colors.blue[200]),
+                                        style:
+                                            TextStyle(color: Colors.blue[200]),
                                       ),
                                       SizedBox(width: 2),
                                       Flexible(
                                         child: RichText(
                                           overflow: TextOverflow.ellipsis,
-                                          strutStyle: StrutStyle(fontSize: 12.0),
+                                          strutStyle:
+                                              StrutStyle(fontSize: 12.0),
                                           text: TextSpan(
-                                              style: TextStyle(color: Colors.white, fontSize: 12), text: Address),
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12),
+                                              text: Address),
                                         ),
                                       ),
                                       GestureDetector(
                                           onTap: () {
                                             showModalBottomSheet(
                                                 shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.only(
-                                                        topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(20),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    20))),
                                                 context: context,
                                                 builder: (context) {
                                                   return Container(
                                                       // mainAxisSize: MainAxisSize.min,
                                                       // height: MediaQuery.of(context).size.width-50,
                                                       child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Container(
-                                                        padding: EdgeInsets.only(top: 30, left: 20),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 30,
+                                                                left: 20),
                                                         child: Text(
                                                           'Alamat yang Anda gunakan sekarang',
-                                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
                                                         ),
                                                       ),
                                                       Container(
-                                                        padding: EdgeInsets.only(top: 2, bottom: 20, left: 20),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 2,
+                                                                bottom: 20,
+                                                                left: 20),
                                                         child: Text(
                                                           'Kamu bisa pilih alamat yang di simpan',
-                                                          style: TextStyle(color: softGrey, fontSize: 12.sp),
+                                                          style: TextStyle(
+                                                              color: softGrey,
+                                                              fontSize: 12.sp),
                                                         ),
                                                       ),
                                                       SingleChildScrollView(
-                                                        scrollDirection: Axis.horizontal,
+                                                        scrollDirection:
+                                                            Axis.horizontal,
                                                         child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
                                                           children: [
                                                             SizedBox(
                                                               width: 15,
                                                             ),
                                                             Container(
-                                                              padding: EdgeInsets.all(10.w),
-                                                              width: MediaQuery.of(context).size.width / 2,
-                                                              height: MediaQuery.of(context).size.width / 2,
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.w),
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
                                                               decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(25.w),
-                                                                  border: Border.all(color: softGrey, width: 2)),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(25
+                                                                              .w),
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          softGrey,
+                                                                      width:
+                                                                          2)),
                                                               child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
                                                                 children: [
                                                                   GestureDetector(
-                                                                      onTap: () {
-                                                                        print('kjfhkdjshfj');
+                                                                      onTap:
+                                                                          () {
+                                                                        print(
+                                                                            'kjfhkdjshfj');
                                                                       },
-                                                                      child: new Icon(
-                                                                        Icons.location_pin,
-                                                                        color: Colors.red,
-                                                                        size: 45,
+                                                                      child:
+                                                                          new Icon(
+                                                                        Icons
+                                                                            .location_pin,
+                                                                        color: Colors
+                                                                            .red,
+                                                                        size:
+                                                                            45,
                                                                       )),
                                                                   new Text(
                                                                     Address,
                                                                     style: TextStyle(
-                                                                        fontSize: 12.sp, overflow: TextOverflow.clip),
+                                                                        fontSize: 12
+                                                                            .sp,
+                                                                        overflow:
+                                                                            TextOverflow.clip),
                                                                   ),
                                                                   SizedBox(
                                                                     height: 15,
                                                                   ),
                                                                   GestureDetector(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         alamat();
                                                                       },
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(right: 20.0),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(right: 20.0),
                                                                         child: Container(
-                                                                            decoration: BoxDecoration(
-                                                                                color: Colors.blue,
-                                                                                borderRadius: BorderRadius.circular(8)),
+                                                                            decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8)),
                                                                             child: Padding(
                                                                               padding: const EdgeInsets.all(8.0),
                                                                               child: Text(
                                                                                 'Cocokan Alamat',
-                                                                                style: TextStyle(
-                                                                                    color: Colors.white, fontSize: 15),
+                                                                                style: TextStyle(color: Colors.white, fontSize: 15),
                                                                               ),
                                                                             )),
                                                                       ))
@@ -341,48 +416,77 @@ class _HomeState extends State<Home> {
                                                               width: 15,
                                                             ),
                                                             Container(
-                                                              padding: EdgeInsets.all(10.w),
-                                                              width: MediaQuery.of(context).size.width / 2,
-                                                              height: MediaQuery.of(context).size.width / 2,
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.w),
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
                                                               decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(25.w),
-                                                                  border: Border.all(color: softGrey, width: 2)),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(25
+                                                                              .w),
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          softGrey,
+                                                                      width:
+                                                                          2)),
                                                               child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
                                                                 children: [
                                                                   GestureDetector(
-                                                                      onTap: () {
-                                                                        print('kjfhkdjshfj');
+                                                                      onTap:
+                                                                          () {
+                                                                        print(
+                                                                            'kjfhkdjshfj');
                                                                       },
-                                                                      child: new Icon(
-                                                                        Icons.location_pin,
-                                                                        color: Colors.red,
-                                                                        size: 45,
+                                                                      child:
+                                                                          new Icon(
+                                                                        Icons
+                                                                            .location_pin,
+                                                                        color: Colors
+                                                                            .red,
+                                                                        size:
+                                                                            45,
                                                                       )),
                                                                   new Text(
                                                                     Address,
                                                                     style: TextStyle(
-                                                                        fontSize: 12.sp, overflow: TextOverflow.clip),
+                                                                        fontSize: 12
+                                                                            .sp,
+                                                                        overflow:
+                                                                            TextOverflow.clip),
                                                                   ),
                                                                   SizedBox(
                                                                     height: 15,
                                                                   ),
                                                                   GestureDetector(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         alamat();
                                                                       },
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(right: 20.0),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(right: 20.0),
                                                                         child: Container(
-                                                                            decoration: BoxDecoration(
-                                                                                color: Colors.blue,
-                                                                                borderRadius: BorderRadius.circular(8)),
+                                                                            decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8)),
                                                                             child: Padding(
                                                                               padding: const EdgeInsets.all(8.0),
                                                                               child: Text(
                                                                                 'Cocokan Alamat',
-                                                                                style: TextStyle(
-                                                                                    color: Colors.white, fontSize: 15),
+                                                                                style: TextStyle(color: Colors.white, fontSize: 15),
                                                                               ),
                                                                             )),
                                                                       ))
@@ -393,48 +497,77 @@ class _HomeState extends State<Home> {
                                                               width: 15,
                                                             ),
                                                             Container(
-                                                              padding: EdgeInsets.all(10.w),
-                                                              width: MediaQuery.of(context).size.width / 2,
-                                                              height: MediaQuery.of(context).size.width / 2,
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.w),
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
                                                               decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(25.w),
-                                                                  border: Border.all(color: softGrey, width: 2)),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(25
+                                                                              .w),
+                                                                  border: Border.all(
+                                                                      color:
+                                                                          softGrey,
+                                                                      width:
+                                                                          2)),
                                                               child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
                                                                 children: [
                                                                   GestureDetector(
-                                                                      onTap: () {
-                                                                        print('kjfhkdjshfj');
+                                                                      onTap:
+                                                                          () {
+                                                                        print(
+                                                                            'kjfhkdjshfj');
                                                                       },
-                                                                      child: new Icon(
-                                                                        Icons.location_pin,
-                                                                        color: Colors.red,
-                                                                        size: 45,
+                                                                      child:
+                                                                          new Icon(
+                                                                        Icons
+                                                                            .location_pin,
+                                                                        color: Colors
+                                                                            .red,
+                                                                        size:
+                                                                            45,
                                                                       )),
                                                                   new Text(
                                                                     Address,
                                                                     style: TextStyle(
-                                                                        fontSize: 12.sp, overflow: TextOverflow.clip),
+                                                                        fontSize: 12
+                                                                            .sp,
+                                                                        overflow:
+                                                                            TextOverflow.clip),
                                                                   ),
                                                                   SizedBox(
                                                                     height: 15,
                                                                   ),
                                                                   GestureDetector(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         alamat();
                                                                       },
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(right: 20.0),
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.only(right: 20.0),
                                                                         child: Container(
-                                                                            decoration: BoxDecoration(
-                                                                                color: Colors.blue,
-                                                                                borderRadius: BorderRadius.circular(8)),
+                                                                            decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(8)),
                                                                             child: Padding(
                                                                               padding: const EdgeInsets.all(8.0),
                                                                               child: Text(
                                                                                 'Cocokan Alamat',
-                                                                                style: TextStyle(
-                                                                                    color: Colors.white, fontSize: 15),
+                                                                                style: TextStyle(color: Colors.white, fontSize: 15),
                                                                               ),
                                                                             )),
                                                                       ))
@@ -444,19 +577,48 @@ class _HomeState extends State<Home> {
                                                             SizedBox(
                                                               width: 15,
                                                             ),
-                                                            Container(
-                                                                padding: EdgeInsets.all(10.w),
-                                                                width: MediaQuery.of(context).size.width / 2,
-                                                                height: MediaQuery.of(context).size.width / 2,
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(25.w),
-                                                                  border: Border.all(color: softGrey, width: 2),
-                                                                ),
-                                                                child: Icon(
-                                                                  Icons.add,
-                                                                  color: softGrey,
-                                                                  size: 50.w,
-                                                                )),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (BuildContext context) =>
+                                                                                PilihLokasi()));
+                                                              },
+                                                              child: Container(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(10
+                                                                              .w),
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width /
+                                                                      2,
+                                                                  height: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width /
+                                                                      2,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.w),
+                                                                    border: Border.all(
+                                                                        color:
+                                                                            softGrey,
+                                                                        width:
+                                                                            2),
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons.add,
+                                                                    color:
+                                                                        softGrey,
+                                                                    size: 50.w,
+                                                                  )),
+                                                            ),
                                                             SizedBox(
                                                               width: 15,
                                                             ),
@@ -464,25 +626,50 @@ class _HomeState extends State<Home> {
                                                         ),
                                                       ),
                                                       Container(
-                                                        margin: EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 2),
+                                                        margin: EdgeInsets.only(
+                                                            left: 5,
+                                                            right: 5,
+                                                            top: 15,
+                                                            bottom: 2),
                                                         color: softGrey,
                                                         height: 2,
                                                       ),
                                                       Container(
-                                                          padding: EdgeInsets.only(top: 5, bottom: 10, left: 20),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 5,
+                                                                  bottom: 10,
+                                                                  left: 20),
                                                           child: Flexible(
                                                             child: Text(
                                                                 'Kamu juga bisa cari lokasi dulu kalau Kamu mau kirim ke alamat lain',
                                                                 style: TextStyle(
-                                                                    overflow: TextOverflow.clip, fontSize: 12.w)),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .clip,
+                                                                    fontSize:
+                                                                        12.w)),
                                                           )),
                                                       Container(
-                                                        margin: EdgeInsets.only(left: 15.w, right: 15.w),
-                                                        width: MediaQuery.of(context).size.width,
-                                                        height: MediaQuery.of(context).size.height / 15,
-                                                        decoration: BoxDecoration(
-                                                            // color: Colors.blue[50],
-                                                            borderRadius: BorderRadius.circular(25)),
+                                                        margin: EdgeInsets.only(
+                                                            left: 15.w,
+                                                            right: 15.w),
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height /
+                                                            15,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                // color: Colors.blue[50],
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            25)),
                                                         child: TextFormField(
                                                           // controller: email,
                                                           // onChanged: (vale) {
@@ -500,23 +687,37 @@ class _HomeState extends State<Home> {
 
                                                           // textAlign: TextAlign.left,
                                                           // ignore: unnecessary_new
-                                                          decoration: new InputDecoration(
-                                                            fillColor: Colors.grey[200],
+                                                          decoration:
+                                                              new InputDecoration(
+                                                            fillColor: Colors
+                                                                .grey[200],
                                                             filled: true,
                                                             contentPadding:
-                                                                EdgeInsets.only(left: 20, right: 20, top: 5),
-                                                            hintText: 'Cari lokasi',
-                                                            hintStyle: TextStyle(color: softGrey),
+                                                                EdgeInsets.only(
+                                                                    left: 20,
+                                                                    right: 20,
+                                                                    top: 5),
+                                                            hintText:
+                                                                'Cari lokasi',
+                                                            hintStyle: TextStyle(
+                                                                color:
+                                                                    softGrey),
                                                             prefixIcon: Icon(
                                                               Icons.search,
                                                               size: 30,
                                                               color: softGrey,
                                                             ),
-                                                            border: OutlineInputBorder(
-                                                                borderRadius: const BorderRadius.all(
-                                                                  Radius.circular(25.0),
-                                                                ),
-                                                                borderSide: BorderSide.none),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        const BorderRadius
+                                                                            .all(
+                                                                      Radius.circular(
+                                                                          25.0),
+                                                                    ),
+                                                                    borderSide:
+                                                                        BorderSide
+                                                                            .none),
                                                           ),
                                                         ),
                                                       ),
@@ -538,9 +739,11 @@ class _HomeState extends State<Home> {
                                       color: Colors.white10,
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 15, right: 15, top: 3),
+                                      padding: const EdgeInsets.only(
+                                          left: 15, right: 15, top: 3),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           //
                                           Row(
@@ -550,7 +753,8 @@ class _HomeState extends State<Home> {
                                                 height: 50,
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                    image: AssetImage('gambar/login.png'),
+                                                    image: AssetImage(
+                                                        'gambar/login.png'),
                                                   ),
                                                 ),
                                               ),
@@ -558,12 +762,16 @@ class _HomeState extends State<Home> {
                                                 width: 10,
                                               ),
                                               Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     'Hallo ${namauser!} !',
                                                     style: TextStyle(
-                                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15),
                                                     overflow: TextOverflow.clip,
                                                   ),
                                                   //
@@ -572,8 +780,10 @@ class _HomeState extends State<Home> {
                                                       Text(
                                                         'Customer -',
                                                         style: TextStyle(
-                                                            color: Colors.white60,
-                                                            fontWeight: FontWeight.w600,
+                                                            color:
+                                                                Colors.white60,
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                             fontSize: 12),
                                                       ),
                                                       //
@@ -584,8 +794,10 @@ class _HomeState extends State<Home> {
                                                         'Member Gold',
                                                         style: TextStyle(
                                                             color: Colors.white,
-                                                            fontWeight: FontWeight.w600,
-                                                            fontStyle: FontStyle.italic,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontStyle: FontStyle
+                                                                .italic,
                                                             fontSize: 12),
                                                       ),
                                                     ],
@@ -600,7 +812,10 @@ class _HomeState extends State<Home> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (BuildContext context) => Notifikasi(name: nama)));
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          Notifikasi(
+                                                              name: nama)));
                                             },
                                             child: CircleAvatar(
                                               radius: 16,
@@ -612,7 +827,9 @@ class _HomeState extends State<Home> {
                                                 height: 16,
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                      image: AssetImage('gambar/Vector.png'), fit: BoxFit.fitHeight),
+                                                      image: AssetImage(
+                                                          'gambar/Vector.png'),
+                                                      fit: BoxFit.fitHeight),
                                                 ),
                                               ),
                                             ),
@@ -730,7 +947,9 @@ class _HomeState extends State<Home> {
                                     },
                                     child: Text(
                                       'Pilih Layanan',
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
                                     ))),
                             //
                             ListView(
@@ -738,31 +957,39 @@ class _HomeState extends State<Home> {
                               physics: NeverScrollableScrollPhysics(),
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 5.0, right: 5),
+                                  padding: const EdgeInsets.only(
+                                      left: 5.0, right: 5),
                                   child: Container(
                                     // color: Colors.red,
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 1, top: 0.0, right: 1),
+                                        padding: const EdgeInsets.only(
+                                            left: 1, top: 0.0, right: 1),
                                         child: GridView.builder(
-                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 4,
-                                                mainAxisSpacing: 0,
-                                                // childAspectRatio: 1 / 1,
-                                                crossAxisSpacing: 0),
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 4,
+                                                    mainAxisSpacing: 0,
+                                                    // childAspectRatio: 1 / 1,
+                                                    crossAxisSpacing: 0),
                                             shrinkWrap: true,
-                                            physics: NeverScrollableScrollPhysics(),
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
                                             // ignore: prefer_if_null_operators
-                                            itemCount: filter == null ? 0 : filter.length,
+                                            itemCount: filter == null
+                                                ? 0
+                                                : filter.length,
                                             // datalist == null
                                             //     ? 0
                                             //     : (datalist.length > 8 ? 8 : datalist.length),
                                             // data == null
                                             //                 ? 0
                                             //                 : data!.length,
-                                            itemBuilder: (BuildContext context, i) {
+                                            itemBuilder:
+                                                (BuildContext context, i) {
                                               return Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
@@ -829,26 +1056,40 @@ class _HomeState extends State<Home> {
                                                           // },
                                                           pageBuilder: (context, animation, animationTime) {
                                                         return ListHome(
-                                                            id: '${filter[i]['id']}',
-                                                            nama: filter[i]['name'],
-                                                            gambar: filter[i]['images']);
+                                                            id:
+                                                                '${filter[i]['id']}',
+                                                            nama: filter[i]
+                                                                ['name'],
+                                                            gambar: filter[i]
+                                                                ['images']);
                                                       }));
                                                     },
                                                     child: loading
                                                         ? Container(
                                                             decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(10),
-                                                                color: Colors.blue[100]!.withOpacity(0.3)),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                color: Colors
+                                                                    .blue[100]!
+                                                                    .withOpacity(
+                                                                        0.3)),
                                                             child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5.0),
                                                               child: Container(
                                                                 width: 40,
                                                                 height: 40,
-                                                                decoration: BoxDecoration(
+                                                                decoration:
+                                                                    BoxDecoration(
                                                                   image: DecorationImage(
                                                                       image: NetworkImage(
-                                                                          '${filter[i]['images']}'.toString()),
-                                                                      fit: BoxFit.cover),
+                                                                          '${filter[i]['images']}'
+                                                                              .toString()),
+                                                                      fit: BoxFit
+                                                                          .cover),
                                                                 ),
                                                               ),
                                                             ),
@@ -856,25 +1097,41 @@ class _HomeState extends State<Home> {
                                                         : Shimmer.fromColors(
                                                             child: Container(
                                                               decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(10),
-                                                                  color: Colors.blue[50]),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  color: Colors
+                                                                          .blue[
+                                                                      50]),
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(5.0),
-                                                                child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    Container(
                                                                   width: 40,
                                                                   height: 40,
-                                                                  decoration: BoxDecoration(
+                                                                  decoration:
+                                                                      BoxDecoration(
                                                                     image: DecorationImage(
-                                                                        image: NetworkImage(
-                                                                            '${filter[i]['images']}'.toString()),
-                                                                        fit: BoxFit.cover),
+                                                                        image: NetworkImage('${filter[i]['images']}'
+                                                                            .toString()),
+                                                                        fit: BoxFit
+                                                                            .cover),
                                                                   ),
                                                                 ),
                                                               ),
                                                             ),
-                                                            baseColor: Colors.grey[100]!,
-                                                            highlightColor: Colors.grey[300]!,
-                                                            direction: ShimmerDirection.ltr,
+                                                            baseColor: Colors
+                                                                .grey[100]!,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .grey[300]!,
+                                                            direction:
+                                                                ShimmerDirection
+                                                                    .ltr,
                                                           ),
                                                   ),
                                                   SizedBox(
@@ -883,21 +1140,35 @@ class _HomeState extends State<Home> {
                                                   loading
                                                       ? Flexible(
                                                           child: Text(
-                                                          '${filter[i]['name']}'.toString(),
-                                                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-                                                          textAlign: TextAlign.center,
+                                                          '${filter[i]['name']}'
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ))
                                                       : Shimmer.fromColors(
                                                           child: Container(
                                                             decoration: BoxDecoration(
-                                                                color: Colors.grey,
-                                                                borderRadius: BorderRadius.circular(10)),
+                                                                color:
+                                                                    Colors.grey,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10)),
                                                             height: 10,
                                                             width: 50,
                                                           ),
-                                                          baseColor: Colors.grey[100]!,
-                                                          highlightColor: Colors.grey[300]!,
-                                                          direction: ShimmerDirection.ltr,
+                                                          baseColor:
+                                                              Colors.grey[100]!,
+                                                          highlightColor:
+                                                              Colors.grey[300]!,
+                                                          direction:
+                                                              ShimmerDirection
+                                                                  .ltr,
                                                         ),
                                                 ],
                                               );
@@ -917,20 +1188,25 @@ class _HomeState extends State<Home> {
                                   height: 15,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 10.0, right: 10),
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0, right: 10),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         'Info & Berita',
-                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                       Text('Lihat Semua',
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.greenAccent,
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                           ))
                                     ],
                                   ),
