@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Router/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,7 +35,8 @@ class _PilihLokasiState extends State<PilihLokasi> {
         body: body);
 
     if (response.statusCode == 200) {
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context) {
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (BuildContext context) {
         return Dashboard();
       }), (Route<dynamic> route) => false);
     } else {
@@ -66,34 +66,123 @@ class _PilihLokasiState extends State<PilihLokasi> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: null,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: _goToTheLake,
-          label: Text('To the lake!'),
-          icon: Icon(Icons.directions_boat),
-        ),
         body: SafeArea(
-            top: false,
             child: AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle(
                     statusBarColor: white,
                     statusBarIconBrightness: Brightness.dark,
                     statusBarBrightness: Brightness.dark),
-                child: SingleChildScrollView(
-                    clipBehavior: Clip.none,
-                    child: Column(
-                      children: [
-                        Container(
-                            child: Row(
-                          children: [Icon(Icons.arrow_back), Text('Pilih lokasi Kamu'), SizedBox()],
-                        )),
-                        GoogleMap(
-                          mapType: MapType.hybrid,
-                          initialCameraPosition: _kGooglePlex,
-                          onMapCreated: (GoogleMapController controller) {
-                            _controller.complete(controller);
-                          },
-                        ),
-                      ],
-                    )))));
+                child: Stack(children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                          color: null,
+                          decoration: BoxDecoration(color: null),
+                          padding: EdgeInsets.all(15.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.arrow_back),
+                              Text(
+                                'Pilih lokasi Kamu',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.sp),
+                              ),
+                              SizedBox()
+                            ],
+                          )),
+                      Flexible(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: GoogleMap(
+                                mapToolbarEnabled: true,
+                                myLocationEnabled: true,
+                                mapType: MapType.normal,
+                                initialCameraPosition: _kGooglePlex,
+                                onMapCreated: (GoogleMapController controller) {
+                                  _controller.complete(controller);
+                                },
+                                onTap: (LatLng) {
+                                  showModalBottomSheet(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20))),
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          child: Text('${LatLng}'),
+                                        );
+                                      });
+                                },
+                              ))),
+                    ],
+                  ),
+                  Positioned(
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            // backgroundBlendMode: BlendMode.overlay,
+                            color: white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(40.w),
+                                topRight: Radius.circular(40.w))),
+                        padding: EdgeInsets.all(20.w),
+                        margin: EdgeInsets.only(left: 0, right: 0),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.2,
+                        child: Column(children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 15.w, right: 15.w),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 15,
+                            decoration: BoxDecoration(
+                                // color: Colors.blue[50],
+                                borderRadius: BorderRadius.circular(25)),
+                            child: TextFormField(
+                              // controller: email,
+                              // onChanged: (vale) {
+                              //   if (vale.length == 0) {
+                              //     setState(() {
+                              //       canSubmit = false;
+                              //     });
+                              //   } else {
+                              //     setState(() {
+                              //       canSubmit = true;
+                              //     });
+                              //   }
+                              // },
+                              autocorrect: false,
+
+                              // textAlign: TextAlign.left,
+                              // ignore: unnecessary_new
+                              decoration: new InputDecoration(
+                                fillColor: Colors.grey[200],
+                                filled: true,
+                                contentPadding: EdgeInsets.only(
+                                    left: 20, right: 20, top: 5),
+                                hintText: 'Pilih lokasi saat ini',
+                                hintStyle: TextStyle(color: softGrey),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  size: 30,
+                                  color: softGrey,
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(25.0),
+                                    ),
+                                    borderSide: BorderSide.none),
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ))
+                ]))));
   }
 }
