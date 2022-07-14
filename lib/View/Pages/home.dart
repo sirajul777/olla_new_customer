@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/listhome.dart';
+import 'package:customer/View/Pages/MultiLokasi/PilihLokasi.dart';
 import 'package:customer/View/TabDashboard/blog.dart';
 import 'package:customer/View/TabDashboard/dibawabanner.dart';
 import 'package:customer/View/TabDashboard/slidebanneratas.dart';
@@ -444,19 +445,28 @@ class _HomeState extends State<Home> {
                                                             SizedBox(
                                                               width: 15,
                                                             ),
-                                                            Container(
-                                                                padding: EdgeInsets.all(10.w),
-                                                                width: MediaQuery.of(context).size.width / 2,
-                                                                height: MediaQuery.of(context).size.width / 2,
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(25.w),
-                                                                  border: Border.all(color: softGrey, width: 2),
-                                                                ),
-                                                                child: Icon(
-                                                                  Icons.add,
-                                                                  color: softGrey,
-                                                                  size: 50.w,
-                                                                )),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext context) =>
+                                                                            PilihLokasi()));
+                                                              },
+                                                              child: Container(
+                                                                  padding: EdgeInsets.all(10.w),
+                                                                  width: MediaQuery.of(context).size.width / 2,
+                                                                  height: MediaQuery.of(context).size.width / 2,
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(25.w),
+                                                                    border: Border.all(color: softGrey, width: 2),
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons.add,
+                                                                    color: softGrey,
+                                                                    size: 50.w,
+                                                                  )),
+                                                            ),
                                                             SizedBox(
                                                               width: 15,
                                                             ),
