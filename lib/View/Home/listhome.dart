@@ -117,7 +117,7 @@ class _ListHomeState extends State<ListHome> {
                               child: Center(
                                 child: Icon(
                                   Icons.arrow_back_ios_outlined,
-                                  color: Colors.black,
+                                  color: Colors.grey[600],
                                   size: 20,
                                 ),
                               ),
@@ -133,7 +133,7 @@ class _ListHomeState extends State<ListHome> {
                             child: Text(
                               "Pesan Layanan",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.grey[600],
                                 fontSize: 16,
                                 fontFamily: 'comfortaa',
                               ),
@@ -162,6 +162,7 @@ class _ListHomeState extends State<ListHome> {
                       //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                     ),
                     floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                    floatingActionButtonAnimator: NoScalingAnimation(),
                     floatingActionButton: _showLanjutButton
                         ? Align(
                             alignment: Alignment.bottomCenter,
@@ -320,7 +321,8 @@ class _ListHomeState extends State<ListHome> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Pilih Tindakan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                              Text('Pilih Tindakan',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[600])),
                               //    const SizedBox(height: 10),
                               // const Divider(),
                               // const SizedBox(height: 10),
@@ -373,8 +375,10 @@ class _ListHomeState extends State<ListHome> {
                                                                         child: Text(
                                                                           datalist![index]['name'],
                                                                           style: TextStyle(
-                                                                            overflow: TextOverflow.clip,
-                                                                          ),
+                                                                              overflow: TextOverflow.clip,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.grey[600],
+                                                                              fontSize: 13.sp),
                                                                         ),
                                                                       ),
                                                                       Container(
@@ -423,7 +427,7 @@ class _ListHomeState extends State<ListHome> {
                                                                 ),
                                                                 Center(
                                                                   child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Container(
                                                                         // margin: EdgeInsets.only(
@@ -449,9 +453,6 @@ class _ListHomeState extends State<ListHome> {
                                                                       //               .yellow[
                                                                       //           600]),
                                                                       // ),
-                                                                      SizedBox(
-                                                                        width: 5,
-                                                                      ),
 
                                                                       Text(
                                                                         NumberFormat.currency(
@@ -464,6 +465,66 @@ class _ListHomeState extends State<ListHome> {
                                                                             fontWeight: FontWeight.w700,
                                                                             color: Colors.yellow[600]),
                                                                       ),
+                                                                      SizedBox(
+                                                                        width: 5,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: 5,
+                                                                      ),
+                                                                      Container(
+                                                                        width: 90.w,
+                                                                        height: 30.h,
+                                                                        padding: EdgeInsets.only(left: 5.w, right: 5.w),
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(5.w),
+                                                                            color: lightBlue),
+                                                                        child: Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            GestureDetector(
+                                                                              onTap: () {
+                                                                                minQty(index);
+                                                                              },
+                                                                              child: Container(
+                                                                                  width: 22.w,
+                                                                                  height: 22.w,
+                                                                                  decoration: BoxDecoration(
+                                                                                      color: primary,
+                                                                                      borderRadius:
+                                                                                          BorderRadius.circular(5.w)),
+                                                                                  child: const Center(
+                                                                                    child: Text(
+                                                                                      '-',
+                                                                                      style: TextStyle(color: white),
+                                                                                    ),
+                                                                                  )),
+                                                                            ),
+                                                                            Text('${qty[index]}',
+                                                                                style:
+                                                                                    const TextStyle(color: darkGrey)),
+                                                                            GestureDetector(
+                                                                              onTap: () {
+                                                                                addQty(index);
+                                                                              },
+                                                                              child: Container(
+                                                                                  width: 22.w,
+                                                                                  height: 22.w,
+                                                                                  padding: EdgeInsets.only(top: 5.w),
+                                                                                  decoration: BoxDecoration(
+                                                                                      color: primary,
+                                                                                      borderRadius:
+                                                                                          BorderRadius.circular(5.w)),
+                                                                                  child: const Center(
+                                                                                    child: Text(
+                                                                                      '+',
+                                                                                      style: TextStyle(color: white),
+                                                                                    ),
+                                                                                  )),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 )
@@ -474,59 +535,13 @@ class _ListHomeState extends State<ListHome> {
                                                       ),
                                                     ),
                                                   ),
-                                                  Positioned(
-                                                    bottom: 16,
-                                                    //  left: 0,
-                                                    right: 30,
-                                                    //  top:10,
-                                                    child: Container(
-                                                      width: 90.w,
-                                                      height: 30.h,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(5.w), color: lightBlue),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                        children: [
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              minQty(index);
-                                                            },
-                                                            child: Container(
-                                                                width: 22.w,
-                                                                height: 22.w,
-                                                                decoration: BoxDecoration(
-                                                                    color: primary,
-                                                                    borderRadius: BorderRadius.circular(5.w)),
-                                                                child: const Center(
-                                                                  child: Text(
-                                                                    '-',
-                                                                    style: TextStyle(color: white),
-                                                                  ),
-                                                                )),
-                                                          ),
-                                                          Text('${qty[index]}',
-                                                              style: const TextStyle(color: darkGrey)),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              addQty(index);
-                                                            },
-                                                            child: Container(
-                                                                width: 22.w,
-                                                                height: 22.w,
-                                                                decoration: BoxDecoration(
-                                                                    color: primary,
-                                                                    borderRadius: BorderRadius.circular(5.w)),
-                                                                child: const Center(
-                                                                  child: Text(
-                                                                    '+',
-                                                                    style: TextStyle(color: white),
-                                                                  ),
-                                                                )),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  // Positioned(
+                                                  //   bottom: 14,
+                                                  //   //  left: 0,
+                                                  //   right: 30,
+                                                  //   //  top:10,
+                                                  //   child:
+                                                  // ),
                                                 ],
                                               ),
                                             ),
@@ -894,22 +909,19 @@ class _ListHomeState extends State<ListHome> {
   // }
 }
 
-// class Second extends StatelessWidget{
-//   @override
-//   Widget build(BuildContext context){
-//     return datalist!==null?0: datalist!.map<Widget>((hobby) {
-//                       if (hobby['description'] == true) {
-//                         return Card(
-//                           elevation: 3,
-//                           color: Colors.amber,
-//                           child: Padding(
-//                             padding: const EdgeInsets.all(8.0),
-//                             child: Text(hobby['name']),
-//                           ),
-//                         );
-//                       }
+class NoScalingAnimation extends FloatingActionButtonAnimator {
+  @override
+  Offset getOffset({Offset? begin, Offset? end, double? progress}) {
+    return end!;
+  }
 
-//                       return Container();
-//                     }).toList();
-//   }
-// }
+  @override
+  Animation<double> getRotationAnimation({Animation<double>? parent}) {
+    return Tween<double>(begin: 0, end: 0).animate(parent!);
+  }
+
+  @override
+  Animation<double> getScaleAnimation({Animation<double>? parent}) {
+    return Tween<double>(begin: 1, end: 1).animate(parent!);
+  }
+}

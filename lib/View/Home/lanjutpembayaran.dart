@@ -4,6 +4,7 @@ import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/detailpembayaran.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,12 +35,14 @@ class LanjutPembayaran extends StatefulWidget {
   // int? rumah;
   int? idalamat;
   List iddata;
+  DateTime datajadwal;
 
   List? id;
   // String koment;
 // Get Key Data
   LanjutPembayaran({
     Key? key,
+    required this.datajadwal,
     required this.longitude,
     required this.latitude,
     required this.id,
@@ -62,15 +65,39 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   late int methodpayment;
   bool tampil = false;
   bool pembayaran = false;
+  List<String> _month = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+  ];
 
   late int order_id;
   late List<bool>? pressed;
   bool _selected = false;
+  DateTime dateTime = DateTime.now();
+
+  Future setDatetime() async {
+    setState(() {
+      dateTime = widget.datajadwal;
+    });
+  }
+
   @override
   void initState() {
+    print(widget.jadwal);
     print(widget.harga);
     super.initState();
     getDataPembayaran();
+    setDatetime();
     getDataListHome();
   }
 
@@ -100,7 +127,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
 
     print(widget.iddata);
     await http
-        .post(Uri.parse(Uri.encodeFull(myUrl)),
+        .post(Uri.parse(Uri.encodeFull(KEY.BASE_URL + "/order-post")),
             headers: {
               'Accept': 'application/json',
               "x-token-olla": KEY.APIKEY,
@@ -251,7 +278,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
 
   _launchURLApp(String url_checkout) async {
     var url = Uri.parse(url_checkout);
-    if (await launchUrl(url)) {
+    if (await launchUrl(url, mode: LaunchMode.externalApplication, webViewConfiguration: WebViewConfiguration())) {
       await launchUrl(url);
     } else {
       throw 'Could not launch $url';
@@ -372,6 +399,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                   child: Icon(
                                     Icons.arrow_back_ios_outlined,
                                     // color: Colors.black,
+                                    color: darkGrey,
                                     size: 20,
                                   ),
                                 ),
@@ -381,7 +409,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                               child: Text(
                                 'Pembayaran',
                                 style: TextStyle(
-                                  color: blackBlue,
+                                  color: darkGrey,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16.w,
                                 ),
@@ -403,8 +431,9 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                   Text(
                                     'Ringkasan Pesanan',
                                     style: TextStyle(
-                                      color: Colors.black,
+                                      color: darkGrey,
                                       fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                       fontFamily: 'comfortaa',
                                     ),
                                   ),
@@ -416,6 +445,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                     style: TextStyle(
                                       color: Colors.blue,
                                       fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                       fontFamily: 'comfortaa',
                                     ),
                                   ),
@@ -447,9 +477,9 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 8,
-                        ),
+                        // SizedBox(
+                        //   height: 8,
+                        // ),
                         tampil
                             ? ListView.builder(
                                 shrinkWrap: true,
@@ -478,7 +508,10 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Text(widget.nama[i]['name'].toString()),
+                                            Text(
+                                              widget.nama[i]['name'].toString(),
+                                              style: TextStyle(color: darkGrey, fontWeight: FontWeight.bold),
+                                            ),
                                             SizedBox(
                                               height: 5,
                                             ),
@@ -549,6 +582,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                       children: [
                                         Text(
                                           'Jadwal',
+                                          style: TextStyle(fontWeight: FontWeight.bold, color: darkGrey),
                                         ),
                                         SizedBox(height: 8),
                                         Row(
@@ -565,15 +599,34 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                               ),
                                             ),
                                             SizedBox(width: 5),
-                                            Text(widget.jadwal),
+                                            Text(
+                                              'Tanggal : ',
+                                              style: TextStyle(
+                                                  color: softGrey, fontWeight: FontWeight.bold, fontSize: 13.sp),
+                                            ),
+                                            Text(
+                                              '${dateTime.day} ' '${_month[dateTime.month - 1]} ' '${dateTime.year}',
+                                              style: TextStyle(color: softGrey, fontSize: 13.sp),
+                                            ),
                                             SizedBox(
                                               width: 3,
                                             ),
-                                            Text('-'),
+                                            Text(
+                                              '-',
+                                              style: TextStyle(color: softGrey, fontSize: 13.sp),
+                                            ),
                                             SizedBox(
                                               width: 3,
                                             ),
-                                            Text(widget.waktu),
+                                            Text(
+                                              'Waktu : ',
+                                              style: TextStyle(
+                                                  color: softGrey, fontWeight: FontWeight.bold, fontSize: 13.sp),
+                                            ),
+                                            Text(
+                                              widget.waktu,
+                                              style: TextStyle(color: softGrey, fontSize: 13.sp),
+                                            ),
                                           ],
                                         ),
                                         SizedBox(
@@ -594,7 +647,16 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                               ),
                                             ),
                                             SizedBox(width: 5),
-                                            Flexible(child: Text(widget.alamat))
+                                            Text(
+                                              'Lokasi : ',
+                                              style: TextStyle(
+                                                  color: softGrey, fontWeight: FontWeight.bold, fontSize: 13.sp),
+                                            ),
+                                            Flexible(
+                                                child: Text(
+                                              widget.alamat,
+                                              style: TextStyle(color: softGrey, fontSize: 13.sp),
+                                            ))
                                           ],
                                         ),
                                         //
@@ -725,6 +787,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                     children: [
                                       Text(
                                         'Pembayaran',
+                                        style: TextStyle(color: darkGrey, fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                           NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
@@ -739,9 +802,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Subtottal',
-                                          style:
-                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                      Text('Sub Total', style: TextStyle(fontSize: 13, color: Colors.grey)),
                                       SizedBox(width: 5),
                                       Text(
                                           NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
@@ -757,9 +818,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Biaya Admin',
-                                          style:
-                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                      Text('Biaya Admin', style: TextStyle(fontSize: 13, color: Colors.grey)),
                                       // SizedBox(width: 5),
                                       Text(
                                           NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(
@@ -777,9 +836,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Potongan',
-                                          style:
-                                              TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey)),
+                                      Text('Potongan/Diskon', style: TextStyle(fontSize: 13, color: Colors.grey)),
                                       SizedBox(width: 5),
                                       Text(
                                           NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0).format(0),
@@ -795,206 +852,228 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                         //
                         Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Text('Metode Pembayaran'),
+                          child: Text(
+                            'Metode Pembayaran',
+                            style: TextStyle(color: darkGrey, fontSize: 16.sp, fontWeight: FontWeight.bold),
+                          ),
                         ),
                         // banking
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.blue),
-                                  color: Colors.blue[50]),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 18.0, right: 18),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Virtual Account',
-                                        style: TextStyle(
-                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
-                                    GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            pembayaran = !pembayaran;
-                                          });
-                                        },
-                                        child: !pembayaran
-                                            ? Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage('gambar/pembayaran.png'),
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage('gambar/pembayaran1.png'),
-                                                  ),
-                                                ),
-                                              )),
-                                  ],
-                                ),
-                              )),
-                        ),
-                        //Retail Outlet
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.blue),
-                                  color: Colors.blue[50]),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 18.0, right: 18),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Retail Outlet (OTC)',
-                                        style: TextStyle(
-                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
-                                    GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            pembayaran = !pembayaran;
-                                          });
-                                        },
-                                        child: !pembayaran
-                                            ? Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage('gambar/pembayaran.png'),
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage('gambar/pembayaran1.png'),
-                                                  ),
-                                                ),
-                                              )),
-                                  ],
-                                ),
-                              )),
-                        ),
-                        // e-wallet
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.blue),
-                                  color: Colors.blue[50]),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 18.0, right: 18),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('e-Wallet',
-                                        style: TextStyle(
-                                            color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
-                                    GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            pembayaran = !pembayaran;
-                                          });
-                                        },
-                                        child: !pembayaran
-                                            ? Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage('gambar/pembayaran.png'),
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage('gambar/pembayaran1.png'),
-                                                  ),
-                                                ),
-                                              )),
-                                  ],
-                                ),
-                              )),
-                        ),
-                        //kartu
-
-                        pembayaran
-                            ? ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: payment == null ? 0 : payment.length,
-                                itemBuilder: (BuildContext context, i) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      print(payment[i]['id']);
-                                      setState(() {
-                                        methodpayment = payment[i]['id'];
-                                        for (var index = 0; index < payment.length; index++) {
-                                          pressed![index] = false;
-                                        }
-                                        pressed![i] = !pressed![i];
-                                      });
-                                      //  getDataPembayaran();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            color: pressed![i] ? Colors.blue[100] : Colors.white,
-                                            border: Border.all(color: Colors.blue[100]!)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 20, right: 10, top: 2),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 2),
-                                            child: Row(
-                                              children: [
-                                                // Text('${methodpayment}'),
-                                                Container(
+                        GestureDetector(
+                          onTap: () {
+                            // setState(() {
+                            //   pembayaran = !pembayaran;
+                            // });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2, bottom: 10),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.blue),
+                                    color: Colors.blue[50]),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Virtual Account ',
+                                          style: TextStyle(
+                                              color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                      Text('(Segera)',
+                                          style:
+                                              TextStyle(color: ligthgreen, fontSize: 13, fontWeight: FontWeight.bold)),
+                                      Container(
+                                          child: !pembayaran
+                                              ? Container(
                                                   width: 40,
                                                   height: 40,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                      image: NetworkImage(payment[i]['image']),
+                                                      image: AssetImage('gambar/pembayaran.png'),
                                                     ),
                                                   ),
+                                                )
+                                              : Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage('gambar/pembayaran1.png'),
+                                                    ),
+                                                  ),
+                                                )),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ), //Retail Outlet
+                        GestureDetector(
+                          onTap: () {
+                            // setState(() {
+                            //   pembayaran = !pembayaran;
+                            // });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2, bottom: 10),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.blue),
+                                    color: Colors.blue[50]),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Retail Outlet (OTC)',
+                                          style: TextStyle(
+                                              color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                      Text('(Segera)',
+                                          style:
+                                              TextStyle(color: ligthgreen, fontSize: 13, fontWeight: FontWeight.bold)),
+                                      GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              pembayaran = !pembayaran;
+                                            });
+                                          },
+                                          child: !pembayaran
+                                              ? Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage('gambar/pembayaran.png'),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage('gambar/pembayaran1.png'),
+                                                    ),
+                                                  ),
+                                                )),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ), // e-wallet
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              pembayaran = !pembayaran;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.blue),
+                                    color: Colors.blue[50]),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0, right: 18),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('e-Wallet',
+                                          style: TextStyle(
+                                              color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                      Container(
+                                          child: !pembayaran
+                                              ? Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage('gambar/pembayaran.png'),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage('gambar/pembayaran1.png'),
+                                                    ),
+                                                  ),
+                                                )),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                          //kartu
+                        ),
+                        pembayaran
+                            ? Container(
+
+                                // height: MediaQuery.of(context).size.width / 2,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    // physics: NeverScrollableScrollPhysics(),
+                                    itemCount: payment == null ? 0 : payment.length,
+                                    itemBuilder: (BuildContext context, i) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          print(payment[i]['id']);
+                                          setState(() {
+                                            methodpayment = payment[i]['id'];
+                                            for (var index = 0; index < payment.length; index++) {
+                                              pressed![index] = false;
+                                            }
+                                            pressed![i] = !pressed![i];
+                                          });
+                                          //  getDataPembayaran();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 25.0, right: 25, bottom: 8),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(10),
+                                                color: pressed![i] ? Colors.blue[100] : Colors.white,
+                                                border: Border.all(color: Colors.blue[100]!)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 20, right: 10, top: 2),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(top: 2),
+                                                child: Row(
+                                                  children: [
+                                                    // Text('${methodpayment}'),
+                                                    Container(
+                                                      width: 40,
+                                                      height: 40,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(payment[i]['image']),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      payment[i]['name'],
+                                                      style: TextStyle(fontSize: 13.sp, color: darkGrey),
+                                                    ),
+                                                  ],
                                                 ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  payment[i]['name'],
-                                                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  );
-                                })
-                            : SizedBox(),
+                                      );
+                                    }))
+                            : SizedBox(
+                                height: 8,
+                              ),
                         //
                         // card
                         Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2, bottom: 10),
                           child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
@@ -1008,11 +1087,13 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                     Text('Credit / Debit',
                                         style: TextStyle(
                                             color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
+                                    Text('(Segera)',
+                                        style: TextStyle(color: ligthgreen, fontSize: 13, fontWeight: FontWeight.bold)),
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() {
-                                            pembayaran = !pembayaran;
-                                          });
+                                          // setState(() {
+                                          //   pembayaran = !pembayaran;
+                                          // });
                                         },
                                         child: !pembayaran
                                             ? Container(
@@ -1039,7 +1120,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                         ),
                         // Qris
                         Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2),
+                          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 2, bottom: 10),
                           child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
@@ -1054,11 +1135,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
                                         style: TextStyle(
                                             color: Colors.blue[300], fontSize: 13, fontWeight: FontWeight.bold)),
                                     GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            pembayaran = !pembayaran;
-                                          });
-                                        },
+                                        onTap: () {},
                                         child: !pembayaran
                                             ? Container(
                                                 width: 40,

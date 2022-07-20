@@ -48,6 +48,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
       );
     } else {
       return Scaffold(
+          backgroundColor: white,
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
@@ -90,7 +91,6 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
-                        fontFamily: 'comfortaa',
                       ),
                     ),
                   ),
@@ -133,7 +133,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                             Row(
                               children: const [
                                 Text(
-                                  'Invoice ',
+                                  'Nomor Tagihan ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
@@ -147,7 +147,6 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                                   style: TextStyle(
                                     color: Colors.blue,
                                     fontSize: 16,
-                                    fontFamily: 'comfortaa',
                                   ),
                                 ),
                               ],
@@ -181,55 +180,64 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                             child: Column(
                               children: [
                                 const Text(
-                                  'Lakukan Pembayaran Sebelum',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                  ),
+                                  'Lakukan pembayaran sebelum',
+                                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: darkGrey),
                                 ),
                                 const SizedBox(
                                   height: 2,
+                                ),
+                                Center(
+                                  child: Text.rich(TextSpan(
+                                      text: 'Waktu pembayaran : ',
+                                      style: TextStyle(color: darkGrey, fontSize: 12.sp),
+                                      children: <InlineSpan>[
+                                        TextSpan(
+                                          text: timerDisplayString,
+                                          style: TextStyle(color: redDanger, fontSize: 12.sp),
+                                        ),
+                                      ])),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(
-                                              '${dateTime.day}',
-                                             style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.red),
-                                            ),
-                                            Text(
-                                              '${_month[dateTime.month - 1]}',
-                                           style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.red),
-                                            ),
-                                            Text(
-                                              '${dateTime.year}',
-                                              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.red),
-                                            ),
-                                          ],
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          'Tanggal : ',
+                                          style:
+                                              TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp, color: darkGrey),
                                         ),
-                                    
+                                        Text(
+                                          '${dateTime.day}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400, fontSize: 12.sp, color: Colors.red),
+                                        ),
+                                        Text(
+                                          '${_month[dateTime.month - 1]}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400, fontSize: 12.sp, color: Colors.red),
+                                        ),
+                                        Text(
+                                          '${dateTime.year}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400, fontSize: 12.sp, color: Colors.red),
+                                        ),
+                                      ],
+                                    ),
                                     SizedBox(
                                       width: 3,
                                     ),
                                     Text(
-                                      'Pukul',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                      ),
+                                      '- Waktu',
+                                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp, color: darkGrey),
                                     ),
                                     SizedBox(
                                       width: 3,
                                     ),
-                                   Text('${dateTime.hour}:${dateTime.minute}',
-                                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: Colors.red),
-                                   ),
                                     Text(
-                                      timerDisplayString,
-                                      style: TextStyle(color: darkGrey),
+                                      '${dateTime.hour}:${dateTime.minute}',
+                                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp, color: Colors.red),
                                     ),
                                   ],
                                 ),
@@ -249,20 +257,18 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                                 const Text(
                                   'Ringkasan Pesanan',
                                   style: TextStyle(
-                                    color: Colors.black,
+                                    color: darkGrey,
                                     fontSize: 16,
-                                    fontFamily: 'comfortaa',
                                   ),
                                 ),
                                 const SizedBox(
                                   width: 5,
                                 ),
                                 Text(
-                                  '(${widget.harga})',
+                                  '(${widget.seluruh.length})',
                                   style: const TextStyle(
                                     color: Colors.blue,
                                     fontSize: 16,
-                                    fontFamily: 'comfortaa',
                                   ),
                                 ),
                               ],
@@ -401,15 +407,18 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                                   height: 12,
                                 ),
                                 const Text(
-                                  'Nomor Handphone',
-                                  style: TextStyle(fontSize: 16),
+                                  'Nomor Gawai Kamu',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: darkGrey,
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const Text(
-                                  '081234567890',
-                                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                                Text(
+                                  nomerhp,
+                                  style: TextStyle(fontSize: 16, color: darkGrey, fontWeight: FontWeight.bold),
                                 )
                               ],
                             ),
@@ -429,11 +438,26 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                                   border: Border.all(color: Colors.blue[50]!),
                                   borderRadius: BorderRadius.circular(12)),
                               child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Text(
-                                    'ini adalah bukti pesanan yang Anda lakukan dengan nomor $invoice. Harap tunggu sampai mitra kami mengambil pesanan.',
-                                    style: TextStyle(color: Colors.black.withOpacity(0.7), height: 1.5, fontSize: 14)),
-                              )),
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Center(
+                                      child: Text.rich(
+                                    TextSpan(
+                                        text: 'Ini adalah bukti pesanan yang Anda lakukan dengan nomor tagihan ',
+                                        style: TextStyle(color: softGrey),
+                                        children: <InlineSpan>[
+                                          TextSpan(
+                                            text: '$invoice.',
+                                            style: TextStyle(fontWeight: FontWeight.bold, color: darkGrey),
+                                          ),
+                                          TextSpan(
+                                            text: ' Harap tunggu sampai mitra kami mengambil pesanan.',
+                                            style: TextStyle(color: softGrey),
+                                          )
+                                        ]),
+                                    textAlign: TextAlign.justify,
+                                    style: TextStyle(fontSize: 12.sp),
+                                    softWrap: true,
+                                  )))),
                         ),
                       ),
                       //
@@ -448,12 +472,15 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                           (Route<dynamic> route) => false);
                     },
                     child: const Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
+                      padding: EdgeInsets.only(bottom: 20.0),
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Text('Batalkan Pesanan',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w400, decoration: TextDecoration.underline)),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                                color: redDanger)),
                       ),
                     ),
                   )
@@ -510,30 +537,32 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                               )),
                         ))
                       : status == 'FAILED'
-                          ? Center(
-                              child: Padding(
-                              padding: const EdgeInsets.only(left: 50.0, right: 50, top: 70),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10), color: Colors.red.withOpacity(0.8)),
+                          ? GestureDetector(
+                              onTap: () {},
+                              child: Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [
-                                        Icon(
-                                          Icons.cancel,
-                                          color: Colors.white,
-                                          size: 30,
-                                        ),
-                                        SizedBox(width: 24),
-                                        Text('Maaf Pembayaran Gagal',
-                                            style: TextStyle(
-                                                fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  )),
-                            ))
+                                padding: const EdgeInsets.only(left: 50.0, right: 50, top: 70),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10), color: Colors.red.withOpacity(0.8)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: const [
+                                          Icon(
+                                            Icons.cancel,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                          SizedBox(width: 24),
+                                          Text('Maaf Pembayaran Gagal',
+                                              style: TextStyle(
+                                                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500)),
+                                        ],
+                                      ),
+                                    )),
+                              )))
                           : Container(
                               height: MediaQuery.of(context).size.height,
                               width: MediaQuery.of(context).size.height,
@@ -558,6 +587,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
   late int grandtotal;
   late int adminfee;
   late var partner;
+  late String nomerhp;
   // String status;
   getDataListHome() async {
     final prefs1 = await SharedPreferences.getInstance();
@@ -569,12 +599,15 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
       "Authorization": "Bearer $customer",
     });
     var converDataToJson = json.decode(response.body);
+
     setState(() {
       invoice = converDataToJson['invoice'];
       status = converDataToJson['payments']['status'];
       gambar = converDataToJson['payments']['image'];
       grandtotal = converDataToJson['grand_total'];
       adminfee = converDataToJson['admin_fee'];
+      nomerhp = converDataToJson['payments']['phone'];
+      print(nomerhp);
       print(converDataToJson);
     });
     return converDataToJson;
@@ -642,7 +675,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
     return DateTime(now.year, now.month, now.day, now.hour, now.second);
   }
 
-  int _start = 60;
+  int _start = 90;
   String get timerDisplayString {
     var duration = _start;
 
@@ -693,7 +726,6 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
     dateTime = getDateTime();
     startTimer();
 
-
     Future.delayed(Duration(seconds: 3), () {
       setState(() {
         loading = !loading;
@@ -725,7 +757,6 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
   @override
   void dispose() {
     timer.cancel();
-
     super.dispose();
   }
 

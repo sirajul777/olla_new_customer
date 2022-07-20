@@ -16,7 +16,7 @@ class _ProfileState extends State<Profile> {
       body: ListView(
         children: [
           Container(
-            height: 180,
+            height: 150,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 // color: Colors.red,
@@ -26,24 +26,21 @@ class _ProfileState extends State<Profile> {
             child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Center(
+                    child: Container(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         '${nama} !',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Customer -',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 12),
+                            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12),
                           ),
                           //
                           SizedBox(
@@ -51,24 +48,20 @@ class _ProfileState extends State<Profile> {
                           ),
                           Text(
                             'Member Gold',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.italic,
-                                fontSize: 12),
+                            style: TextStyle(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic, fontSize: 12),
                           ),
                         ],
                       ),
                     ],
                   ),
-                )),
+                ))),
           ),
           //
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20, top: 15),
             child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.blue[50]!)),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.blue[50]!)),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Column(
@@ -80,8 +73,7 @@ class _ProfileState extends State<Profile> {
                           children: [
                             Text(
                               'Saldo Saya',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                             ),
                             Text(
                               'Riwayat',
@@ -114,15 +106,12 @@ class _ProfileState extends State<Profile> {
                             color: Colors.blue,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 40, right: 40, top: 13),
+                            padding: const EdgeInsets.only(left: 40, right: 40, top: 13),
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 15.0),
                               child: Text(
                                 'Cairkan',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800),
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                               ),
                             ),
                           ),
@@ -137,10 +126,7 @@ class _ProfileState extends State<Profile> {
             padding: const EdgeInsets.only(left: 0.0, right: 0, top: 8),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => EditAkun()));
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditAkun()));
               },
               child: Container(
                 child: ListTile(
@@ -261,8 +247,7 @@ class _ProfileState extends State<Profile> {
                     out();
                     Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LandingAuth()),
+                        MaterialPageRoute(builder: (BuildContext context) => LandingAuth()),
                         (Route<dynamic> route) => true);
 
                     //  Navigator.pushAndRemoveUntil(

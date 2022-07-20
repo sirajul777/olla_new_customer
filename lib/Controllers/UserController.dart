@@ -15,7 +15,7 @@ class UserController {
 
   // create user
   static Future<User> postCreateUserToApi(String name) async {
-    var result = await http.post(Uri.parse(KEY.BASE_URL), body: {name: name});
+    var result = await http.post(Uri.parse(KEY.BASE_URL + "/register"), body: {name: name});
     var jsonObject = json.decode(result.body);
     var userdata = (jsonObject as Map<String, dynamic>)['data'];
     User.createUser(userdata);

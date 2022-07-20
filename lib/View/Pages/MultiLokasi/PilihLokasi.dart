@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
+import 'package:customer/View/Pages/MultiLokasi/PostDetailLokasi.dart';
 import 'package:customer/View/Router/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,56 +21,25 @@ class PilihLokasi extends StatefulWidget {
 }
 
 class _PilihLokasiState extends State<PilihLokasi> {
-  addDataLocation() async* {
-    var body = {
-      "title": "Kos",
-      "customer_name": "Abi",
-      "address": "jalan kos",
-      "longitude": "123",
-      "latitude": "456",
-      "mobile_phone": "085239969393",
-      "address_note": "rumah warna hijau"
-    };
-    var response = await http.post(Uri.parse(Uri.encodeFull(KEY.BASE_URL)),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-        },
-        body: body);
-
-    if (response.statusCode == 200) {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (BuildContext context) {
-        return Dashboard();
-      }), (Route<dynamic> route) => false);
-    } else {
-      print('input all field');
-    }
-  }
-
   Completer<GoogleMapController> _controller = Completer();
 
   Future<void> _goToTheLake(LatLng) async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        bearing: 192.8334901395799,
-        target: LatLng,
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414)));
+        bearing: 192.8334901395799, target: LatLng, tilt: 59.440717697143555, zoom: 19.151926040649414)));
     print(LatLng);
   }
 
   String? Address;
   String? Street;
-
+  LatLng? latLng;
   Future<void> GetAddressFromLatLong(LatLng position) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    latLng = position;
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     print(placemarks);
     Placemark place = placemarks[0];
     Street = '${place.street}';
-    Address =
-        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
   }
 
@@ -78,8 +48,8 @@ class _PilihLokasiState extends State<PilihLokasi> {
   void alamat() async {
     Position position = await _getGeoLocationPosition();
     newposition = position;
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    latLng = LatLng(newposition!.latitude, newposition!.longitude);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
 
     _kGooglePlex = CameraPosition(
       target: LatLng(newposition!.latitude, newposition!.longitude),
@@ -89,8 +59,7 @@ class _PilihLokasiState extends State<PilihLokasi> {
     Placemark place = placemarks[0];
     Street = '${place.street}';
 
-    Address =
-        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
 
     print('$Address');
@@ -126,20 +95,18 @@ class _PilihLokasiState extends State<PilihLokasi> {
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
   @override
   void initState() {
     // TODO: implement initState
     alamat();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 4), () {
       setState(() {
         isloading = true;
       });
@@ -171,6 +138,7 @@ class _PilihLokasiState extends State<PilihLokasi> {
           backgroundColor: transparent,
           floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
           floatingActionButton: FloatingActionButton(
+              mini: true,
               backgroundColor: white,
               onPressed: () {
                 Navigator.pop(context);
@@ -181,7 +149,7 @@ class _PilihLokasiState extends State<PilihLokasi> {
                 ),
 
                 child: Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(5),
                   // decoration: BoxDecoration(
                   //     color: white,
                   //     borderRadius: BorderRadius.circular(25.w)),
@@ -219,9 +187,9 @@ class _PilihLokasiState extends State<PilihLokasi> {
                                   mapToolbarEnabled: true,
                                   myLocationEnabled: true,
                                   mapType: MapType.normal,
+                                  onCameraMove: null,
                                   initialCameraPosition: _kGooglePlex,
-                                  onMapCreated:
-                                      (GoogleMapController controller) {
+                                  onMapCreated: (GoogleMapController controller) {
                                     _controller.complete(controller);
                                   },
                                   onTap: (LatLng) {
@@ -242,9 +210,8 @@ class _PilihLokasiState extends State<PilihLokasi> {
                           decoration: BoxDecoration(
                               // backgroundBlendMode: BlendMode.overlay,
                               color: white,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40.w),
-                                  topRight: Radius.circular(40.w))),
+                              borderRadius:
+                                  BorderRadius.only(topLeft: Radius.circular(40.w), topRight: Radius.circular(40.w))),
                           padding: EdgeInsets.all(20.w),
                           margin: EdgeInsets.only(left: 0, right: 0),
                           width: MediaQuery.of(context).size.width,
@@ -253,15 +220,14 @@ class _PilihLokasiState extends State<PilihLokasi> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
+                                Center(
+                                    child: Container(
                                   child: Icon(Icons.arrow_drop_down),
-                                ),
+                                )),
                                 Container(
-                                  margin:
-                                      EdgeInsets.only(left: 15.w, right: 15.w),
+                                  margin: EdgeInsets.only(left: 15.w, right: 15.w),
                                   width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height / 15,
+                                  height: MediaQuery.of(context).size.height / 15,
                                   decoration: BoxDecoration(
                                       // color: Colors.blue[50],
                                       borderRadius: BorderRadius.circular(25)),
@@ -285,8 +251,7 @@ class _PilihLokasiState extends State<PilihLokasi> {
                                     decoration: new InputDecoration(
                                       fillColor: Colors.grey[200],
                                       filled: true,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 20, right: 20, top: 5),
+                                      contentPadding: EdgeInsets.only(left: 20, right: 20, top: 5),
                                       hintText: 'Pilih lokasi saat ini',
                                       hintStyle: TextStyle(color: softGrey),
                                       prefixIcon: Icon(
@@ -303,46 +268,45 @@ class _PilihLokasiState extends State<PilihLokasi> {
                                   ),
                                 ),
                                 Container(
-                                    padding: EdgeInsets.only(
-                                        top: 10.w, left: 15.w, right: 15.w),
+                                    padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w),
                                     child: Text(
                                       Street! != null ? Street! : '',
-                                      style: TextStyle(
-                                          color: darkGrey,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(color: darkGrey, fontSize: 16.sp, fontWeight: FontWeight.bold),
                                     )),
                                 Container(
-                                  padding: EdgeInsets.only(
-                                      top: 10.w, left: 15.w, right: 15.w),
+                                  padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w),
                                   child: Text(
                                     Address! != null ? Address! : '',
-                                    style: TextStyle(
-                                        color: softGrey, fontSize: 13.sp),
+                                    style: TextStyle(color: softGrey, fontSize: 13.sp),
                                   ),
                                 ),
                                 Container(
+                                  margin: EdgeInsets.only(top: 6.w),
                                   child: GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) => PostLokasi(
+                                                      address: Address!,
+                                                      addressName: Street!,
+                                                      latlng: latLng!,
+                                                    )));
+                                      },
                                       child: Container(
                                         margin: EdgeInsets.only(
                                           top: 10.w,
                                           left: 15.w,
                                           right: 15.w,
                                         ),
-                                        width:
-                                            MediaQuery.of(context).size.width,
+                                        width: MediaQuery.of(context).size.width,
                                         padding: EdgeInsets.all(15.w),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25.w),
-                                            color: primary),
+                                        decoration:
+                                            BoxDecoration(borderRadius: BorderRadius.circular(25.w), color: primary),
                                         child: Center(
                                             child: Text(
                                           'Pilih lokasi ini',
-                                          style: TextStyle(
-                                              color: white,
-                                              fontWeight: FontWeight.w500),
+                                          style: TextStyle(color: white, fontWeight: FontWeight.w500),
                                         )),
                                       )),
                                 )
