@@ -480,10 +480,15 @@ class _HomeState extends State<Home> {
                                           });
                                     },
                                     child: Row(children: [
+                                      Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.orange,
+                                        size: 12,
+                                      ),
                                       Text(
-                                        'Lokasi kamu:',
+                                        'Lokasimu:',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          // fontWeight: FontWeight.bold,
                                           color: Colors.blue[200],
                                           fontSize: 12.sp,
                                         ),
@@ -575,19 +580,20 @@ class _HomeState extends State<Home> {
                                                   MaterialPageRoute(
                                                       builder: (BuildContext context) => Notifikasi(name: nama)));
                                             },
-                                            child: CircleAvatar(
-                                              radius: 16,
-                                              backgroundColor: Colors.white30,
-                                              child: Container(
-                                                // margin: EdgeInsets.only(
-                                                //     top: MediaQuery.of(context).size.height / 20),
-                                                width: 16,
-                                                height: 16,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: AssetImage('gambar/Vector.png'), fit: BoxFit.fitHeight),
-                                                ),
-                                              ),
+                                            child: Container(
+                                              // margin: EdgeInsets.only(
+                                              //     top: MediaQuery.of(context).size.height / 20),
+                                              width: 30,
+                                              padding: EdgeInsets.all(5),
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                  color: lightBlue, borderRadius: BorderRadius.circular(30)),
+                                              child: Center(
+                                                  child: Icon(
+                                                Icons.notifications_outlined,
+                                                color: darkBlue,
+                                                size: 20,
+                                              )),
                                             ),
                                           )
                                         ],
@@ -897,7 +903,7 @@ class _HomeState extends State<Home> {
                                     children: [
                                       Text(
                                         'Info & Berita',
-                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: darkGrey),
                                       ),
                                       Text('Lihat Semua',
                                           style: TextStyle(

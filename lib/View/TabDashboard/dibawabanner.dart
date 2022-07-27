@@ -15,14 +15,10 @@ class _DibawahBannerState extends State<DibawahBanner> {
     return loading
         ? Padding(
             padding: EdgeInsets.only(
-                left: (ScreenUtil().setWidth(10.w)),
-                right: (ScreenUtil().setWidth(10.w)),
-                bottom: 20.h,
-                top: 3.h),
+                left: (ScreenUtil().setWidth(10.w)), right: (ScreenUtil().setWidth(10.w)), bottom: 20.h, top: 3.h),
             child: Container(
               padding: EdgeInsets.only(top: 5.w, bottom: 20.h),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15), color: lightBlue),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: lightBlue),
               child: Column(children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -33,45 +29,43 @@ class _DibawahBannerState extends State<DibawahBanner> {
                       //         .size
                       //         .width /
                       //     2,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: Text(
-                                'Pesan Tukang',
-                                style: TextStyle(
-                                  color: blackBlue,
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Container(
+                          child: Text(
+                            'Pesan Tukang',
+                            style: TextStyle(
+                              color: darkGrey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.w,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(bottom: 15.h),
+                          child: Text(
+                            'di Kota Anda',
+                            style: TextStyle(
+                                color: darkGrey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.w,
+                                fontStyle: FontStyle.normal),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(bottom: 15.h),
+                          child: GestureDetector(
+                            onTap: (() {}),
+                            child: Text(
+                              'Cari Tukang',
+                              style: TextStyle(
+                                  color: primary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16.w,
-                                ),
-                              ),
+                                  decoration: TextDecoration.underline),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(bottom: 15.h),
-                              child: Text(
-                                'di Kota Anda',
-                                style: TextStyle(
-                                    color: blackBlue,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12.w,
-                                    fontStyle: FontStyle.normal),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(bottom: 15.h),
-                              child: GestureDetector(
-                                onTap: (() {}),
-                                child: Text(
-                                  'Cari Tukang',
-                                  style: TextStyle(
-                                      color: primary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.w,
-                                      decoration: TextDecoration.underline),
-                                ),
-                              ),
-                            )
-                          ]),
+                          ),
+                        )
+                      ]),
                     ),
                     Container(
                       // margin: EdgeInsets.only(
@@ -103,7 +97,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                 child: Text(
                                   'Jakarta',
                                   style: TextStyle(
-                                      color: blackBlue,
+                                      color: darkGrey,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12.w,
                                       fontStyle: FontStyle.normal),
@@ -135,7 +129,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                 child: Text(
                                   'Tangerang',
                                   style: TextStyle(
-                                      color: blackBlue,
+                                      color: darkGrey,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12.w,
                                       fontStyle: FontStyle.normal),
@@ -179,8 +173,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                               fit: BoxFit.cover)),
                     ),
                     Container(
-                      padding: EdgeInsets.only(
-                          top: 20.h, left: 5.w, bottom: 20.h, right: 5.w),
+                      padding: EdgeInsets.only(top: 20.h, left: 5.w, bottom: 20.h, right: 5.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -189,7 +182,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                             child: Text(
                               'Tukang Teladan',
                               style: TextStyle(
-                                  color: blackBlue,
+                                  color: darkGrey,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14.w,
                                   fontStyle: FontStyle.normal),
@@ -200,7 +193,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                             child: Text(
                               'Aby Abdullah',
                               style: TextStyle(
-                                  color: blackBlue,
+                                  color: darkGrey,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14.w,
                                   fontStyle: FontStyle.normal),
@@ -267,8 +260,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                         children: [
                           Text(
                             'Pesan Tukang',
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
                             height: 5,
@@ -300,9 +292,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   // border: Border.all(color: Colors.grey[200]),
-                                  image: DecorationImage(
-                                      image: AssetImage('gambar/bg.png'),
-                                      fit: BoxFit.cover),
+                                  image: DecorationImage(image: AssetImage('gambar/bg.png'), fit: BoxFit.cover),
                                 ),
                               ),
                               Column(
@@ -310,19 +300,15 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                 children: [
                                   Text(
                                     'Tukang Teladan',
-                                    style: TextStyle(
-                                        color: Colors.blue[900],
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15),
+                                    style:
+                                        TextStyle(color: Colors.blue[900], fontWeight: FontWeight.w500, fontSize: 15),
                                   ),
                                   SizedBox(
                                     height: 8,
                                   ),
                                   Text(
                                     'Hariyono Makmur',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                                   ),
                                   SizedBox(
                                     height: 4,
@@ -333,14 +319,10 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                         width: 15,
                                         height: 15,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              color: Colors.grey[200]!),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(color: Colors.grey[200]!),
                                           image: DecorationImage(
-                                              image: AssetImage(
-                                                  'gambar/bintang.png'),
-                                              fit: BoxFit.cover),
+                                              image: AssetImage('gambar/bintang.png'), fit: BoxFit.cover),
                                         ),
                                       ),
                                       SizedBox(
@@ -348,18 +330,15 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                       ),
                                       Text(
                                         '5.0',
-                                        style: TextStyle(
-                                            color: Colors.amber,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12),
+                                        style:
+                                            TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 12),
                                       ),
                                       SizedBox(
                                         width: 5,
                                       ),
                                       Text(
                                         'Jakarta',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 12),
+                                        style: TextStyle(color: Colors.grey, fontSize: 12),
                                       )
                                     ],
                                   ),
@@ -367,10 +346,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                               ),
                               Text(
                                 '',
-                                style: TextStyle(
-                                    color: Colors.blue[900],
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
+                                style: TextStyle(color: Colors.blue[900], fontWeight: FontWeight.w500, fontSize: 15),
                               ),
                             ],
                           )
@@ -390,10 +366,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                     height: 60,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(35),
-                                      image: DecorationImage(
-                                          image:
-                                              AssetImage('gambar/gambar.png'),
-                                          fit: BoxFit.cover),
+                                      image: DecorationImage(image: AssetImage('gambar/gambar.png'), fit: BoxFit.cover),
                                     ),
                                   ),
                                   SizedBox(
@@ -415,10 +388,8 @@ class _DibawahBannerState extends State<DibawahBanner> {
                                     height: 60,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(35),
-                                      image: DecorationImage(
-                                          image:
-                                              AssetImage('gambar/gambar1.png'),
-                                          fit: BoxFit.cover),
+                                      image:
+                                          DecorationImage(image: AssetImage('gambar/gambar1.png'), fit: BoxFit.cover),
                                     ),
                                   ),
                                   SizedBox(

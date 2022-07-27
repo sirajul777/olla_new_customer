@@ -8,6 +8,7 @@ import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Router/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoding/geocoding.dart';
@@ -31,7 +32,7 @@ class _StepOrderState extends State<StepOrder> {
   bool tampil = false;
   late List<bool> _selectedIndex;
   late Timer timer;
-  
+
   @override
   Widget build(BuildContext context) {
     if (!isloading) {
@@ -49,313 +50,457 @@ class _StepOrderState extends State<StepOrder> {
         ),
       );
     } else {
-      return SafeArea(
-          top: false,
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-                statusBarColor: white, statusBarIconBrightness: Brightness.dark, statusBarBrightness: Brightness.dark),
-            child: Stack(
+      return Scaffold(
+          backgroundColor: white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Scaffold(
-                    backgroundColor: white,
-                    appBar: AppBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     // Navigator.pop(context);
-                          //     // getDataListorderStep();
-                          //     // getDataListRate();
-                          //   },
-                          //   // ignore: avoid_unnecessary_containers
-                          //   child: Container(
-                          //     height: MediaQuery.of(context).size.height / 25,
-                          //     decoration: BoxDecoration(
-                          //       borderRadius: BorderRadius.circular(3),
-                          //       color: Colors.blue[50],
-                          //     ),
-                          //     child: Center(
-                          //       child: Icon(
-                          //         Icons.arrow_back_ios_outlined,
-                          //         color: Colors.black,
-                          //         size: 20,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   width: 80,
-                          // ),
-                          GestureDetector(
-                            onTap: () async {
-                              getDataListHome();
-                            },
-                            child: Text(widget.invoice!,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.green.withOpacity(0.7),
-                                )),
-                          ),
-                        ],
-                      ),
-                      automaticallyImplyLeading: false,
-                      // backgroundColor: Colors.transparent,
-                      // shape:
-                      //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-                    ),
-                    body: SingleChildScrollView(
-                        child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: Container(
-                              margin: EdgeInsets.only(right: 10.w),
-                              width: 200,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                // color: blackBlue,
-                                image: DecorationImage(image: AssetImage('gambar/image3.png'), fit: BoxFit.fitHeight),
-                              ),
+                GestureDetector(
+                  onTap: () async {
+                    getDataListHome();
+                  },
+                  child: Text(widget.invoice!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.green.withOpacity(0.7),
+                      )),
+                ),
+              ],
+            ),
+            automaticallyImplyLeading: false,
+            // backgroundColor: Colors.transparent,
+            // shape:
+            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+          ),
+          body: SafeArea(
+            // top: false,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                    statusBarColor: blackBlue,
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.dark),
+                child: Stack(children: [
+                  SingleChildScrollView(
+                      child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Container(
+                            margin: EdgeInsets.only(right: 10.w),
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              // color: blackBlue,
+                              image: DecorationImage(image: AssetImage('gambar/image3.png'), fit: BoxFit.fitHeight),
                             ),
                           ),
-                          partner == null
-                              ? Container(
-                                  child: Column(
-                                    children: [
-                                      Center(
-                                          child: Container(
-                                        margin: EdgeInsets.only(top: 20.w),
-                                        // decoration: BoxDecoration(
-                                        //     borderRadius: BorderRadius.circular(10),
-                                        //     color: blackBlue),
-
-                                        child: Text('Sedang mencari Teknisi',
-                                            style:
-                                                TextStyle(fontSize: 16, color: primary, fontWeight: FontWeight.w600)),
-                                      )),
-                                      Center(
+                        ),
+                        partner == null
+                            ? Container(
+                                child: Column(
+                                  children: [
+                                    Center(
                                         child: Container(
-                                          // height: MediaQuery.of(context).size.height,
-                                          padding: EdgeInsets.only(top: 20.w),
-                                          width: MediaQuery.of(context).size.width,
-                                          // color: Colors.red,
-                                          child: const Center(
-                                            child: SpinKitFadingCircle(
-                                              color: Colors.blue,
-                                              size: 60.0,
-                                            ),
+                                      padding: EdgeInsets.only(left: 40, right: 40),
+                                      margin: EdgeInsets.only(top: 20.w),
+                                      // decoration: BoxDecoration(
+                                      //     borderRadius: BorderRadius.circular(10),
+                                      //     color: blackBlue),
+
+                                      child: Text('Sedang mencari Mitra terdekat,',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: primary,
+                                            overflow: TextOverflow.fade,
+                                          )),
+                                    )),
+                                    Center(
+                                        child: Container(
+                                      padding: EdgeInsets.only(left: 40, right: 40),
+                                      margin: EdgeInsets.only(top: 5.w),
+                                      // decoration: BoxDecoration(
+                                      //     borderRadius: BorderRadius.circular(10),
+                                      //     color: blackBlue),
+
+                                      child: Text('harap tunggu sejenak.',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: primary,
+                                            overflow: TextOverflow.fade,
+                                          )),
+                                    )),
+                                    Center(
+                                      child: Container(
+                                        // height: MediaQuery.of(context).size.height,
+                                        padding: EdgeInsets.only(top: 20.w),
+                                        width: MediaQuery.of(context).size.width,
+                                        // color: Colors.red,
+                                        child: const Center(
+                                          child: SpinKitFadingCircle(
+                                            color: Colors.blue,
+                                            size: 40.0,
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                )
-                              : Column(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.only(left: 20.0, right: 20),
-                                      child: Container(
-                                          margin: EdgeInsets.only(top: 10.w),
-                                          padding: EdgeInsets.all(15.w),
-                                          decoration: BoxDecoration(
-                                            color: white,
-                                            borderRadius: BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: softGrey,
-                                                blurRadius: 15.0,
-                                                // has the effect of softening the shadow
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                    child: Container(
+                                        margin: EdgeInsets.only(top: 10.w),
+                                        padding: EdgeInsets.all(15.w),
+                                        decoration: BoxDecoration(
+                                          color: white,
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: softGrey,
+                                              blurRadius: 15.0,
+                                              // has the effect of softening the shadow
 //                    spreadRadius: 2.0,
-                                                // has the effect of extending the shadow
-                                                offset: Offset(
-                                                  1.0, // horizontal, move right 10
-                                                  5.0, // vertical, move down 10
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.only(right: 10),
-                                                width: 40,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: AssetImage('gambar/partner.png'), fit: BoxFit.fitHeight),
-                                                ),
+                                              // has the effect of extending the shadow
+                                              offset: Offset(
+                                                1.0, // horizontal, move right 10
+                                                5.0, // vertical, move down 10
                                               ),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      child: Text(
-                                                        partner != null ? partner!['name'] : '',
-                                                        style: TextStyle(
-                                                            overflow: TextOverflow.clip,
-                                                            fontSize: 15,
-                                                            fontWeight: FontWeight.w500),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      child: Text(
-                                                        '${workingdate!} - ${workingtime!}',
-                                                        style: TextStyle(fontSize: 13, color: Colors.grey),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
+                                            )
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(right: 10),
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage('gambar/gambarprofile.png'),
+                                                    fit: BoxFit.fitHeight),
                                               ),
-                                              Container(
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: AssetImage('gambar/pesanpartner.png'),
-                                                            fit: BoxFit.fitHeight),
-                                                      ),
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      partner != null ? partner!['name'] : '',
+                                                      style: TextStyle(
+                                                          overflow: TextOverflow.clip,
+                                                          fontSize: 12.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: darkGrey),
                                                     ),
-                                                    SizedBox(
-                                                      width: 8,
+                                                  ),
+                                                  Container(
+                                                    child: Text(
+                                                      '${workingdate!} - ${workingtime!}',
+                                                      style: TextStyle(fontSize: 11.sp, color: Colors.grey),
                                                     ),
-                                                    Container(
-                                                      width: 40,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: AssetImage('gambar/telponpartner.png'),
-                                                            fit: BoxFit.fitHeight),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          )),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 20.w, right: 20.w),
-                                      padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                        color: lightBlue, borderRadius: BorderRadius.circular(25)),
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.forum_outlined,
+                                                      color: Color.fromARGB(255, 59, 167, 255),
+                                                      size: 20,
+                                                    )),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Container(
+                                                    width: 40,
+                                                    height: 40,
+                                                    decoration: BoxDecoration(
+                                                        color: lightBlue, borderRadius: BorderRadius.circular(25)),
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.phone_callback_outlined,
+                                                      color: Color.fromARGB(255, 59, 167, 255),
+                                                      size: 20,
+                                                    )),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        )),
+                                  ),
+                                  SizedBox(
+                                    height: 20.w,
+                                  ),
+                                  Container(
                                       child: Column(
-                                        children: [
-                                          SizedBox(
-                                            //  width: 100,
-                                            //  height: 100,
-                                            child: TimelineTile(
-                                              afterLineStyle:
-                                                  LineStyle(color: isdone == 1 ? Colors.green : softGrey, thickness: 3),
-                                              indicatorStyle: IndicatorStyle(
-                                                  color: isdone == 1 ? Colors.green : softGrey, width: 15),
-                                              isFirst: true,
-                                              endChild: Padding(
-                                                padding: const EdgeInsets.all(10.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      awal,
-                                                      style: TextStyle(fontSize: 12),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 3,
-                                                    ),
-                                                    Text(
-                                                      'tukang telah mengambil order',
-                                                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          //
-                                          SizedBox(
-                                            child: TimelineTile(
-                                              isLast: true,
-                                              beforeLineStyle:
-                                                  LineStyle(color: isdone == 1 ? Colors.green : softGrey, thickness: 3),
-                                              afterLineStyle: LineStyle(
-                                                  color: isdonekedua == 1 ? Colors.green : softGrey, thickness: 3),
-                                              indicatorStyle: IndicatorStyle(
-                                                  color: isdonekedua == 1 ? Colors.green : softGrey, width: 15),
-                                              endChild: Padding(
-                                                padding: const EdgeInsets.all(10.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '${kedua}',
-                                                      style: TextStyle(fontSize: 12),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 3,
-                                                    ),
-                                                    isdonekedua == 1
-                                                        ? Text(
-                                                            Address,
-                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                          )
-                                                        : Text(
-                                                            'menunggu tukang sampai lokasi anda',
-                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                          ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 20.w, bottom: 10.w),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                child: Text(
+                                              'Bagikan status Pekerjaan',
+                                              style: TextStyle(
+                                                  fontSize: 12.sp, color: darkGrey, fontWeight: FontWeight.bold),
+                                            )),
+                                          ],
+                                        ),
                                       ),
+                                      // Divider(
+                                      //   thickness: 1,
+                                      // ),
+                                    ],
+                                  )),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.w),
+                                      child: Container(
+                                          padding: EdgeInsets.all(10.w),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(color: lightBlue, width: 1),
+                                              borderRadius: BorderRadius.circular(20.w)),
+                                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      'Bagikan status pekerjaan yang sedang berlangsung.',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                          overflow: TextOverflow.fade,
+                                                          color: softGrey,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 10.sp),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    child: Text(
+                                                      'Disini dapat melihat status pekerjaan.',
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                          overflow: TextOverflow.fade,
+                                                          color: softGrey,
+                                                          fontSize: 10.sp),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                                padding: EdgeInsets.all(2),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20.w),
+                                                    border: Border.all(color: softGrey, width: 1)),
+                                                // padding: EdgeInsets.only(left: 5.w),
+                                                child: Icon(
+                                                  Icons.share,
+                                                  color: softGrey,
+                                                  size: 10,
+                                                ))
+                                          ])),
                                     ),
-                                    isdonekedua == 1
-                                        ? Container(
-                                            child: Column(
-                                            children: [
-                                              GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      showWork = !showWork;
-                                                    });
-                                                  },
-                                                  child: Column(
+                                  ),
+                                  Container(
+                                      child: Column(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                          left: 20.w,
+                                          right: 20.w,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                child: Text(
+                                              'Rincian status pekerjaan',
+                                              style: TextStyle(
+                                                  fontSize: 12.sp, color: darkGrey, fontWeight: FontWeight.bold),
+                                            )),
+                                          ],
+                                        ),
+                                      ),
+                                      // Divider(
+                                      //   thickness: 1,
+                                      // ),
+                                    ],
+                                  )),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 20.w, right: 20.w),
+                                    padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          //  width: 100,
+                                          //  height: 100,
+                                          child: TimelineTile(
+                                            afterLineStyle:
+                                                LineStyle(color: isdone == 1 ? Colors.green : softGrey, thickness: 3),
+                                            indicatorStyle:
+                                                IndicatorStyle(color: isdone == 1 ? Colors.green : softGrey, width: 15),
+                                            isFirst: true,
+                                            endChild: Padding(
+                                              padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Container(
-                                                        padding: EdgeInsets.only(
-                                                            left: 20.w, right: 20.w, top: 20.w, bottom: 10.w),
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Container(
-                                                                child: Text(
-                                                              'Pekerjaan',
-                                                              style: TextStyle(
-                                                                  color: blackBlue, fontWeight: FontWeight.bold),
-                                                            )),
-                                                            Icon(
-                                                              Icons.expand_more,
-                                                              color: blackBlue,
-                                                            )
-                                                          ],
-                                                        ),
+                                                      Text(
+                                                        "${awal[0]['step_name']}",
+                                                        style: TextStyle(
+                                                            fontSize: 12, color: darkGrey, fontWeight: FontWeight.bold),
                                                       ),
-                                                      Divider(
-                                                        thickness: 1,
+                                                      Text(
+                                                        "${awal[0]['time'] ?? ''}",
+                                                        style: TextStyle(fontSize: 12, color: primary),
                                                       ),
                                                     ],
-                                                  )),
-                                              showWork
-                                                  ? Padding(
+                                                  ),
+                                                  SizedBox(
+                                                    height: 3,
+                                                  ),
+                                                  Text(
+                                                    'Mitra telah mengambil order',
+                                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        //
+                                        SizedBox(
+                                          child: TimelineTile(
+                                            isLast: true,
+                                            beforeLineStyle:
+                                                LineStyle(color: isdone == 1 ? Colors.green : softGrey, thickness: 3),
+                                            afterLineStyle: LineStyle(
+                                                color: isdonekedua == 1 ? Colors.green : softGrey, thickness: 3),
+                                            indicatorStyle: IndicatorStyle(
+                                                color: isdonekedua == 1 ? Colors.green : softGrey, width: 15),
+                                            endChild: Padding(
+                                              padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 0, top: 10),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "${awal[1]['step_name'] ?? ''}",
+                                                        style: TextStyle(
+                                                            fontSize: 12, color: darkGrey, fontWeight: FontWeight.bold),
+                                                      ),
+                                                      Text(
+                                                        "${awal[1]['time'] ?? ''}",
+                                                        style: TextStyle(fontSize: 12.sp, color: primary),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 3,
+                                                  ),
+                                                  isdonekedua == 1
+                                                      ? Text(
+                                                          Address,
+                                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                        )
+                                                      : Text(
+                                                          'menunggu tukang sampai lokasi anda',
+                                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                        ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  isdonekedua == 1
+                                      ? Container(
+                                          child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    showWork = !showWork;
+                                                  });
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 20.w, right: 20.w, top: 20.w, bottom: 10.w),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                              child: Text(
+                                                            'Pekerjaan yang akan di lakukan',
+                                                            style: TextStyle(
+                                                                fontSize: 12.sp,
+                                                                color: darkGrey,
+                                                                fontWeight: FontWeight.bold),
+                                                          )),
+                                                          SizedBox(),
+                                                          SizedBox(),
+                                                          SizedBox(),
+                                                          SizedBox(),
+                                                          SizedBox(),
+                                                          Container(
+                                                              padding: EdgeInsets.all(1),
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(20.w),
+                                                                  border: Border.all(color: softGrey, width: 1)),
+                                                              child: Icon(
+                                                                Icons.expand_more,
+                                                                color: softGrey,
+                                                                size: 12,
+                                                              )),
+                                                          SizedBox()
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    // Divider(
+                                                    //   thickness: 1,
+                                                    // ),
+                                                  ],
+                                                )),
+                                            showWork
+                                                ? Column(children: [
+                                                    // step middle
+                                                    Padding(
                                                       padding: EdgeInsets.only(left: 30.w),
                                                       child: Container(
                                                         child: ListView.builder(
@@ -377,21 +522,19 @@ class _StepOrderState extends State<StepOrder> {
                                                                       // mainAxisAlignment: MainAxisAlignment.center,
                                                                       children: [
                                                                         Container(
-                                                                          width: 15,
-                                                                          height: 15,
-                                                                          decoration: BoxDecoration(
-                                                                            image: DecorationImage(
-                                                                                image: AssetImage('gambar/pesanan.png'),
-                                                                                fit: BoxFit.fitHeight),
-                                                                          ),
-                                                                        ),
+                                                                            width: 20.w,
+                                                                            height: 20.w,
+                                                                            decoration: BoxDecoration(
+                                                                                color: darkYellow,
+                                                                                borderRadius:
+                                                                                    BorderRadius.circular(20)),
+                                                                            child: Icon(
+                                                                              Icons.task_alt,
+                                                                              size: 14,
+                                                                              color: white,
+                                                                            )),
                                                                         SizedBox(
                                                                           width: 2,
-                                                                        ),
-                                                                        Icon(
-                                                                          Icons.circle,
-                                                                          size: 5,
-                                                                          color: Colors.grey,
                                                                         ),
                                                                         SizedBox(
                                                                           width: 2,
@@ -399,7 +542,8 @@ class _StepOrderState extends State<StepOrder> {
                                                                         Flexible(
                                                                             child: Text(
                                                                           orderansemua[i]['service_name'],
-                                                                          style: TextStyle(fontSize: 13),
+                                                                          style: TextStyle(
+                                                                              fontSize: 12.sp, color: darkGrey),
                                                                         )),
                                                                         SizedBox(
                                                                           width: 3,
@@ -408,19 +552,18 @@ class _StepOrderState extends State<StepOrder> {
                                                                     ),
                                                                   ),
                                                                   Padding(
-                                                                    padding: const EdgeInsets.only(left: 40.0, top: 10),
+                                                                    padding:
+                                                                        const EdgeInsets.only(left: 20.0, bottom: 10),
                                                                     child: Column(
                                                                       children: [
                                                                         SizedBox(
-                                                                          //  width: 100,
-                                                                          //  height: 50,
                                                                           child: TimelineTile(
                                                                             isFirst: true,
                                                                             beforeLineStyle: LineStyle(
                                                                                 color: isdonekedua == 1
                                                                                     ? Colors.green
                                                                                     : softGrey,
-                                                                                thickness: 3),
+                                                                                thickness: 4),
                                                                             afterLineStyle: LineStyle(
                                                                                 color: orderansemua[i]['steps'][0]
                                                                                             ['is_done'] ==
@@ -429,6 +572,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                     : softGrey,
                                                                                 thickness: 3),
                                                                             indicatorStyle: IndicatorStyle(
+                                                                                indicatorXY: 0.3,
                                                                                 color: orderansemua[i]['steps'][0]
                                                                                             ['is_done'] ==
                                                                                         1
@@ -436,18 +580,42 @@ class _StepOrderState extends State<StepOrder> {
                                                                                     : softGrey,
                                                                                 width: 15),
                                                                             endChild: Padding(
-                                                                              padding: const EdgeInsets.all(10.0),
+                                                                              padding: const EdgeInsets.only(
+                                                                                  left: 10.0,
+                                                                                  right: 10,
+                                                                                  bottom: 1,
+                                                                                  top: 10),
                                                                               child: Column(
                                                                                 crossAxisAlignment:
                                                                                     CrossAxisAlignment.start,
                                                                                 children: [
-                                                                                  Text(
-                                                                                    orderansemua[i]['steps'][0]
-                                                                                        ['step_name'],
-                                                                                    style: TextStyle(fontSize: 12),
+                                                                                  Row(
+                                                                                    mainAxisAlignment:
+                                                                                        MainAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Container(
+                                                                                          width: MediaQuery.of(context)
+                                                                                                  .size
+                                                                                                  .width /
+                                                                                              1.9,
+                                                                                          child: Text(
+                                                                                            orderansemua[i]['steps'][0]
+                                                                                                ['step_name'],
+                                                                                            style: TextStyle(
+                                                                                                fontSize: 12,
+                                                                                                color: softGrey),
+                                                                                          )),
+                                                                                      Text(
+                                                                                        orderansemua[i]['steps'][0]
+                                                                                            ['time'],
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 12,
+                                                                                            color: primary),
+                                                                                      ),
+                                                                                    ],
                                                                                   ),
                                                                                   SizedBox(
-                                                                                    height: 4,
+                                                                                    height: 5,
                                                                                   ),
                                                                                   orderansemua[i]['steps'][0]
                                                                                               ['is_done'] ==
@@ -470,25 +638,111 @@ class _StepOrderState extends State<StepOrder> {
                                                                                       : Container(
                                                                                           width: 40,
                                                                                           height: 40,
-                                                                                          child: Image.asset(
-                                                                                            'gambar/foto.png',
-                                                                                            fit: BoxFit.cover,
+                                                                                          child: Icon(
+                                                                                            Icons.image_outlined,
+                                                                                            color: darkGrey,
+                                                                                            size: 22,
+                                                                                          )),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          //  width: 100,
+                                                                          //  height: 50,
+                                                                          child: TimelineTile(
+                                                                            isLast: true,
+                                                                            beforeLineStyle: LineStyle(
+                                                                                color: isdonekedua == 1
+                                                                                    ? Colors.green
+                                                                                    : softGrey,
+                                                                                thickness: 3),
+                                                                            afterLineStyle: LineStyle(
+                                                                                color: orderansemua[i]['steps'][1]
+                                                                                            ['is_done'] ==
+                                                                                        1
+                                                                                    ? Colors.green
+                                                                                    : softGrey,
+                                                                                thickness: 2),
+                                                                            indicatorStyle: IndicatorStyle(
+                                                                                indicatorXY: 0.3,
+                                                                                color: orderansemua[i]['steps'][1]
+                                                                                            ['is_done'] ==
+                                                                                        1
+                                                                                    ? Colors.green
+                                                                                    : softGrey,
+                                                                                width: 15),
+                                                                            endChild: Padding(
+                                                                              padding: const EdgeInsets.only(
+                                                                                  left: 10.0,
+                                                                                  right: 10,
+                                                                                  bottom: 1,
+                                                                                  top: 10),
+                                                                              child: Column(
+                                                                                crossAxisAlignment:
+                                                                                    CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Row(
+                                                                                    mainAxisAlignment:
+                                                                                        MainAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Container(
+                                                                                          width: MediaQuery.of(context)
+                                                                                                  .size
+                                                                                                  .width /
+                                                                                              1.9,
+                                                                                          child: Text(
+                                                                                            orderansemua[i]['steps'][1]
+                                                                                                ['step_name'],
+                                                                                            style: TextStyle(
+                                                                                                fontSize: 12,
+                                                                                                color: softGrey),
+                                                                                          )),
+                                                                                      Text(
+                                                                                        orderansemua[i]['steps'][1]
+                                                                                            ['time'],
+                                                                                        style: TextStyle(
+                                                                                            fontSize: 12,
+                                                                                            color: primary),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 5,
+                                                                                  ),
+                                                                                  orderansemua[i]['steps'][1]
+                                                                                              ['is_done'] ==
+                                                                                          1
+                                                                                      ? Container(
+                                                                                          width: 40,
+                                                                                          height: 40,
+                                                                                          decoration: BoxDecoration(
+                                                                                            borderRadius:
+                                                                                                BorderRadius.circular(
+                                                                                                    5),
+                                                                                            image: DecorationImage(
+                                                                                                image: NetworkImage(
+                                                                                                    orderansemua[i]
+                                                                                                            ['steps'][1]
+                                                                                                        ['images']),
+                                                                                                fit: BoxFit.cover),
                                                                                           ),
-                                                                                        ),
+                                                                                        )
+                                                                                      : Container(
+                                                                                          width: 40,
+                                                                                          height: 40,
+                                                                                          child: Icon(
+                                                                                            Icons.image_outlined,
+                                                                                            color: darkGrey,
+                                                                                            size: 22,
+                                                                                          )),
                                                                                 ],
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
                                                                         //
-                                                                        Container(
-                                                                          child: Text(
-                                                                            orderansemua[i]['is_done'] == 1
-                                                                                ? '${orderansemua[i]['time']}'
-                                                                                : '',
-                                                                            style: TextStyle(color: primary),
-                                                                          ),
-                                                                        )
 
                                                                         //
                                                                       ],
@@ -496,329 +750,334 @@ class _StepOrderState extends State<StepOrder> {
                                                                   ),
 
                                                                   //
-                                                                  Divider(
-                                                                    thickness: 1,
-                                                                  ),
                                                                 ],
                                                               );
                                                             }),
                                                       ),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 30.w, right: 40.w, bottom: 30.w, top: 5),
+                                                      child: Container(
+                                                          width: MediaQuery.of(context).size.width - 30,
+                                                          child: Column(
+                                                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                            children: [
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    _selectedIndex[0] = !_selectedIndex[0];
+                                                                  });
+
+                                                                  print(_selectedIndex);
+                                                                },
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Container(
+                                                                        width: MediaQuery.of(context).size.width / 2,
+                                                                        child: Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            children: [
+                                                                              Container(
+                                                                                  margin: EdgeInsets.only(right: 5.w),
+                                                                                  width: 20.w,
+                                                                                  height: 20.w,
+                                                                                  decoration: BoxDecoration(
+                                                                                      color: darkYellow,
+                                                                                      borderRadius:
+                                                                                          BorderRadius.circular(20)),
+                                                                                  child: Icon(
+                                                                                    Icons.task_alt,
+                                                                                    size: 14,
+                                                                                    color: white,
+                                                                                  )),
+                                                                              Flexible(
+                                                                                  child: Text(
+                                                                                terakhir[0]['step_name'],
+                                                                                style: TextStyle(
+                                                                                    fontSize: 13, color: darkGrey),
+                                                                              )),
+                                                                            ])),
+                                                                    Container(
+                                                                        child: Text(
+                                                                      terakhir[0]['time'],
+                                                                      style: TextStyle(fontSize: 13, color: primary),
+                                                                    )),
+                                                                  ],
+                                                                ),
+                                                              ),
+
+                                                              //
+
+                                                              //
+                                                            ],
+                                                          )),
                                                     )
-                                                  : SizedBox()
-                                            ],
-                                          ))
-                                        : SizedBox(),
-                                  ],
-                                )
+                                                  ])
+                                                : SizedBox(),
+                                            Padding(
+                                              padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 10.w),
+                                              child: Container(
+                                                  child: Text(
+                                                'Pemberitahuan',
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color: darkGrey, fontWeight: FontWeight.bold, fontSize: 12.sp),
+                                              )),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.w),
+                                              child: Container(
+                                                  padding: EdgeInsets.all(10.w),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: lightBlue, width: 1),
+                                                      borderRadius: BorderRadius.circular(20.w)),
+                                                  child:
+                                                      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        'Tidak dapat membatalkan pesanan yang sedang berlangasung.',
+                                                        textAlign: TextAlign.justify,
+                                                        style: TextStyle(color: softGrey, fontSize: 11.sp),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                        width: 16,
+                                                        height: 16,
+                                                        // padding: EdgeInsets.all(2),
+                                                        margin: EdgeInsets.only(left: 15.w, right: 7.w),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(20.w),
+                                                            border: Border.all(color: softGrey, width: 1)),
+                                                        child: Center(
+                                                            child: Text(
+                                                          'i',
+                                                          style: TextStyle(
+                                                              color: softGrey,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12.sp),
+                                                        )))
+                                                  ])),
+                                            ),
+                                            statusorder == 3
+                                                ? GestureDetector(
+                                                    onTap: () {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return Dialog(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(15.0)), //this right here
+
+                                                              child: Container(
+                                                                height: 230,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.all(10.0),
+                                                                  child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Center(
+                                                                        child: Text(
+                                                                          'Berikan ulasan',
+                                                                          style: TextStyle(
+                                                                              color: darkGrey,
+                                                                              fontSize: 14.sp,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: 8,
+                                                                      ),
+
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children: [
+                                                                          RatingBar.builder(
+                                                                            initialRating: 0,
+                                                                            minRating: 0,
+                                                                            direction: Axis.horizontal,
+                                                                            itemCount: 5,
+                                                                            itemPadding:
+                                                                                EdgeInsets.symmetric(horizontal: 4.0),
+                                                                            itemBuilder: (context, _) => Icon(
+                                                                              Icons.star,
+                                                                              color: Colors.amber,
+                                                                            ),
+                                                                            onRatingUpdate: (rating) {
+                                                                              setState(() {
+                                                                                bintang = rating;
+                                                                              });
+
+                                                                              //  print(bintang);
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      ),
 
 //
-//
-//                       partner != null
-//                           ?
 
-//                       partner != null
-//                           ? Padding(
-//                               padding: const EdgeInsets.only(left: 10.0),
-//                               child: SizedBox(
-//                                 //  width: 100,
-//                                 //  height: 50,
-//                                 child: TimelineTile(
-//                                   isFirst: true,
-//                                   isLast: true,
-//                                   beforeLineStyle: LineStyle(
-//                                       color: isdoneterakhir == 1
-//                                           ? Colors.green
-//                                           : softGrey,
-//                                       thickness: 3),
-//                                   afterLineStyle: LineStyle(
-//                                     color: isdoneterakhir == 1
-//                                         ? Colors.green
-//                                         : Colors.yellow,
-//                                   ),
-//                                   indicatorStyle: IndicatorStyle(
-//                                       color: isdoneterakhir == 1
-//                                           ? Colors.green
-//                                           : Colors.yellow,
-//                                       width: 15),
-//                                   endChild: Padding(
-//                                     padding: const EdgeInsets.all(10.0),
-//                                     child: Text(
-//                                       terakhir,
-//                                       style: TextStyle(fontSize: 12),
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                             )
-//                           : SizedBox(),
-//                       //
-//                       SizedBox(
-//                         height: 8,
-//                       ),
-//                       statusorder == 3
-//                           ? GestureDetector(
-//                               onTap: () {
-//                                 showDialog(
-//                                     context: context,
-//                                     builder: (BuildContext context) {
-//                                       return Dialog(
-//                                         shape: RoundedRectangleBorder(
-//                                             borderRadius: BorderRadius.circular(
-//                                                 15.0)), //this right here
-//                                         child: Container(
-//                                           height: 230,
-//                                           child: Padding(
-//                                             padding: const EdgeInsets.all(10.0),
-//                                             child: Column(
-//                                               mainAxisAlignment:
-//                                                   MainAxisAlignment.center,
-//                                               crossAxisAlignment:
-//                                                   CrossAxisAlignment.start,
-//                                               children: [
-//                                                 Text(
-//                                                   'Beri Review',
-//                                                   style: TextStyle(
-//                                                       color: Colors.grey),
-//                                                 ),
-//                                                 SizedBox(
-//                                                   height: 8,
-//                                                 ),
-//                                                 Row(
-//                                                   mainAxisAlignment:
-//                                                       MainAxisAlignment.center,
-//                                                   children: [
-//                                                     RatingBar.builder(
-//                                                       initialRating: 0,
-//                                                       minRating: 0,
-//                                                       direction:
-//                                                           Axis.horizontal,
+                                                                      Container(
+                                                                        decoration: BoxDecoration(
 
-//                                                       //  allowHalfRating: true,
-//                                                       //  unratedColor: Colors.grey,
-//                                                       //  glowColor: Colors.red,
-//                                                       itemCount: 5,
-//                                                       itemPadding:
-//                                                           EdgeInsets.symmetric(
-//                                                               horizontal: 4.0),
-//                                                       itemBuilder:
-//                                                           (context, _) => Icon(
-//                                                         Icons.star,
-//                                                         color: Colors.amber,
-//                                                       ),
-//                                                       onRatingUpdate: (rating) {
-//                                                         setState(() {
-//                                                           bintang = rating;
-//                                                         });
-//                                                         //  print(bintang);
-//                                                       },
-//                                                     ),
-// // Text('${bintang}'.replaceAll('.0', ''))
-//                                                   ],
-//                                                 ),
-// //
-//                                                 Container(
-//                                                   // width: MediaQuery.of(context).size.width,
-//                                                   // height: MediaQuery.of(context).size.height / 10,
-//                                                   decoration: BoxDecoration(
-//                                                       // color: Colors.blue[50],
-//                                                       borderRadius:
-//                                                           BorderRadius.circular(
-//                                                               25)),
-//                                                   child: Padding(
-//                                                     padding:
-//                                                         const EdgeInsets.only(
-//                                                             left: 10.0,
-//                                                             right: 10,
-//                                                             top: 15),
-//                                                     child: TextField(
-//                                                       // controller: email,
-//                                                       // textAlign: TextAlign.left,
-//                                                       // ignore: unnecessary_new
-//                                                       decoration:
-//                                                           new InputDecoration(
-//                                                         fillColor:
-//                                                             Colors.blue[50],
-//                                                         filled: true,
-//                                                         contentPadding:
-//                                                             EdgeInsets.only(
-//                                                                 left: 10,
-//                                                                 right: 0,
-//                                                                 top: 20),
-//                                                         hintText:
-//                                                             'Tulis review disini',
-//                                                         //        prefixIcon:  Padding(
-//                                                         //   padding: const EdgeInsets.all(20.0),
-//                                                         //   child: Image.asset(
-//                                                         //     'gambar/email.png',
-//                                                         //     width: 25,
-//                                                         //     height: 25,
-//                                                         //     fit: BoxFit.fill,
-//                                                         //   ),
-//                                                         // ),
-//                                                         hintStyle: TextStyle(
-//                                                             color: Colors.grey,
-//                                                             fontSize: 12),
-//                                                         border:
-//                                                             OutlineInputBorder(
-//                                                                 borderRadius:
-//                                                                     const BorderRadius
-//                                                                         .all(
-//                                                                   Radius
-//                                                                       .circular(
-//                                                                           10.0),
-//                                                                 ),
-//                                                                 borderSide:
-//                                                                     BorderSide
-//                                                                         .none),
-//                                                       ),
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                                 GestureDetector(
-//                                                   onTap: () {
-//                                                     addData();
-//                                                   },
-//                                                   child: Padding(
-//                                                     padding:
-//                                                         const EdgeInsets.only(
-//                                                             left: 150.0,
-//                                                             right: 10,
-//                                                             top: 10),
-//                                                     child: Container(
-//                                                       decoration: BoxDecoration(
-//                                                           borderRadius:
-//                                                               BorderRadius
-//                                                                   .circular(15),
-//                                                           color:
-//                                                               Colors.blue[300]),
-//                                                       child: Padding(
-//                                                         padding:
-//                                                             const EdgeInsets
-//                                                                     .only(
-//                                                                 left: 0,
-//                                                                 right: 0,
-//                                                                 top: 12,
-//                                                                 bottom: 12),
-//                                                         child: Row(
-//                                                           mainAxisAlignment:
-//                                                               MainAxisAlignment
-//                                                                   .center,
-//                                                           children: [
-//                                                             Container(
-//                                                               width: 20,
-//                                                               height: 20,
-//                                                               decoration:
-//                                                                   BoxDecoration(
-//                                                                 image: DecorationImage(
-//                                                                     image: AssetImage(
-//                                                                         'gambar/simpan.png'),
-//                                                                     fit: BoxFit
-//                                                                         .fitHeight),
-//                                                               ),
-//                                                             ),
-//                                                             SizedBox(
-//                                                               width: 15,
-//                                                             ),
-//                                                             Text(
-//                                                               'simpan',
-//                                                               style: TextStyle(
-//                                                                   color: Colors
-//                                                                       .white,
-//                                                                   fontSize: 14),
-//                                                             )
-//                                                           ],
-//                                                         ),
-//                                                       ),
-//                                                     ),
-//                                                   ),
-//                                                 )
-//                                               ],
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       );
-//                                     });
-//                               },
-//                               child: Padding(
-//                                 padding: const EdgeInsets.only(
-//                                     left: 15.0, right: 15),
-//                                 child: Container(
-//                                     decoration: BoxDecoration(
-//                                       borderRadius: BorderRadius.circular(25),
-//                                       color: Colors.blue,
-//                                     ),
-//                                     width: MediaQuery.of(context).size.width,
-//                                     child: Center(
-//                                         child: Padding(
-//                                       padding: const EdgeInsets.all(15.0),
-//                                       child: Text(
-//                                         'Beri Review',
-//                                         style: TextStyle(
-//                                             color: Colors.white,
-//                                             fontSize: 14,
-//                                             fontWeight: FontWeight.w500),
-//                                       ),
-//                                     ))),
-//                               ),
-//                             )
-//                           : SizedBox(),
-//                       //
-//                       statusorder == 3
-//                           ? Padding(
-//                               padding: const EdgeInsets.only(
-//                                   left: 15.0, right: 15, top: 8),
-//                               child: Container(
-//                                   decoration: BoxDecoration(
-//                                     borderRadius: BorderRadius.circular(25),
-//                                     color: Colors.red,
-//                                   ),
-//                                   width: MediaQuery.of(context).size.width,
-//                                   child: Center(
-//                                       child: Padding(
-//                                     padding: const EdgeInsets.all(15.0),
-//                                     child: Text(
-//                                       'Kirim Laporan',
-//                                       style: TextStyle(
-//                                           color: Colors.white,
-//                                           fontSize: 14,
-//                                           fontWeight: FontWeight.w500),
-//                                     ),
-//                                   ))),
-//                             )
-//                           : SizedBox(),
-//                       //
-//                       SizedBox(
-//                         height: 5,
-//                       ),
-                        ],
-                      ),
-                      // Positioned(
-                      //     // top: 10.h,
-                      //     top: MediaQuery.of(context).size.height,
-                      //     bottom: 0,
-                      //     left: 0,
-                      //     right: 0,
-                      //     child: Text('batal order')),
-                    ))),
-              ],
-            ),
+                                                                            // color: Colors.blue[50],
+
+                                                                            borderRadius: BorderRadius.circular(25)),
+                                                                        child: Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                              left: 10.0, right: 10, top: 15),
+                                                                          child: TextField(
+                                                                            // controller: email,
+
+                                                                            // textAlign: TextAlign.left,
+
+                                                                            // ignore: unnecessary_new
+
+                                                                            decoration: new InputDecoration(
+                                                                              fillColor: Colors.blue[50],
+                                                                              filled: true,
+                                                                              contentPadding: EdgeInsets.only(
+                                                                                  left: 10, right: 0, top: 20),
+                                                                              hintText: 'Tulis review disini',
+                                                                              hintStyle: TextStyle(
+                                                                                  color: Colors.grey, fontSize: 12),
+                                                                              border: OutlineInputBorder(
+                                                                                  borderRadius: const BorderRadius.all(
+                                                                                    Radius.circular(10.0),
+                                                                                  ),
+                                                                                  borderSide: BorderSide.none),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+
+                                                                      GestureDetector(
+                                                                        onTap: () {
+                                                                          addData();
+                                                                        },
+                                                                        child: Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                              left: 150.0, right: 10, top: 10),
+                                                                          child: Container(
+                                                                            decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(15),
+                                                                                color: Colors.blue[300]),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.only(
+                                                                                  left: 0,
+                                                                                  right: 0,
+                                                                                  top: 12,
+                                                                                  bottom: 12),
+                                                                              child: Row(
+                                                                                mainAxisAlignment:
+                                                                                    MainAxisAlignment.spaceEvenly,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    child: Icon(
+                                                                                      Icons.save_outlined,
+                                                                                      color: white,
+                                                                                      size: 26,
+                                                                                    ),
+                                                                                  ),
+                                                                                  Text(
+                                                                                    'simpan',
+                                                                                    style: TextStyle(
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Colors.white,
+                                                                                        fontSize: 14),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 15.0, right: 15),
+                                                      child: Container(
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(25),
+                                                            color: Colors.blue,
+                                                          ),
+                                                          width: MediaQuery.of(context).size.width,
+                                                          child: Center(
+                                                              child: Padding(
+                                                            padding: const EdgeInsets.all(15.0),
+                                                            child: Text(
+                                                              'Beri Ulasan',
+                                                              style: TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.w500),
+                                                            ),
+                                                          ))),
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                            // SizedBox(
+                                            //   height: 5,
+                                            // ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 15.0, right: 15, top: 8),
+                                              child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(25),
+                                                    color: redDanger,
+                                                  ),
+                                                  width: MediaQuery.of(context).size.width,
+                                                  child: Center(
+                                                      child: Padding(
+                                                    padding: const EdgeInsets.all(15.0),
+                                                    child: Text(
+                                                      'Kirim Laporan',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500),
+                                                    ),
+                                                  ))),
+                                            ),
+                                            SizedBox(
+                                              height: 40,
+                                            ),
+
+                                            //
+
+                                            //
+                                          ],
+                                        ))
+                                      : SizedBox(),
+                                ],
+                              )
+                      ],
+                    ),
+                  ))
+                ])),
           ));
     }
   }
 
   var bintang;
-//   //
   bool showWork = false;
   bool isloading = false;
   @override
   void initState() {
     getDataListHome();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 4), () {
       setState(() {
         isloading = !isloading;
       });
     });
-    Timer.periodic(Duration(seconds: 50), (timer) {
+    Timer.periodic(Duration(seconds: 30), (timer) {
       var data = getDataListHome();
       print(data);
       if (statusorder == 3) {
@@ -849,7 +1108,8 @@ class _StepOrderState extends State<StepOrder> {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
     var response = await http
-        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+        // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${1066}')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
       "Authorization": "Bearer $customer",
@@ -894,20 +1154,21 @@ class _StepOrderState extends State<StepOrder> {
   late String latitude;
   late String longitude;
   late String orderan;
-  late String awal;
+  late List awal;
   late List orderansemua;
   late int isdone;
   late int isdonekedua;
-  late String kedua;
-  late String terakhir;
+
+  late List terakhir;
   late int isdoneterakhir;
   late String latitudekedua;
   late String longitudekedua;
   getDataListorderStep() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response =
-        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${988}')), headers: {
+    var response = await http
+        // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${widget.orderid}')), headers: {
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${1066}')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
       "Authorization": "Bearer $customer",
@@ -919,22 +1180,23 @@ class _StepOrderState extends State<StepOrder> {
     //   print('ada');
     // }
     var converDataToJsonsteporder = json.decode(response.body);
+    print(converDataToJsonsteporder);
     orderansemua = converDataToJsonsteporder['stepMiddle'];
     _selectedIndex = List<bool>.filled(orderansemua.length, false, growable: true);
+    print(orderansemua);
     setState(() {
-      print(orderansemua);
-      awal = converDataToJsonsteporder['stepStart'][0]['step_name']; //ambil order
+      awal = converDataToJsonsteporder['stepStart']; //ambil order
       isdone = converDataToJsonsteporder['stepStart'][0]['is_done']; //isdone ambil order
       latitude = converDataToJsonsteporder['stepStart'][0]['latitude']; //latitude ambil order
       longitude = converDataToJsonsteporder['stepStart'][0]['longitude']; //longitude ambil order
-      kedua = converDataToJsonsteporder['stepStart'][1]['step_name']; //sampai rumah pelanggan
+
       isdonekedua = converDataToJsonsteporder['stepStart'][1]['is_done']; //isdone sampai rumah pelanggan
       latitudekedua = converDataToJsonsteporder['stepStart'][1]['latitude']; //latitude sampai rumah
       longitudekedua = converDataToJsonsteporder['stepStart'][1]['longitude']; //longitude sampai rumah
-      terakhir = converDataToJsonsteporder['stepEnd'][0]['step_name'];
+      terakhir = converDataToJsonsteporder['stepEnd'];
       isdoneterakhir = converDataToJsonsteporder['stepEnd'][0]['is_done'];
       //  orderan=orderansemua['service_name'];
-      print(converDataToJsonsteporder);
+
       // latitude = steporder[0]['time'];
       // invoice = converDataToJson['invoice'];
       // status = converDataToJson['payments']['status'];
@@ -952,7 +1214,7 @@ class _StepOrderState extends State<StepOrder> {
   }
 
   String location = 'Null, Press Button';
-  String Address = 'search';
+  String Address = 'Search';
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
     LocationPermission permission;

@@ -4,6 +4,7 @@ import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Components/utils.dart';
 import 'package:customer/View/Home/lanjutpembayaran.dart';
+import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:loading/loading.dart';
 
 // ignore: must_be_immutable
 class Aturjadwal extends StatefulWidget {
@@ -27,9 +29,12 @@ class Aturjadwal extends StatefulWidget {
   String? id;
   String? totalharga;
   List? quantity;
+  List? isChecked;
+  Function? callback;
 
   Aturjadwal(
       {Key? key,
+      this.callback,
       this.iddnama,
       this.iddharga,
       this.iddata,
@@ -38,6 +43,7 @@ class Aturjadwal extends StatefulWidget {
       this.longitude,
       this.latitude,
       this.id,
+      this.isChecked,
       this.quantity,
       this.totalharga})
       : super(key: key);
@@ -79,90 +85,119 @@ class _AturjadwalState extends State<Aturjadwal> {
 
   Widget? _buildItem(String item, Animation<double> animation, int index) {
     if (item != 0 || datahalaman![index] != 0) {
-      return SizeTransition(
-          sizeFactor: animation,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Container(
-              height: MediaQuery.of(context).size.height / 5,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[200]!),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: ListTile(
-                  title: Text('${datahalaman![index]['name']}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey)),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'gambar/rupiah.png',
-                          width: 25,
-                          height: 25,
+      if (datahalaman![index] == 0) {
+        return SizedBox();
+      } else {
+        return SizeTransition(
+            sizeFactor: animation,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                height: MediaQuery.of(context).size.height / 5,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[200]!),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: ListTile(
+                    title: Text(datahalaman![index]['name'] ?? '',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey)),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'gambar/rupiah.png',
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.fill,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                              NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                                  .format(int.parse('${item}')),
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.yellow[800])),
+                        ],
+                      ),
+                    ),
+                    trailing: IconButton(
+                        icon: Image.asset(
+                          'gambar/Delete.png',
+                          width: 20,
+                          height: 20,
                           fit: BoxFit.fill,
                         ),
-                        SizedBox(width: 10),
-                        Text(
-                            NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
-                                .format(int.parse('${item}')),
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.yellow[800])),
-                      ],
-                    ),
+                        onPressed: () async {
+                          _removeItem(index);
+                          // getdata();
+                          setState(() {
+                            hargatotal = iddharga!.reduce((a, b) => a + b);
+                          });
+                        }),
                   ),
-                  trailing: IconButton(
-                      icon: Image.asset(
-                        'gambar/Delete.png',
-                        width: 20,
-                        height: 20,
-                        fit: BoxFit.fill,
-                      ),
-                      onPressed: () async {
-                        iddharga!.length == 1
-                            ? showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: SpinKitPouringHourGlassRefined(
-                                      color: Colors.blue,
-                                      size: 50.0,
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                          onPressed: () {
-                                            // _dismissDialog();
-                                          },
-                                          child: Center(child: Text('tidak boleh kosong!!!'))),
-                                    ],
-                                  );
-                                })
-                            : _removeItem(index);
-                        // getdata();
-                        setState(() {
-                          hargatotal = iddharga!.reduce((a, b) => a + b);
-                        });
-                      }),
                 ),
               ),
-            ),
-          ));
+            ));
+      }
     } else {
       return null;
     }
   }
 
   //
-  void _removeItem(int i) {
-    int removedItem = iddharga!.removeAt(i);
-    // iddata!.removeAt(i);
-    // iddnama!.removeAt(i);
-    // datahalaman!.elementAt(i);
-    AnimatedListRemovedItemBuilder builder = (context, animation) {
-      return _buildItem(removedItem.toString(), animation, i)!;
-    };
-    _key.currentState!.removeItem(i, builder);
+  Future _removeItem(int i) async {
+    isChecked![i] = false;
+    var isnull = isChecked!.every((element) => element == false);
+    if (await isnull) {
+      isChecked![i] = true;
+      print(isnull);
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: SpinKitPouringHourGlassRefined(
+                color: Colors.blue,
+                size: 50.0,
+              ),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      // _dismissDialog();
+                    },
+                    child: Center(child: Text('tidak boleh kosong!!!'))),
+              ],
+            );
+          });
+    } else {
+      print(isnull);
+      // AnimatedListRemovedItemBuilder builder = (context, animation) {
+      //   return _buildItem(iddharga.toString(), animation, i)!;
+      // };
+      _key.currentState!.removeItem(i, (_, animation) {
+        return SizeTransition(
+          sizeFactor: animation,
+          child: const Card(margin: EdgeInsets.all(10), elevation: 10, color: white, child: SizedBox()),
+        );
+      }, duration: const Duration(seconds: 2));
+      setState(() {
+        // datahalaman!.elementAt(i);
+        isloading = false;
+        iddata![i] = 0;
+        iddnama![i] = 0;
+        datahalaman![i] = 0;
+        qty![i] = 0;
+        iddharga![i] = 0;
+        isChecked![i] = false;
+        hargatotal = iddharga!.reduce((a, b) => a + b);
+      });
+      print(iddharga);
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          isloading = true;
+        });
+      });
+    }
   }
 
   List? dataOrder = [];
@@ -173,6 +208,7 @@ class _AturjadwalState extends State<Aturjadwal> {
   List? iddnama;
   List<int>? iddharga;
   List<int>? qty;
+  List? isChecked;
   late int? hargatotal;
 
   Future cleardata() async {
@@ -182,23 +218,25 @@ class _AturjadwalState extends State<Aturjadwal> {
       iddnama = widget.iddnama!;
       iddharga = widget.iddharga!.cast<int>();
       qty = widget.quantity!.cast<int>();
-      // hargatotal = iddharga!.cast();
+      isChecked = widget.isChecked!;
+      // hargatotal = iddharga!.cast() as int?;
 
       // datahalaman!.removeWhere((element) => element == 0);
       // iddata!.removeWhere((element) => element == 0);
       // iddnama!.removeWhere((element) => element == 0);
       // iddharga!.removeWhere((element) => element == 0);
     });
-    for (var i = 0; i < iddata!.length; i++) {
-      if (iddata!.where((element) => element != 0) != 0) {
-        dataOrder!.add({"id": iddata![i], "qty": qty![i], "comment": iddnama![i]});
-      }
-    }
+
     var jumlah = iddharga!.reduce((a, b) => a + b).toString();
     hargatotal = int.parse(jumlah);
 
-    print(iddharga);
-    print(jumlah);
+    // print(iddharga);
+    print(iddata);
+    // print(iddnama);
+    print(datahalaman);
+    // print(qty);
+    // print(isChecked);
+    // print(jumlah);
     // print(hargatotal);
   }
 
@@ -227,12 +265,16 @@ class _AturjadwalState extends State<Aturjadwal> {
 
   semuajadwal() async {
 // print(months[current_mon-1]);
-
+    for (var i = 0; i < iddata!.length; i++) {
+      if (iddata!.where((element) => element != 0) != 0) {
+        dataOrder!.add({"id": iddata![i], "qty": qty![i], "comment": iddnama![i]});
+      }
+    }
     setState(() {
       final value = DateFormat('HH:mm').format(dateTime);
       waktu = value;
       // tanggalstack = ("$_selectedLocationstack");
-      final value2 = DateFormat('MM/dd/yyyy').format(dateTime);
+      final value2 = DateFormat('yyyy/MM/dd').format(dateTime);
       jadwal = value2;
       print(jadwal);
     });
@@ -258,7 +300,6 @@ class _AturjadwalState extends State<Aturjadwal> {
       // ignore: avoid_print
       // print(datalist);
       // print(service);
-      print(method);
     });
     return "Success";
   }
@@ -295,9 +336,6 @@ class _AturjadwalState extends State<Aturjadwal> {
       rumahid = converDataToJson['data'][1]['id'];
       // ignore: avoid_print
       // print(domisili);
-      print(apartement);
-      print(rumah);
-      print(rumahid);
     });
     return "Success";
   }
@@ -309,9 +347,6 @@ class _AturjadwalState extends State<Aturjadwal> {
   void alamat() async {
     Position position = await _getGeoLocationPosition();
     GetAddressFromLatLong(position);
-    print('$Address');
-    print('${position.latitude}');
-    print('${position.longitude}');
   }
 
   Future<Position> _getGeoLocationPosition() async {
@@ -349,12 +384,13 @@ class _AturjadwalState extends State<Aturjadwal> {
 
   Future<void> GetAddressFromLatLong(Position position) async {
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    print(placemarks);
+
     Placemark place = placemarks[0];
     Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
   }
 
+  static PageStorageBucket bucket = PageStorageBucket();
   bool isloading = false;
   @override
   Widget build(BuildContext context) {
@@ -374,398 +410,415 @@ class _AturjadwalState extends State<Aturjadwal> {
       );
     } else {
       return Scaffold(
-        appBar: null,
-        backgroundColor: white,
-        body: SafeArea(
-            top: false,
-            child: AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                    statusBarColor: white,
-                    statusBarIconBrightness: Brightness.dark,
-                    statusBarBrightness: Brightness.dark),
-                child: SingleChildScrollView(
-                    clipBehavior: Clip.none,
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(top: 30.w, left: 20.w, right: 20.w),
-                          height: ScreenUtil().setHeight(60.h),
-                          color: white,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context, true);
-                              },
-                              // ignore: avoid_unnecessary_containers
-                              child: Container(
-                                height: MediaQuery.of(context).size.height / 25,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  // color: Colors.blue[50],
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.arrow_back_ios_outlined,
-                                    color: darkGrey,
-                                    size: 20,
+          appBar: null,
+          backgroundColor: white,
+          body: DoubleBack(
+              child: new PageStorage(
+            bucket: bucket,
+            child: SafeArea(
+                top: false,
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: SystemUiOverlayStyle(
+                        statusBarColor: white,
+                        statusBarIconBrightness: Brightness.dark,
+                        statusBarBrightness: Brightness.dark),
+                    child: SingleChildScrollView(
+                        clipBehavior: Clip.none,
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 30.w, left: 20.w, right: 20.w),
+                              height: ScreenUtil().setHeight(60.h),
+                              color: white,
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                GestureDetector(
+                                  onTap: () async {
+                                    setState(() {
+                                      datahalaman = datahalaman;
+                                      iddata = iddata;
+                                      iddnama = iddnama;
+                                      iddharga = iddharga;
+                                      qty = qty;
+                                      isChecked = isChecked;
+                                    });
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height / 25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      // color: Colors.blue[50],
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.arrow_back_ios_outlined,
+                                        color: darkGrey,
+                                        size: 20,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                'Atur Jadwal',
-                                style: TextStyle(
-                                  color: darkGrey,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.w,
-                                ),
-                              ),
-                            ),
-                            SizedBox()
-                          ]),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 10.w, right: 10.w),
-                          margin: EdgeInsets.only(bottom: 10.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                child: Row(children: [
-                                  SizedBox(
-                                      width: 35.w,
-                                      height: 35.w,
-                                      child: Icon(
-                                        Icons.near_me_outlined,
-                                        color: darkGrey,
-                                      )),
-                                  Text(
-                                    ' Pengiriman',
-                                    textAlign: TextAlign.left,
+                                Center(
+                                  child: Text(
+                                    'Atur Jadwal',
                                     style: TextStyle(
                                       color: darkGrey,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14.w,
+                                      fontSize: 16.w,
                                     ),
-                                  )
-                                ]),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    // tampil2 = !tampil2;
-                                  });
-                                },
-                                child: Text(
-                                  'Sesuaikan',
-                                  style: TextStyle(
-                                      color: ligthgreen,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.w,
-                                      decoration: TextDecoration.underline),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                            padding: const EdgeInsets.all(15.0),
-                            width: MediaQuery.of(context).size.width - 60,
-                            // height: MediaQuery.of(context).size.height / 15,
-                            decoration: BoxDecoration(color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
-                            child: Center(
-                                child: Text(
-                              Address,
-                              style: TextStyle(fontSize: 12, color: darkGrey),
-                            ))),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Text(
-                          'Tipe Domisili',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
-                        ),
-                        //
-                        Row(
-                          children: [
-                            Expanded(
-                              child: RadioListTile(
-                                title: Text(
-                                  '${apartement}',
-                                  style: TextStyle(color: darkGrey, fontSize: 14.sp, fontWeight: FontWeight.w500),
-                                ),
-                                value: 0,
-                                groupValue: _groupValue,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _groupValue = value!;
-                                    result = apartement;
-                                    idalamat = apartmentid;
-                                    getDataDomisili();
-                                    print(idalamat);
-                                    print(result);
-                                  });
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: RadioListTile(
-                                title: Text(
-                                  '${rumah}',
-                                  style: TextStyle(color: darkGrey, fontSize: 14.sp, fontWeight: FontWeight.w500),
-                                ),
-                                value: 1,
-                                groupValue: _groupValue,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    getDataDomisili();
-                                    _groupValue = value!;
-                                    result1 = rumah;
-                                    idalamat = rumahid;
-                                    print(result1);
-                                    print(idalamat);
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        Text(
-                          'Tambahkan Catatan Alamat',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
-                        ),
-
-                        Container(
-                          padding: const EdgeInsets.all(15.0),
-                          width: MediaQuery.of(context).size.width - 30,
-                          decoration: BoxDecoration(
-                              // color: Colors.blue[50],
-                              borderRadius: BorderRadius.circular(25)),
-                          child: TextField(
-                            controller: address_note,
-                            // textAlign: TextAlign.left,
-                            // ignore: unnecessary_new
-                            decoration: new InputDecoration(
-                              fillColor: Colors.blue[50],
-                              filled: true,
-                              contentPadding: EdgeInsets.only(left: 20, right: 20, top: 20),
-                              hintText: 'Tulis catatan disini',
-                              // prefixIcon: Padding(
-                              //   padding: const EdgeInsets.all(20.0),
-                              //   child: Image.asset(
-                              //     'gambar/email.png',
-                              //     width: 25,
-                              //     height: 25,
-                              //     fit: BoxFit.fill,
-                              //   ),
-                              // ),
-                              hintStyle: TextStyle(color: Colors.grey),
-                              border: OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0),
                                   ),
-                                  borderSide: BorderSide.none),
+                                ),
+                                SizedBox()
+                              ]),
                             ),
-                          ),
-                        ),
-                        //
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Text(
-                          'Jadwal',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        SizedBox(
-                          width: 300.w,
-                          child: Container(
-                            padding: EdgeInsets.all(20.w),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: softGrey, width: 0.5),
-                                borderRadius: BorderRadius.circular(20.w)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Container(
+                              padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                              margin: EdgeInsets.only(bottom: 10.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    child: Row(children: [
+                                      SizedBox(
+                                          width: 35.w,
+                                          height: 35.w,
+                                          child: Icon(
+                                            Icons.near_me_outlined,
+                                            color: darkGrey,
+                                          )),
+                                      Text(
+                                        ' Pengiriman',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: darkGrey,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.w,
+                                        ),
+                                      )
+                                    ]),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        // tampil2 = !tampil2;
+                                      });
+                                    },
+                                    child: Text(
+                                      'Sesuaikan',
+                                      style: TextStyle(
+                                          color: ligthgreen,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.w,
+                                          decoration: TextDecoration.underline),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                                padding: const EdgeInsets.all(15.0),
+                                width: MediaQuery.of(context).size.width - 60,
+                                // height: MediaQuery.of(context).size.height / 15,
+                                decoration:
+                                    BoxDecoration(color: Colors.blue[50], borderRadius: BorderRadius.circular(8)),
+                                child: Center(
+                                    child: Text(
+                                  Address,
+                                  style: TextStyle(fontSize: 12, color: darkGrey),
+                                ))),
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                            Text(
+                              'Tipe Domisili',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
+                            ),
+                            //
+                            Row(
                               children: [
-                                // buildDatePicker(),
-                                // Text('Setup Date'),
-
-                                GestureDetector(
-                                    onTap: () {
-                                      Utils.showSheet(
-                                        context,
-                                        child: buildDatePicker(),
-                                        onClicked: () {
-                                          // Utils.showSheet(context, 'Selected "$value"');
-
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                Expanded(
+                                  child: RadioListTile(
+                                    title: Text(
+                                      '${apartement}',
+                                      style: TextStyle(color: darkGrey, fontSize: 14.sp, fontWeight: FontWeight.w500),
+                                    ),
+                                    value: 0,
+                                    groupValue: _groupValue,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        _groupValue = value!;
+                                        result = apartement;
+                                        idalamat = apartmentid;
+                                        getDataDomisili();
+                                        print(idalamat);
+                                        print(result);
+                                      });
                                     },
-                                    child: Container(
-                                        padding: EdgeInsets.all(20.w),
-                                        decoration:
-                                            BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(20.w)),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(
-                                              '${dateTime.day}',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
-                                            ),
-                                            Text(
-                                              '${_month[dateTime.month - 1]}',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
-                                            ),
-                                            Text(
-                                              '${dateTime.year}',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
-                                            ),
-                                          ],
-                                        ))),
-                                const SizedBox(height: 24),
-
-                                GestureDetector(
-                                    onTap: () {
-                                      Utils.showSheet(
-                                        context,
-                                        child: buildTimePicker(),
-                                        onClicked: () {
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  ),
+                                ),
+                                Expanded(
+                                  child: RadioListTile(
+                                    title: Text(
+                                      '${rumah}',
+                                      style: TextStyle(color: darkGrey, fontSize: 14.sp, fontWeight: FontWeight.w500),
+                                    ),
+                                    value: 1,
+                                    groupValue: _groupValue,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        getDataDomisili();
+                                        _groupValue = value!;
+                                        result1 = rumah;
+                                        idalamat = rumahid;
+                                        print(result1);
+                                        print(idalamat);
+                                      });
                                     },
-                                    child: Container(
-                                        padding: EdgeInsets.all(20.w),
-                                        decoration:
-                                            BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(20.w)),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(
-                                              'Pukul ',
-                                              style: TextStyle(
-                                                  fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
-                                            ),
-                                            dateTime.minute != 0
-                                                ? Text(
-                                                    '${dateTime.hour}:${dateTime.minute}',
-                                                    style: TextStyle(
-                                                        fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
-                                                  )
-                                                : Text(
-                                                    '${dateTime.hour}:${dateTime.minute}0',
-                                                    style: TextStyle(
-                                                        fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
-                                                  ),
-                                            // Text(''),
-                                          ],
-                                        ))),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 20.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Layanan yang dipilih',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
-                              ),
-                              hargatotal != 0
-                                  ? Text(
-                                      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
-                                          .format(hargatotal),
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.green))
-                                  : Text(
-                                      NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
-                                          .format(hargatotal!),
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.green)),
-                            ],
-                          ),
-                        ),
 
-                        //
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width - 30,
-                          padding: EdgeInsets.only(left: 20.w, right: 20.w),
-                          child: AnimatedList(
-                            key: _key,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            initialItemCount: datahalaman!.length,
-                            itemBuilder: (context, index, animation) {
-                              return _buildItem('${iddharga![index]}', animation, index)!;
-                            },
-                          ),
-                        ),
-                        //
-                        //
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Align(
-                            alignment: Alignment.bottomCenter,
-                            child: GestureDetector(
-                              onTap: () {
-                                semuajadwal();
-                                print(jadwal);
+                            Text(
+                              'Tambahkan Catatan Alamat',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
+                            ),
 
-                                Future.delayed(Duration(seconds: 3), () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) => LanjutPembayaran(
-                                              longitude: widget.longitude!,
-                                              latitude: widget.latitude!,
-                                              harga: hargatotal!,
-                                              nama: datahalaman!,
-                                              alamat: widget.alamat!,
-                                              jadwal: jadwal,
-                                              datajadwal: dateTime,
-                                              waktu: waktu,
-                                              domisiliproblem: address_note.text,
-                                              // apartement: idapartement!,
-                                              // rumah: idrumah ,
-                                              idalamat: idalamat!,
-                                              iddata: dataOrder!,
-                                              id: iddata!)));
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.height * 0.08,
-                                  decoration:
-                                      BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(25)),
-                                  child: Center(
-                                      child: Text('Lanjut Pembayaran',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                          ))),
+                            Container(
+                              padding: const EdgeInsets.all(15.0),
+                              width: MediaQuery.of(context).size.width - 30,
+                              decoration: BoxDecoration(
+                                  // color: Colors.blue[50],
+                                  borderRadius: BorderRadius.circular(25)),
+                              child: TextField(
+                                controller: address_note,
+                                // textAlign: TextAlign.left,
+                                // ignore: unnecessary_new
+                                decoration: new InputDecoration(
+                                  fillColor: Colors.blue[50],
+                                  filled: true,
+                                  contentPadding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                                  hintText: 'Tulis catatan disini',
+                                  // prefixIcon: Padding(
+                                  //   padding: const EdgeInsets.all(20.0),
+                                  //   child: Image.asset(
+                                  //     'gambar/email.png',
+                                  //     width: 25,
+                                  //     height: 25,
+                                  //     fit: BoxFit.fill,
+                                  //   ),
+                                  // ),
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10.0),
+                                      ),
+                                      borderSide: BorderSide.none),
                                 ),
                               ),
-                            )),
-                      ],
-                    )))),
-      );
+                            ),
+                            //
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Text(
+                              'Jadwal',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            SizedBox(
+                              width: 300.w,
+                              child: Container(
+                                padding: EdgeInsets.all(20.w),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: softGrey, width: 0.5),
+                                    borderRadius: BorderRadius.circular(20.w)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // buildDatePicker(),
+                                    // Text('Setup Date'),
+
+                                    GestureDetector(
+                                        onTap: () {
+                                          Utils.showSheet(
+                                            context,
+                                            child: buildDatePicker(),
+                                            onClicked: () {
+                                              // Utils.showSheet(context, 'Selected "$value"');
+
+                                              Navigator.pop(context, {setState(() {})});
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.all(20.w),
+                                            decoration: BoxDecoration(
+                                                color: lightBlue, borderRadius: BorderRadius.circular(20.w)),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  '${dateTime.day}',
+                                                  style: TextStyle(
+                                                      fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
+                                                ),
+                                                Text(
+                                                  '${_month[dateTime.month - 1]}',
+                                                  style: TextStyle(
+                                                      fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
+                                                ),
+                                                Text(
+                                                  '${dateTime.year}',
+                                                  style: TextStyle(
+                                                      fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
+                                                ),
+                                              ],
+                                            ))),
+                                    const SizedBox(height: 24),
+
+                                    GestureDetector(
+                                        onTap: () {
+                                          Utils.showSheet(
+                                            context,
+                                            child: buildTimePicker(),
+                                            onClicked: () {
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.all(20.w),
+                                            decoration: BoxDecoration(
+                                                color: lightBlue, borderRadius: BorderRadius.circular(20.w)),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  'Pukul ',
+                                                  style: TextStyle(
+                                                      fontSize: 18.sp, fontWeight: FontWeight.w600, color: darkGrey),
+                                                ),
+                                                dateTime.minute != 0
+                                                    ? Text(
+                                                        '${dateTime.hour}:${dateTime.minute}',
+                                                        style: TextStyle(
+                                                            fontSize: 18.sp,
+                                                            fontWeight: FontWeight.w600,
+                                                            color: darkGrey),
+                                                      )
+                                                    : Text(
+                                                        '${dateTime.hour}:${dateTime.minute}0',
+                                                        style: TextStyle(
+                                                            fontSize: 18.sp,
+                                                            fontWeight: FontWeight.w600,
+                                                            color: darkGrey),
+                                                      ),
+                                                // Text(''),
+                                              ],
+                                            ))),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 20.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Layanan yang dipilih',
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
+                                  ),
+                                  hargatotal != 0
+                                      ? Text(
+                                          NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                                              .format(hargatotal),
+                                          style:
+                                              TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.green))
+                                      : Text(
+                                          NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                                              .format(hargatotal!),
+                                          style: TextStyle(
+                                              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.green)),
+                                ],
+                              ),
+                            ),
+
+                            //
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width - 30,
+                              padding: EdgeInsets.only(left: 20.w, right: 20.w),
+                              child: AnimatedList(
+                                key: _key,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                initialItemCount: datahalaman!.length,
+                                itemBuilder: (context, index, animation) {
+                                  return _buildItem('${iddharga![index]}', animation, index)!;
+                                },
+                              ),
+                            ),
+                            //
+                            //
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    semuajadwal();
+                                    print(jadwal);
+
+                                    Future.delayed(Duration(seconds: 3), () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) => LanjutPembayaran(
+                                                  longitude: widget.longitude!,
+                                                  latitude: widget.latitude!,
+                                                  harga: hargatotal!,
+                                                  nama: datahalaman!,
+                                                  alamat: widget.alamat!,
+                                                  jadwal: jadwal,
+                                                  datajadwal: dateTime,
+                                                  waktu: waktu,
+                                                  domisiliproblem: address_note.text,
+                                                  // apartement: idapartement!,
+                                                  // rumah: idrumah ,
+                                                  idalamat: idalamat!,
+                                                  iddata: dataOrder!,
+                                                  id: iddata!)));
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: MediaQuery.of(context).size.height * 0.08,
+                                      decoration:
+                                          BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(25)),
+                                      child: Center(
+                                          child: Text('Lanjut Pembayaran',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ))),
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        )))),
+          )));
     }
   }
 

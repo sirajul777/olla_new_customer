@@ -1,3 +1,4 @@
+import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/keranjang.dart';
 import 'package:customer/View/Pages/home.dart';
 import 'package:customer/View/TabDashboard/profile.dart';
@@ -63,11 +64,9 @@ class _DashboardState extends State<Dashboard> {
       floatingActionButton: FloatingActionButton(
         child: Padding(
           padding: const EdgeInsets.all(0),
-          child: Image.asset(
-            'gambar/Buy.png',
-            width: 30,
-            height: 30,
-            fit: BoxFit.fill,
+          child: Icon(
+            Icons.local_mall,
+            color: white,
           ),
         ),
         onPressed: () {
@@ -106,15 +105,11 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Image.asset(
-                            'gambar/Home.png',
-                            width: 25,
-                            height: 25,
-                            fit: BoxFit.fill,
-                            color: currentTab == 0 ? Colors.blue : Colors.grey,
-                          ),
-                        ),
+                            padding: const EdgeInsets.all(0),
+                            child: Icon(
+                              Icons.home_outlined,
+                              color: currentTab == 0 ? primary : softGrey,
+                            )),
                         Text(
                           'Home',
                           style: TextStyle(fontSize: 12.sp, color: currentTab == 0 ? Colors.blue : Colors.grey),
@@ -138,12 +133,9 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(0),
-                          child: Image.asset(
-                            'gambar/email.png',
-                            width: 25,
-                            height: 25,
-                            fit: BoxFit.fill,
-                            color: currentTab == 1 ? Colors.blue : Colors.grey,
+                          child: Icon(
+                            Icons.forward_to_inbox,
+                            color: currentTab == 1 ? primary : softGrey,
                           ),
                         ),
                         Text(
@@ -174,12 +166,9 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(0),
-                          child: Image.asset(
-                            'gambar/Paper.png',
-                            width: 25,
-                            height: 25,
-                            fit: BoxFit.fill,
-                            color: currentTab == 2 ? Colors.blue : Colors.grey,
+                          child: Icon(
+                            Icons.description_outlined,
+                            color: currentTab == 2 ? primary : softGrey,
                           ),
                         ),
                         Text(
@@ -203,12 +192,9 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(0),
-                          child: Image.asset(
-                            'gambar/Profile.png',
-                            width: 25,
-                            height: 25,
-                            fit: BoxFit.fill,
-                            color: currentTab == 3 ? Colors.blue : Colors.grey,
+                          child: Icon(
+                            Icons.supervisor_account_outlined,
+                            color: currentTab == 3 ? primary : softGrey,
                           ),
                         ),
                         Text(

@@ -53,31 +53,8 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
             elevation: 0,
             backgroundColor: Colors.transparent,
             title: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  // ignore: avoid_unnecessary_containers
-                  child: Container(
-                    height: MediaQuery.of(context).size.height / 25,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: Colors.blue[50],
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.arrow_back_ios_outlined,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 80,
-                ),
                 GestureDetector(
                   onTap: () {
                     // print(datalist);
@@ -88,10 +65,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                     },
                     child: const Text(
                       "Detail Pembayaran",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: darkGrey, fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -134,10 +108,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                               children: const [
                                 Text(
                                   'Nomor Tagihan ',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: darkGrey),
                                 ),
                                 SizedBox(
                                   width: 5,
@@ -460,37 +431,44 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                                   )))),
                         ),
                       ),
+
                       //
                     ],
                   ),
+                  Positioned(
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      top: MediaQuery.of(context).padding.top,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
+                              (Route<dynamic> route) => false);
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(top: 30.w),
+                          padding: EdgeInsets.only(bottom: 20.0),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Text('Batalkan Pesanan',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    color: redDanger)),
+                          ),
+                        ),
+                      ))
                   //ini unutk stack kedua
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
-                          (Route<dynamic> route) => false);
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.only(bottom: 20.0),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text('Batalkan Pesanan',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                color: redDanger)),
-                      ),
-                    ),
-                  )
                 ],
               ),
               // ini yang container sukses failed dan null
               status == 'SUCCEEDED'
                   ? Center(
                       child: Padding(
-                      padding: const EdgeInsets.only(left: 50.0, right: 50, top: 70),
+                      padding: EdgeInsets.only(left: 20.0, right: 20, top: 320.w),
                       child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10), color: Colors.green.withOpacity(0.7)),
@@ -514,7 +492,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                   : status == 'PENDING'
                       ? Center(
                           child: Padding(
-                          padding: const EdgeInsets.only(left: 50.0, right: 50, top: 70),
+                          padding: EdgeInsets.only(left: 20.0, right: 20, top: 320.w),
                           child: Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10), color: Colors.indigo.withOpacity(0.7)),
@@ -541,7 +519,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                               onTap: () {},
                               child: Center(
                                   child: Padding(
-                                padding: const EdgeInsets.only(left: 50.0, right: 50, top: 70),
+                                padding: EdgeInsets.only(left: 20.0, right: 20, top: 320.w),
                                 child: Container(
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10), color: Colors.red.withOpacity(0.8)),
@@ -572,7 +550,7 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
                                   color: Colors.blue,
                                   size: 50.0,
                                 ),
-                              ))
+                              )),
             ],
           ));
     }
@@ -592,8 +570,10 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
   getDataListHome() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
+    print(customer);
     var response = await http
-        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+        // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${1066}')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
       "Authorization": "Bearer $customer",
@@ -735,13 +715,15 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
     Timer.periodic(const Duration(seconds: 10), (timer) {
       getDataListHome();
       if (status == "SUCCEEDED") {
+        _start = 0;
         timer.cancel();
 
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    StepOrder(invoice: invoice, orderid: widget.orderid, seluruhdata: widget.seluruh)));
+                    StepOrder(invoice: invoice, orderid: widget.orderid, seluruhdata: widget.seluruh)),
+            (Route<dynamic> route) => false);
       }
     });
   }

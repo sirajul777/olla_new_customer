@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
@@ -46,10 +47,7 @@ class _ListHomeState extends State<ListHome> {
 
   // ];
   showButtonLanjut() {
-    if (idharga!.length != 0 ||
-        idharga!.length != 0 ||
-        selectData!.length != 0 ||
-        isChecked!.any((element) => element != false)) {
+    if (selectData!.every((element) => false) == true || isChecked!.any((element) => element != false) == true) {
       setState(() {
         _showLanjutButton = true;
       });
@@ -61,9 +59,11 @@ class _ListHomeState extends State<ListHome> {
   }
 
   List? selectData = [];
+
   List? iddatta = [];
   List? idcomment = [];
-  List? idharga = [];
+  final PageStorageBucket bucket = PageStorageBucket();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -135,7 +135,6 @@ class _ListHomeState extends State<ListHome> {
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 16,
-                                fontFamily: 'comfortaa',
                               ),
                             ),
                           ),
@@ -184,21 +183,30 @@ class _ListHomeState extends State<ListHome> {
                                 print('$Address');
                                 print('${position.latitude}');
                                 print('${position.longitude}');
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) => Aturjadwal(
-                                              alamat: '$Address',
-                                              longitude: '${position.longitude}',
-                                              latitude: '${position.latitude}',
-                                              id: '${widget.id}',
-                                              datahalaman: selectData!,
-                                              iddata: iddatta!,
-                                              iddharga: harga,
-                                              iddnama: idcomment!,
-                                              quantity: qty,
-                                              totalharga: totalharga,
-                                            )));
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      // fullscreenDialog: true,
+                                      // transitionDuration: Duration(seconds: 1),
+                                      // transitionsBuilder: (context, animation, animationTime, child) {
+                                      //   animation = CurvedAnimation(parent: animation, curve: Curves.linearToEaseOut);
+
+                                      //   return ScaleTransition(scale: animation, child: child);
+                                      // },
+                                      builder: (context) => Aturjadwal(
+                                            alamat: '$Address',
+                                            longitude: '${position.longitude}',
+                                            latitude: '${position.latitude}',
+                                            id: '${widget.id}',
+                                            datahalaman: selectData!,
+                                            isChecked: isChecked,
+                                            iddnama: idcomment!,
+                                            iddata: iddatta!,
+                                            iddharga: harga,
+                                            totalharga: totalharga,
+                                            quantity: qty,
+                                          )),
+                                );
+                                ;
                                 print("oke");
                               },
                               child: Padding(
@@ -216,362 +224,384 @@ class _ListHomeState extends State<ListHome> {
                             ),
                           )
                         : null,
-                    body: SingleChildScrollView(
-                        child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 23.0, left: 20, right: 20),
-                              child: loading
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.white,
-                                        border: Border.all(color: Colors.amber),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.1),
-                                            spreadRadius: 1,
-                                            blurRadius: 5,
-                                            offset: Offset(0, 5), // changes position of shadow
-                                          ),
-                                        ],
-                                      ),
-                                      height: MediaQuery.of(context).size.height / 5,
-                                      width: double.infinity,
-                                      child: Center(
-                                          child: Padding(
-                                        padding: const EdgeInsets.only(top: 10, left: 30.0, right: 30),
-                                        child: Text(
-                                          'Demi memelihara unit pendingin ruangan diharapkan dilakukan pemeliharaan dalam jangka waktu 14 hari, sehingga unit pendingin ruangan tidak kotor karena debu dan kotoran, dan terhindar dari kerusakan yang diinginkan.',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 13, color: Colors.grey),
-                                        ),
-                                      )),
-                                    )
-                                  : Shimmer.fromColors(
-                                      child: Container(
-                                        height: MediaQuery.of(context).size.height / 5,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[500],
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                      baseColor: Colors.grey[100]!,
-                                      highlightColor: Colors.grey[300]!,
-                                      direction: ShimmerDirection.ltr,
-                                    ),
-                            ),
-
-                            //
-                            Padding(
-                              padding: const EdgeInsets.only(left: 80.0, right: 80),
-                              child: loading
-                                  ? Container(
-                                      height: MediaQuery.of(context).size.height / 16,
-                                      decoration:
-                                          BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(15)),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(35),
-                                              color: Colors.white,
-                                              image: DecorationImage(
-                                                  image: NetworkImage('${widget.gambar}'), fit: BoxFit.cover),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              widget.nama,
-                                              style: TextStyle(
-                                                  fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Shimmer.fromColors(
-                                      child: Container(
-                                        height: MediaQuery.of(context).size.height / 16,
-                                        decoration: BoxDecoration(
-                                            color: Colors.grey[500], borderRadius: BorderRadius.circular(20)),
-                                      ),
-                                      baseColor: Colors.grey[100]!,
-                                      highlightColor: Colors.grey[300]!,
-                                      direction: ShimmerDirection.ltr,
-                                    ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        //
-                        Container(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    body: WillPopScope(
+                      onWillPop: () async {
+                        Navigator.pop(context, true);
+                        return false;
+                      },
+                      child: new PageStorage(
+                          bucket: bucket,
+                          child: SingleChildScrollView(
+                              child: Column(
                             children: [
-                              Text('Pilih Tindakan',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[600])),
-                              //    const SizedBox(height: 10),
-                              // const Divider(),
-                              // const SizedBox(height: 10),
-                              ListView.builder(
-                                  controller: _controller,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: datalist == null ? 0 : datalist!.length,
-                                  itemBuilder: (context, index) {
-                                    return loading
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 20),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                border: Border.all(color: Colors.blue[100]!),
-                                                borderRadius: BorderRadius.circular(20),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey.withOpacity(0.1),
-                                                    spreadRadius: 1,
-                                                    blurRadius: 5,
-                                                    offset: Offset(0, 5), // changes position of shadow
-                                                  ),
-                                                ],
+                              Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 23.0, left: 20, right: 20),
+                                    child: loading
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: Colors.white,
+                                              border: Border.all(color: Colors.amber),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey.withOpacity(0.1),
+                                                  spreadRadius: 1,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 5), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            height: MediaQuery.of(context).size.height / 5,
+                                            width: double.infinity,
+                                            child: Center(
+                                                child: Padding(
+                                              padding: const EdgeInsets.only(top: 10, left: 30.0, right: 30),
+                                              child: Text(
+                                                'Demi memelihara unit pendingin ruangan diharapkan dilakukan pemeliharaan dalam jangka waktu 14 hari, sehingga unit pendingin ruangan tidak kotor karena debu dan kotoran, dan terhindar dari kerusakan yang diinginkan.',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(fontSize: 13, color: Colors.grey),
                                               ),
-                                              child: Stack(
-                                                clipBehavior: Clip.none,
-                                                children: [
-                                                  Theme(
-                                                    data: ThemeData(unselectedWidgetColor: Colors.blue[200]),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child: Column(
-                                                              // crossAxisAlignment: CrossAxisAlignment.start,
-                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            )),
+                                          )
+                                        : Shimmer.fromColors(
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.height / 5,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[500],
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                            ),
+                                            baseColor: Colors.grey[100]!,
+                                            highlightColor: Colors.grey[300]!,
+                                            direction: ShimmerDirection.ltr,
+                                          ),
+                                  ),
+
+                                  //
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 80.0, right: 80),
+                                    child: loading
+                                        ? Container(
+                                            height: MediaQuery.of(context).size.height / 16,
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue, borderRadius: BorderRadius.circular(15)),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(35),
+                                                    color: Colors.white,
+                                                    image: DecorationImage(
+                                                        image: NetworkImage('${widget.gambar}'), fit: BoxFit.cover),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Flexible(
+                                                  child: Text(
+                                                    widget.nama,
+                                                    style: TextStyle(
+                                                        fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Shimmer.fromColors(
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.height / 16,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey[500], borderRadius: BorderRadius.circular(20)),
+                                            ),
+                                            baseColor: Colors.grey[100]!,
+                                            highlightColor: Colors.grey[300]!,
+                                            direction: ShimmerDirection.ltr,
+                                          ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              //
+                              Container(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Pilih Tindakan',
+                                        style: TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey[600])),
+                                    //    const SizedBox(height: 10),
+                                    // const Divider(),
+                                    // const SizedBox(height: 10),
+                                    ListView.builder(
+                                        controller: _controller,
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: datalist == null ? 0 : datalist!.length,
+                                        itemBuilder: (context, index) {
+                                          return loading
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(left: 10.0, right: 10, top: 20),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(color: Colors.blue[100]!),
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey.withOpacity(0.1),
+                                                          spreadRadius: 1,
+                                                          blurRadius: 5,
+                                                          offset: Offset(0, 5), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Stack(
+                                                      clipBehavior: Clip.none,
+                                                      children: [
+                                                        Theme(
+                                                          data: ThemeData(unselectedWidgetColor: Colors.blue[200]),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 SizedBox(
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: <Widget>[
-                                                                      Flexible(
-                                                                        child: Text(
-                                                                          datalist![index]['name'],
-                                                                          style: TextStyle(
-                                                                              overflow: TextOverflow.clip,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Colors.grey[600],
-                                                                              fontSize: 13.sp),
+                                                                  width: 10,
+                                                                ),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    // crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        child: Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: <Widget>[
+                                                                            Flexible(
+                                                                              child: Text(
+                                                                                datalist![index]['name'],
+                                                                                style: TextStyle(
+                                                                                    overflow: TextOverflow.clip,
+                                                                                    fontWeight: FontWeight.bold,
+                                                                                    color: Colors.grey[600],
+                                                                                    fontSize: 13.sp),
+                                                                              ),
+                                                                            ),
+                                                                            Container(
+                                                                              child: GestureDetector(
+                                                                                onTap: () {
+                                                                                  checked(index: index);
+                                                                                  finalharga(indexs: index);
+                                                                                },
+                                                                                child: Container(
+                                                                                  height: 22.h,
+                                                                                  width: 22.w,
+                                                                                  decoration: BoxDecoration(
+                                                                                      color: isChecked![index]
+                                                                                          ? primary
+                                                                                          : transparent,
+                                                                                      borderRadius:
+                                                                                          BorderRadius.circular(5),
+                                                                                      border: Border.all(
+                                                                                          color: primary, width: 2.w)),
+                                                                                  child: Center(
+                                                                                      child: isChecked![index]
+                                                                                          ? Icon(
+                                                                                              Icons.done,
+                                                                                              size: 20,
+                                                                                              color: isChecked![index]
+                                                                                                  ? white
+                                                                                                  : primary,
+                                                                                            )
+                                                                                          : const SizedBox()),
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
                                                                         ),
                                                                       ),
-                                                                      Container(
-                                                                        child: GestureDetector(
-                                                                          onTap: () {
-                                                                            checked(index: index);
-                                                                            finalharga(indexs: index);
-                                                                          },
-                                                                          child: Container(
-                                                                            height: 22.h,
-                                                                            width: 22.w,
-                                                                            decoration: BoxDecoration(
-                                                                                color: isChecked![index]
-                                                                                    ? primary
-                                                                                    : transparent,
-                                                                                borderRadius: BorderRadius.circular(5),
-                                                                                border: Border.all(
-                                                                                    color: primary, width: 2.w)),
-                                                                            child: Center(
-                                                                                child: isChecked![index]
-                                                                                    ? Icon(
-                                                                                        Icons.done,
-                                                                                        size: 20,
-                                                                                        color: isChecked![index]
-                                                                                            ? white
-                                                                                            : primary,
-                                                                                      )
-                                                                                    : const SizedBox()),
-                                                                          ),
+                                                                      SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Text(
+                                                                        'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
+                                                                        textAlign: TextAlign.left,
+                                                                        style: TextStyle(
+                                                                            height: 1.5,
+                                                                            color: Colors.grey,
+                                                                            fontSize: 12),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height: 5,
+                                                                      ),
+                                                                      Center(
+                                                                        child: Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            Container(
+                                                                              // margin: EdgeInsets.only(
+                                                                              //     top: MediaQuery.of(context).size.height / 20),
+                                                                              width: 30,
+                                                                              height: 30,
+                                                                              decoration: BoxDecoration(
+                                                                                image: DecorationImage(
+                                                                                  image:
+                                                                                      AssetImage('gambar/rupiah.png'),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            // SizedBox(
+                                                                            //   width: 10,
+                                                                            // ),
+                                                                            // Text(
+                                                                            //   'Rp',
+                                                                            //   style: TextStyle(
+                                                                            //       fontWeight:
+                                                                            //           FontWeight
+                                                                            //               .w700,
+                                                                            //       color: Colors
+                                                                            //               .yellow[
+                                                                            //           600]),
+                                                                            // ),
+
+                                                                            Text(
+                                                                              NumberFormat.currency(
+                                                                                      locale: 'id',
+                                                                                      symbol: 'Rp ',
+                                                                                      decimalDigits: 0)
+                                                                                  .format(int.parse(
+                                                                                      datalist![index]['price_min'])),
+                                                                              style: TextStyle(
+                                                                                  fontWeight: FontWeight.w700,
+                                                                                  color: Colors.yellow[600]),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 5,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 5,
+                                                                            ),
+                                                                            Container(
+                                                                              width: 90.w,
+                                                                              height: 30.h,
+                                                                              padding: EdgeInsets.only(
+                                                                                  left: 5.w, right: 5.w),
+                                                                              decoration: BoxDecoration(
+                                                                                  borderRadius:
+                                                                                      BorderRadius.circular(5.w),
+                                                                                  color: lightBlue),
+                                                                              child: Row(
+                                                                                mainAxisAlignment:
+                                                                                    MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  GestureDetector(
+                                                                                    onTap: () {
+                                                                                      minQty(index);
+                                                                                    },
+                                                                                    child: Container(
+                                                                                        width: 22.w,
+                                                                                        height: 22.w,
+                                                                                        decoration: BoxDecoration(
+                                                                                            color: primary,
+                                                                                            borderRadius:
+                                                                                                BorderRadius.circular(
+                                                                                                    5.w)),
+                                                                                        child: const Center(
+                                                                                          child: Text(
+                                                                                            '-',
+                                                                                            style:
+                                                                                                TextStyle(color: white),
+                                                                                          ),
+                                                                                        )),
+                                                                                  ),
+                                                                                  Text('${qty[index]}',
+                                                                                      style: const TextStyle(
+                                                                                          color: darkGrey)),
+                                                                                  GestureDetector(
+                                                                                    onTap: () {
+                                                                                      addQty(index);
+                                                                                    },
+                                                                                    child: Container(
+                                                                                        width: 22.w,
+                                                                                        height: 22.w,
+                                                                                        padding:
+                                                                                            EdgeInsets.only(top: 5.w),
+                                                                                        decoration: BoxDecoration(
+                                                                                            color: primary,
+                                                                                            borderRadius:
+                                                                                                BorderRadius.circular(
+                                                                                                    5.w)),
+                                                                                        child: const Center(
+                                                                                          child: Text(
+                                                                                            '+',
+                                                                                            style:
+                                                                                                TextStyle(color: white),
+                                                                                          ),
+                                                                                        )),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
                                                                         ),
                                                                       )
                                                                     ],
                                                                   ),
                                                                 ),
-                                                                SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Text(
-                                                                  'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
-                                                                  textAlign: TextAlign.left,
-                                                                  style: TextStyle(
-                                                                      height: 1.5, color: Colors.grey, fontSize: 12),
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 5,
-                                                                ),
-                                                                Center(
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      Container(
-                                                                        // margin: EdgeInsets.only(
-                                                                        //     top: MediaQuery.of(context).size.height / 20),
-                                                                        width: 30,
-                                                                        height: 30,
-                                                                        decoration: BoxDecoration(
-                                                                          image: DecorationImage(
-                                                                            image: AssetImage('gambar/rupiah.png'),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      // SizedBox(
-                                                                      //   width: 10,
-                                                                      // ),
-                                                                      // Text(
-                                                                      //   'Rp',
-                                                                      //   style: TextStyle(
-                                                                      //       fontWeight:
-                                                                      //           FontWeight
-                                                                      //               .w700,
-                                                                      //       color: Colors
-                                                                      //               .yellow[
-                                                                      //           600]),
-                                                                      // ),
-
-                                                                      Text(
-                                                                        NumberFormat.currency(
-                                                                                locale: 'id',
-                                                                                symbol: 'Rp ',
-                                                                                decimalDigits: 0)
-                                                                            .format(int.parse(
-                                                                                datalist![index]['price_min'])),
-                                                                        style: TextStyle(
-                                                                            fontWeight: FontWeight.w700,
-                                                                            color: Colors.yellow[600]),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: 5,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width: 5,
-                                                                      ),
-                                                                      Container(
-                                                                        width: 90.w,
-                                                                        height: 30.h,
-                                                                        padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                                                                        decoration: BoxDecoration(
-                                                                            borderRadius: BorderRadius.circular(5.w),
-                                                                            color: lightBlue),
-                                                                        child: Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                minQty(index);
-                                                                              },
-                                                                              child: Container(
-                                                                                  width: 22.w,
-                                                                                  height: 22.w,
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: primary,
-                                                                                      borderRadius:
-                                                                                          BorderRadius.circular(5.w)),
-                                                                                  child: const Center(
-                                                                                    child: Text(
-                                                                                      '-',
-                                                                                      style: TextStyle(color: white),
-                                                                                    ),
-                                                                                  )),
-                                                                            ),
-                                                                            Text('${qty[index]}',
-                                                                                style:
-                                                                                    const TextStyle(color: darkGrey)),
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                addQty(index);
-                                                                              },
-                                                                              child: Container(
-                                                                                  width: 22.w,
-                                                                                  height: 22.w,
-                                                                                  padding: EdgeInsets.only(top: 5.w),
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: primary,
-                                                                                      borderRadius:
-                                                                                          BorderRadius.circular(5.w)),
-                                                                                  child: const Center(
-                                                                                    child: Text(
-                                                                                      '+',
-                                                                                      style: TextStyle(color: white),
-                                                                                    ),
-                                                                                  )),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                )
                                                               ],
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                        // Positioned(
+                                                        //   bottom: 14,
+                                                        //   //  left: 0,
+                                                        //   right: 30,
+                                                        //   //  top:10,
+                                                        //   child:
+                                                        // ),
+                                                      ],
                                                     ),
                                                   ),
-                                                  // Positioned(
-                                                  //   bottom: 14,
-                                                  //   //  left: 0,
-                                                  //   right: 30,
-                                                  //   //  top:10,
-                                                  //   child:
-                                                  // ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Shimmer.fromColors(
-                                              child: Container(
-                                                height: MediaQuery.of(context).size.height / 4,
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey[500],
-                                                  borderRadius: BorderRadius.circular(20),
-                                                ),
-                                              ),
-                                              baseColor: Colors.grey[100]!,
-                                              highlightColor: Colors.grey[300]!,
-                                              direction: ShimmerDirection.ltr,
-                                            ),
-                                          );
-                                  }),
+                                                )
+                                              : Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Shimmer.fromColors(
+                                                    child: Container(
+                                                      height: MediaQuery.of(context).size.height / 4,
+                                                      width: double.infinity,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey[500],
+                                                        borderRadius: BorderRadius.circular(20),
+                                                      ),
+                                                    ),
+                                                    baseColor: Colors.grey[100]!,
+                                                    highlightColor: Colors.grey[300]!,
+                                                    direction: ShimmerDirection.ltr,
+                                                  ),
+                                                );
+                                        }),
 
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 45.h),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 45.h),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
-                        ),
-                      ],
-                    ))),
+                          ))),
+                    ))
               ],
             ),
           ));
@@ -628,9 +658,9 @@ class _ListHomeState extends State<ListHome> {
       datalist = converDataToJson['data'];
       isChecked = List<bool>.filled(datalist!.length, false, growable: true);
       qty = List<int>.filled(datalist!.length, 0, growable: true);
-      // selectData = List<Object>.filled(datalist!.length, 0, growable: true);
-      // iddatta = List<Object>.filled(datalist!.length, 0, growable: true);
-      // idcomment = List<Object>.filled(datalist!.length, 0, growable: true);
+      selectData = List<dynamic>.filled(datalist!.length, 0, growable: true);
+      iddatta = List<dynamic>.filled(datalist!.length, 0, growable: true);
+      idcomment = List<dynamic>.filled(datalist!.length, 0, growable: true);
       harga = List<int>.filled(datalist!.length, 0, growable: true);
 
       // ignore: avoid_print
@@ -771,38 +801,47 @@ class _ListHomeState extends State<ListHome> {
   List<int>? harga = [];
   List<bool>? isChecked;
   bool ceklist = false;
+
+  void valuechecker(int index) {
+    setState(() {
+      if (isChecked![index] && qty[index] > 0 || iddatta![index] == 0 || selectData![index] == 0) {
+        selectData![index] = datalist![index];
+        iddatta![index] = datalist![index]['id'];
+        idcomment![index] = datalist![index]['name'];
+        harga![index] = int.parse(datalist![index]['price_min']);
+      }
+    });
+    finalharga(indexs: index);
+  }
+
+  void valueremove(int index) {
+    setState(() {
+      selectData![selectData!.indexWhere((element) => element['id'] == iddatta![index])] = 0;
+      iddatta![index] = 0;
+      idcomment![index] = 0;
+      harga![index] = 0;
+    });
+  }
+
   void checked({int? index}) async {
     setState(() {
       isChecked![index!] = !isChecked![index];
       showButtonLanjut();
-
       if (isChecked![index]) {
-        selectData!.add(datalist![index]);
-        iddatta!.add(datalist![index]['id']);
-        idcomment!.add(datalist![index]['name']);
-        harga![index] = (int.parse(datalist![index]['price_min']));
         addQty(index);
-
-        finalharga(indexs: index);
       } else {
-        selectData!.removeWhere((element) => element == datalist![index]);
-        iddatta!.removeWhere((element) => element == datalist![index]['id']);
-        idcomment!.removeWhere((element) => element == datalist![index]['name']);
-        idharga!.removeWhere((element) => element == int.parse(datalist![index]['price_min']));
         minQty(index);
-
-        finalharga(indexs: index);
       }
     });
   }
 
   late String? totalharga = '0';
   Future<void> finalharga({int? indexs, bool? all}) async {
-    var cektrue = isChecked!.every((indexl) => indexs == true);
-    var cekfalse = isChecked!.every((indexl) => indexs == false);
+    var cektrue = isChecked!.every((indexl) => indexl == true);
+    var cekfalse = isChecked!.every((indexl) => indexl == false);
 
     if (cektrue) {
-      for (var i = 0; i < datalist!.length; i++) {
+      for (var i = 0; i < harga!.length; i++) {
         if (isChecked![i] == true) {
           var string = datalist![i]['price_min'];
 
@@ -815,7 +854,7 @@ class _ListHomeState extends State<ListHome> {
         }
       }
     } else if (cekfalse) {
-      for (var i = 0; i < datalist!.length; i++) {
+      for (var i = 0; i < harga!.length; i++) {
         setState(() {
           harga![i] = 0;
         });
@@ -825,25 +864,20 @@ class _ListHomeState extends State<ListHome> {
         var string = datalist![indexs]['price_min'];
         String variabel = string;
         int dataharga = int.parse(variabel);
-        for (var i = 0; i < datalist!.length; i++) {
+        for (var i = 0; i < harga!.length; i++) {
           if (isChecked![i] == false) {
             setState(() {
               harga![i] = 0;
             });
           }
+          print(i);
         }
         setState(() {
           harga![indexs] = 0;
           harga![indexs] = dataharga * qty[indexs];
         });
-      } else {
-        // var string = datalist!![indexs]['price'];
-        // String variabel = string.replaceAll('.', '');
-        // int dataharga = int.parse(variabel);
-        setState(() {
-          harga![indexs] = 0;
-        });
       }
+      print(harga);
     }
 
     var jumlah = harga!.reduce((a, b) => a + b).toString();
@@ -859,14 +893,20 @@ class _ListHomeState extends State<ListHome> {
     }
     print(harga);
     print(totalharga);
+    print(qty);
+    print(selectData);
+    print(iddatta);
   }
 
   late List<int> qty = [];
   // toto menambah jumlah
   void addQty(int index) async {
     setState(() {
-      qty[index] += 1;
-      isChecked![index] = true;
+      if (qty[index] < 10) {
+        qty[index] += 1;
+        isChecked![index] = true;
+        valuechecker(index);
+      }
     });
     showButtonLanjut();
     finalharga(indexs: index);
@@ -881,10 +921,14 @@ class _ListHomeState extends State<ListHome> {
           qty[index] -= 1;
           isChecked![index] = false;
         });
+        valueremove(index);
       } else {
+        valueremove(index);
+
         if (isChecked![index] == false) {
           setState(() {
             qty[index] = 0;
+            isChecked![index] = false;
           });
         } else {
           setState(() {
@@ -894,7 +938,6 @@ class _ListHomeState extends State<ListHome> {
       }
     }
     showButtonLanjut();
-    finalharga(indexs: index);
   }
 
   // Future<String> setQty() async {
