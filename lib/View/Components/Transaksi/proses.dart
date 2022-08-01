@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class Proses extends StatefulWidget {
-  String? dataorder;
-  Proses({Key? key,required this.dataorder});
+  String? customer;
+  Proses({Key? key, required this.customer});
 
   @override
   State<Proses> createState() => _ProsesState();
@@ -18,8 +18,10 @@ class _ProsesState extends State<Proses> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        clipBehavior: Clip.none,
+
         // shrinkWrap: true,
-        itemCount: widget.dataorder == null ? 0 : widget.dataorder!.length,
+        itemCount: datalist == null ? 0 : datalist!.length,
         itemBuilder: (BuildContext context, index) {
           return Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
@@ -35,13 +37,13 @@ class _ProsesState extends State<Proses> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Pesanan Jasa Service',
+                      datalist![index]['order_id'] ?? '',
                       style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(
                       height: 4,
                     ),
-                    Text('- ${datalist[index]['message']}',
+                    Text('- ${datalist![index]['message']}' ?? '',
                         style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
                     SizedBox(
                       height: 2,
@@ -53,7 +55,7 @@ class _ProsesState extends State<Proses> {
                           width: 10,
                         ),
                         Text(
-                          datalist[index]['expired_payment'],
+                          datalist![index]['expired_payment'] ?? '',
                           style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
                         ),
                       ],
@@ -73,15 +75,13 @@ class _ProsesState extends State<Proses> {
   }
 
   //
-  late List datalist;
-  late String customer;
+  late List? datalist;
+
   getDataProses() async {
-    final prefs1 = await SharedPreferences.getInstance();
-    customer = prefs1.getString('customer')!;
     var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
-      "Authorization": "Bearer $customer",
+      "Authorization": "Bearer ${widget.customer}",
     });
     //
     setState(() {
@@ -89,7 +89,7 @@ class _ProsesState extends State<Proses> {
       datalist = converDataToJson['data'];
 
       // ignore: avoid_print
-      print(converDataToJson);
+      print(datalist);
     });
     return "Success";
   }
