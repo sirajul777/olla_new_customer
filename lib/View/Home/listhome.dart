@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -342,256 +343,301 @@ class _ListHomeState extends State<ListHome> {
                                     //    const SizedBox(height: 10),
                                     // const Divider(),
                                     // const SizedBox(height: 10),
-                                    ListView.builder(
-                                        controller: _controller,
-                                        shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        itemCount: datalist == null ? 0 : datalist!.length,
-                                        itemBuilder: (context, index) {
-                                          return loading
-                                              ? Padding(
-                                                  padding: const EdgeInsets.only(left: 10.0, right: 10, top: 20),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      border: Border.all(color: Colors.blue[100]!),
-                                                      borderRadius: BorderRadius.circular(20),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey.withOpacity(0.1),
-                                                          spreadRadius: 1,
-                                                          blurRadius: 5,
-                                                          offset: Offset(0, 5), // changes position of shadow
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Stack(
-                                                      clipBehavior: Clip.none,
-                                                      children: [
-                                                        Theme(
-                                                          data: ThemeData(unselectedWidgetColor: Colors.blue[200]),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Row(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 10,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Column(
-                                                                    // crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        child: Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: <Widget>[
-                                                                            Flexible(
-                                                                              child: Text(
-                                                                                datalist![index]['name'],
-                                                                                style: TextStyle(
-                                                                                    overflow: TextOverflow.clip,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    color: Colors.grey[600],
-                                                                                    fontSize: 13.sp),
-                                                                              ),
-                                                                            ),
-                                                                            Container(
-                                                                              child: GestureDetector(
-                                                                                onTap: () {
-                                                                                  checked(index: index);
-                                                                                  finalharga(indexs: index);
-                                                                                },
-                                                                                child: Container(
-                                                                                  height: 22.h,
-                                                                                  width: 22.w,
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: isChecked![index]
-                                                                                          ? primary
-                                                                                          : transparent,
-                                                                                      borderRadius:
-                                                                                          BorderRadius.circular(5),
-                                                                                      border: Border.all(
-                                                                                          color: primary, width: 2.w)),
-                                                                                  child: Center(
-                                                                                      child: isChecked![index]
-                                                                                          ? Icon(
-                                                                                              Icons.done,
-                                                                                              size: 20,
-                                                                                              color: isChecked![index]
-                                                                                                  ? white
-                                                                                                  : primary,
-                                                                                            )
-                                                                                          : const SizedBox()),
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height: 5,
-                                                                      ),
-                                                                      Text(
-                                                                        'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
-                                                                        textAlign: TextAlign.left,
-                                                                        style: TextStyle(
-                                                                            height: 1.5,
-                                                                            color: Colors.grey,
-                                                                            fontSize: 12),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height: 5,
-                                                                      ),
-                                                                      Center(
-                                                                        child: Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            Container(
-                                                                              // margin: EdgeInsets.only(
-                                                                              //     top: MediaQuery.of(context).size.height / 20),
-                                                                              width: 30,
-                                                                              height: 30,
-                                                                              decoration: BoxDecoration(
-                                                                                image: DecorationImage(
-                                                                                  image:
-                                                                                      AssetImage('gambar/rupiah.png'),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                            // SizedBox(
-                                                                            //   width: 10,
-                                                                            // ),
-                                                                            // Text(
-                                                                            //   'Rp',
-                                                                            //   style: TextStyle(
-                                                                            //       fontWeight:
-                                                                            //           FontWeight
-                                                                            //               .w700,
-                                                                            //       color: Colors
-                                                                            //               .yellow[
-                                                                            //           600]),
-                                                                            // ),
-
-                                                                            Text(
-                                                                              NumberFormat.currency(
-                                                                                      locale: 'id',
-                                                                                      symbol: 'Rp ',
-                                                                                      decimalDigits: 0)
-                                                                                  .format(int.parse(
-                                                                                      datalist![index]['price_min'])),
-                                                                              style: TextStyle(
-                                                                                  fontWeight: FontWeight.w700,
-                                                                                  color: Colors.yellow[600]),
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 5,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              width: 5,
-                                                                            ),
-                                                                            Container(
-                                                                              width: 90.w,
-                                                                              height: 30.h,
-                                                                              padding: EdgeInsets.only(
-                                                                                  left: 5.w, right: 5.w),
-                                                                              decoration: BoxDecoration(
-                                                                                  borderRadius:
-                                                                                      BorderRadius.circular(5.w),
-                                                                                  color: lightBlue),
-                                                                              child: Row(
-                                                                                mainAxisAlignment:
-                                                                                    MainAxisAlignment.spaceBetween,
-                                                                                children: [
-                                                                                  GestureDetector(
-                                                                                    onTap: () {
-                                                                                      minQty(index);
-                                                                                    },
-                                                                                    child: Container(
-                                                                                        width: 22.w,
-                                                                                        height: 22.w,
-                                                                                        decoration: BoxDecoration(
-                                                                                            color: primary,
-                                                                                            borderRadius:
-                                                                                                BorderRadius.circular(
-                                                                                                    5.w)),
-                                                                                        child: const Center(
-                                                                                          child: Text(
-                                                                                            '-',
-                                                                                            style:
-                                                                                                TextStyle(color: white),
-                                                                                          ),
-                                                                                        )),
-                                                                                  ),
-                                                                                  Text('${qty[index]}',
-                                                                                      style: const TextStyle(
-                                                                                          color: darkGrey)),
-                                                                                  GestureDetector(
-                                                                                    onTap: () {
-                                                                                      addQty(index);
-                                                                                    },
-                                                                                    child: Container(
-                                                                                        width: 22.w,
-                                                                                        height: 22.w,
-                                                                                        padding:
-                                                                                            EdgeInsets.only(top: 5.w),
-                                                                                        decoration: BoxDecoration(
-                                                                                            color: primary,
-                                                                                            borderRadius:
-                                                                                                BorderRadius.circular(
-                                                                                                    5.w)),
-                                                                                        child: const Center(
-                                                                                          child: Text(
-                                                                                            '+',
-                                                                                            style:
-                                                                                                TextStyle(color: white),
-                                                                                          ),
-                                                                                        )),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
+                                    datalist!.length != 0
+                                        ? ListView.builder(
+                                            controller: _controller,
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemCount: datalist!.length,
+                                            itemBuilder: (context, index) {
+                                              return loading
+                                                  ? Padding(
+                                                      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 20),
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          border: Border.all(color: Colors.blue[100]!),
+                                                          borderRadius: BorderRadius.circular(20),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.grey.withOpacity(0.1),
+                                                              spreadRadius: 1,
+                                                              blurRadius: 5,
+                                                              offset: Offset(0, 5), // changes position of shadow
                                                             ),
+                                                          ],
+                                                        ),
+                                                        child: Stack(
+                                                          clipBehavior: Clip.none,
+                                                          children: [
+                                                            Theme(
+                                                              data: ThemeData(unselectedWidgetColor: Colors.blue[200]),
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.all(8.0),
+                                                                child: Row(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Expanded(
+                                                                      child: Column(
+                                                                        // crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceEvenly,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                            child: Row(
+                                                                              mainAxisAlignment:
+                                                                                  MainAxisAlignment.spaceBetween,
+                                                                              children: <Widget>[
+                                                                                Flexible(
+                                                                                  child: Text(
+                                                                                    datalist![index]['name'],
+                                                                                    style: TextStyle(
+                                                                                        overflow: TextOverflow.clip,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        color: Colors.grey[600],
+                                                                                        fontSize: 13.sp),
+                                                                                  ),
+                                                                                ),
+                                                                                Container(
+                                                                                  child: GestureDetector(
+                                                                                    onTap: () {
+                                                                                      checked(index: index);
+                                                                                      finalharga(indexs: index);
+                                                                                    },
+                                                                                    child: Container(
+                                                                                      height: 22.h,
+                                                                                      width: 22.w,
+                                                                                      decoration: BoxDecoration(
+                                                                                          color: isChecked![index]
+                                                                                              ? primary
+                                                                                              : transparent,
+                                                                                          borderRadius:
+                                                                                              BorderRadius.circular(5),
+                                                                                          border: Border.all(
+                                                                                              color: primary,
+                                                                                              width: 2.w)),
+                                                                                      child: Center(
+                                                                                          child: isChecked![index]
+                                                                                              ? Icon(
+                                                                                                  Icons.done,
+                                                                                                  size: 20,
+                                                                                                  color:
+                                                                                                      isChecked![index]
+                                                                                                          ? white
+                                                                                                          : primary,
+                                                                                                )
+                                                                                              : const SizedBox()),
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 5,
+                                                                          ),
+                                                                          Text(
+                                                                            'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s.',
+                                                                            textAlign: TextAlign.left,
+                                                                            style: TextStyle(
+                                                                                height: 1.5,
+                                                                                color: Colors.grey,
+                                                                                fontSize: 12),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 5,
+                                                                          ),
+                                                                          Center(
+                                                                            child: Row(
+                                                                              mainAxisAlignment:
+                                                                                  MainAxisAlignment.spaceBetween,
+                                                                              children: [
+                                                                                Container(
+                                                                                  // margin: EdgeInsets.only(
+                                                                                  //     top: MediaQuery.of(context).size.height / 20),
+                                                                                  width: 30,
+                                                                                  height: 30,
+                                                                                  decoration: BoxDecoration(
+                                                                                    image: DecorationImage(
+                                                                                      image: AssetImage(
+                                                                                          'gambar/rupiah.png'),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                // SizedBox(
+                                                                                //   width: 10,
+                                                                                // ),
+                                                                                // Text(
+                                                                                //   'Rp',
+                                                                                //   style: TextStyle(
+                                                                                //       fontWeight:
+                                                                                //           FontWeight
+                                                                                //               .w700,
+                                                                                //       color: Colors
+                                                                                //               .yellow[
+                                                                                //           600]),
+                                                                                // ),
+
+                                                                                Text(
+                                                                                  NumberFormat.currency(
+                                                                                          locale: 'id',
+                                                                                          symbol: 'Rp ',
+                                                                                          decimalDigits: 0)
+                                                                                      .format(int.parse(datalist![index]
+                                                                                          ['price_min'])),
+                                                                                  style: TextStyle(
+                                                                                      fontWeight: FontWeight.w700,
+                                                                                      color: Colors.yellow[600]),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 5,
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 5,
+                                                                                ),
+                                                                                Container(
+                                                                                  width: 90.w,
+                                                                                  height: 30.h,
+                                                                                  padding: EdgeInsets.only(
+                                                                                      left: 5.w, right: 5.w),
+                                                                                  decoration: BoxDecoration(
+                                                                                      borderRadius:
+                                                                                          BorderRadius.circular(5.w),
+                                                                                      color: lightBlue),
+                                                                                  child: Row(
+                                                                                    mainAxisAlignment:
+                                                                                        MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      GestureDetector(
+                                                                                        onTap: () {
+                                                                                          minQty(index);
+                                                                                        },
+                                                                                        child: Container(
+                                                                                            width: 22.w,
+                                                                                            height: 22.w,
+                                                                                            decoration: BoxDecoration(
+                                                                                                color: primary,
+                                                                                                borderRadius:
+                                                                                                    BorderRadius
+                                                                                                        .circular(5.w)),
+                                                                                            child: const Center(
+                                                                                              child: Text(
+                                                                                                '-',
+                                                                                                style: TextStyle(
+                                                                                                    color: white),
+                                                                                              ),
+                                                                                            )),
+                                                                                      ),
+                                                                                      Text('${qty[index]}',
+                                                                                          style: const TextStyle(
+                                                                                              color: darkGrey)),
+                                                                                      GestureDetector(
+                                                                                        onTap: () {
+                                                                                          addQty(index);
+                                                                                        },
+                                                                                        child: Container(
+                                                                                            width: 22.w,
+                                                                                            height: 22.w,
+                                                                                            padding: EdgeInsets.only(
+                                                                                                top: 5.w),
+                                                                                            decoration: BoxDecoration(
+                                                                                                color: primary,
+                                                                                                borderRadius:
+                                                                                                    BorderRadius
+                                                                                                        .circular(5.w)),
+                                                                                            child: const Center(
+                                                                                              child: Text(
+                                                                                                '+',
+                                                                                                style: TextStyle(
+                                                                                                    color: white),
+                                                                                              ),
+                                                                                            )),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            // Positioned(
+                                                            //   bottom: 14,
+                                                            //   //  left: 0,
+                                                            //   right: 30,
+                                                            //   //  top:10,
+                                                            //   child:
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Shimmer.fromColors(
+                                                        child: Container(
+                                                          height: MediaQuery.of(context).size.height / 4,
+                                                          width: double.infinity,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.grey[500],
+                                                            borderRadius: BorderRadius.circular(20),
                                                           ),
                                                         ),
-                                                        // Positioned(
-                                                        //   bottom: 14,
-                                                        //   //  left: 0,
-                                                        //   right: 30,
-                                                        //   //  top:10,
-                                                        //   child:
-                                                        // ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
-                                              : Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Shimmer.fromColors(
-                                                    child: Container(
-                                                      height: MediaQuery.of(context).size.height / 4,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.grey[500],
-                                                        borderRadius: BorderRadius.circular(20),
+                                                        baseColor: Colors.grey[100]!,
+                                                        highlightColor: Colors.grey[300]!,
+                                                        direction: ShimmerDirection.ltr,
                                                       ),
-                                                    ),
-                                                    baseColor: Colors.grey[100]!,
-                                                    highlightColor: Colors.grey[300]!,
-                                                    direction: ShimmerDirection.ltr,
+                                                    );
+                                            })
+                                        : Container(
+                                            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                              Container(
+                                                margin: EdgeInsets.only(top: 30.w),
+                                                width: 200.w,
+                                                height: 200.w,
+                                                child: SvgPicture.asset('gambar/takenodata.svg'),
+                                              ),
+                                              Center(
+                                                child: Text(
+                                                  'Pemberitahuan',
+                                                  style: TextStyle(
+                                                      color: darkGrey, fontWeight: FontWeight.bold, fontSize: 16.sp),
+                                                ),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.only(bottom: 20.w),
+                                                padding: EdgeInsets.only(top: 8.w, left: 20, right: 20),
+                                                child: Center(
+                                                  child: Text(
+                                                    'Layanan yang Anda pilih saat ini sedang dalam proses pengembangan',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(color: softGrey, fontSize: 14.sp),
                                                   ),
-                                                );
-                                        }),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                child: Container(
+                                                  width: 120.w,
+                                                  padding: EdgeInsets.only(top: 8, left: 5, right: 5, bottom: 8),
+                                                  decoration: BoxDecoration(
+                                                      color: primary, borderRadius: BorderRadius.circular(20.w)),
+                                                  child: Center(
+                                                      child: Text(
+                                                    'Kembali',
+                                                    style: TextStyle(color: white, fontSize: 14.sp),
+                                                  )),
+                                                ),
+                                              )
+                                            ]),
+                                          ),
 
                                     Padding(
                                       padding: EdgeInsets.only(bottom: 45.h),

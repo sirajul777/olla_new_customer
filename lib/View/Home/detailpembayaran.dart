@@ -572,8 +572,8 @@ class _DetailPembayaranState extends State<DetailPembayaran> {
     customer = prefs1.getString('customer')!;
     print(customer);
     var response = await http
-        // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
-        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${1066}')), headers: {
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+      // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${1066}')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
       "Authorization": "Bearer $customer",

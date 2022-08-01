@@ -13,18 +13,20 @@ class _DibawahBannerState extends State<DibawahBanner> {
   bool loading = false;
   Widget build(BuildContext context) {
     return loading
-        ? Padding(
-            padding: EdgeInsets.only(
-                left: (ScreenUtil().setWidth(10.w)), right: (ScreenUtil().setWidth(10.w)), bottom: 20.h, top: 3.h),
-            child: Container(
-              padding: EdgeInsets.only(top: 5.w, bottom: 20.h),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: lightBlue),
-              child: Column(children: [
-                Row(
+        ? Container(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                margin: EdgeInsets.only(
+                    left: (ScreenUtil().setWidth(20.w)), right: (ScreenUtil().setWidth(20.w)), bottom: 20.h, top: 3.h),
+                // padding: EdgeInsets.only(
+                //   top: 5.w,
+                // ),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: lightBlue),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
-                      padding: EdgeInsets.only(top: 10.h),
+                      padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
                       // width: MediaQuery.of(context)
                       //         .size
                       //         .width /
@@ -36,7 +38,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                             style: TextStyle(
                               color: darkGrey,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16.w,
+                              fontSize: 14.sp,
                             ),
                           ),
                         ),
@@ -45,7 +47,7 @@ class _DibawahBannerState extends State<DibawahBanner> {
                           child: Text(
                             'di Kota Anda',
                             style: TextStyle(
-                                color: darkGrey,
+                                color: softGrey,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12.w,
                                 fontStyle: FontStyle.normal),
@@ -155,134 +157,227 @@ class _DibawahBannerState extends State<DibawahBanner> {
                     )
                   ],
                 ),
-                //todo akhir row atas
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+              ),
+              Container(
+                color: Color.fromARGB(255, 249, 249, 249),
+                padding: EdgeInsets.only(
+                    left: (ScreenUtil().setWidth(20.w)), right: (ScreenUtil().setWidth(20.w)), bottom: 20.h, top: 3.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(5.w),
-                      height: 155.h,
-                      width: 130.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Colors.transparent,
-                          image: const DecorationImage(
-                              image: AssetImage(
-                                'image/test.jpg',
-                              ),
-                              fit: BoxFit.cover)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 20.h, left: 5.w, bottom: 20.h, right: 5.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Padding(
+                      padding: EdgeInsets.only(top: 15.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: EdgeInsets.only(bottom: 5.h),
-                            child: Text(
-                              'Tukang Teladan',
-                              style: TextStyle(
-                                  color: darkGrey,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.w,
-                                  fontStyle: FontStyle.normal),
-                            ),
+                          Text(
+                            'Rekomendasi Mitra',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: darkGrey),
                           ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 5.h),
-                            child: Text(
-                              'Aby Abdullah',
+                          Text('Lihat Semua',
                               style: TextStyle(
-                                  color: darkGrey,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.w,
-                                  fontStyle: FontStyle.normal),
-                            ),
-                          ),
-                          Container(
-                              // width: 20.w,
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                color: darkYellow,
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(5.h),
-                                child: Text(
-                                  '5.0',
-                                  style: TextStyle(
-                                      color: darkYellow,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12.w,
-                                      fontStyle: FontStyle.normal),
-                                ),
-                              ),
-                              Container(
-                                // padding: EdgeInsets.only(
-                                //     bottom: 5.h),
-                                child: Text(
-                                  'Sumbawa',
-                                  style: TextStyle(
-                                      color: softGrey,
-                                      // fontWeight:
-                                      //     FontWeight.bold,
-                                      fontSize: 13.w,
-                                      fontStyle: FontStyle.normal),
-                                ),
-                              ),
-                            ],
-                          )),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.greenAccent,
+                                decoration: TextDecoration.underline,
+                              ))
                         ],
                       ),
-                    )
+                    ),
+                    Text(
+                      'Pilih mitra siaga kami',
+                      style: TextStyle(color: softGrey, fontSize: 11.sp),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(top: 15.w, bottom: 10.w),
+                        // decoration: BoxDecoration(),
+                        // margin: EdgeInsets.only(top: 10.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(5.w),
+                              height: 85.w,
+                              width: 85.w,
+                              decoration: BoxDecoration(
+                                  // borderRadius: BorderRadius.circular(8),
+                                  // color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(color: Color.fromARGB(255, 242, 242, 242), width: 1.5),
+                                  image: const DecorationImage(
+                                      image: AssetImage(
+                                        'image/mitra1.png',
+                                      ),
+                                      fit: BoxFit.cover)),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                left: 15.w,
+                                right: 5.w,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(bottom: 5.h),
+                                    child: Text(
+                                      'Aby Abdullah',
+                                      style: TextStyle(
+                                          color: darkGrey,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.w,
+                                          fontStyle: FontStyle.normal),
+                                    ),
+                                  ),
+                                  Container(
+                                      // width: 20.w,
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 3.w, bottom: 3.w),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: darkYellow, width: 0.7),
+                                            borderRadius: BorderRadius.circular(20.w)),
+                                        child: Text(
+                                          'Pompa air',
+                                          style: TextStyle(
+                                              color: darkYellow,
+                                              // fontWeight:
+                                              //     FontWeight.bold,
+                                              fontSize: 9.w,
+                                              fontStyle: FontStyle.normal),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 3.w),
+                                        padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 3.w, bottom: 3.w),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: darkYellow, width: 0.7),
+                                            borderRadius: BorderRadius.circular(20.w)),
+                                        child: Text(
+                                          'Pendingin ruangan',
+                                          style: TextStyle(
+                                              color: darkYellow,
+                                              // fontWeight:
+                                              //     FontWeight.bold,
+                                              fontSize: 9.w,
+                                              fontStyle: FontStyle.normal),
+                                        ),
+                                      )
+
+                                      // Container(
+                                      //   // padding: EdgeInsets.only(
+                                      //   //     bottom: 5.h),
+                                      //   child: Text(
+                                      //     'Sumbawa',
+                                      //     style: TextStyle(
+                                      //         color: softGrey,
+                                      //         // fontWeight:
+                                      //         //     FontWeight.bold,
+                                      //         fontSize: 13.w,
+                                      //         fontStyle: FontStyle.normal),
+                                      //   ),
+                                      // ),
+                                    ],
+                                  )),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(5.h),
+                                        child: Text(
+                                          '5.0',
+                                          style: TextStyle(
+                                              color: darkYellow,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.w,
+                                              fontStyle: FontStyle.normal),
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.star,
+                                        color: darkYellow,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                      // margin: EdgeInsets.only(left: 15.w),
+                                      width: 60,
+                                      padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 3.w, bottom: 3.w),
+                                      decoration:
+                                          BoxDecoration(color: primary, borderRadius: BorderRadius.circular(20.w)),
+                                      child: Center(
+                                        child: Text(
+                                          'Pilih',
+                                          style: TextStyle(color: white, fontSize: 12.sp, fontWeight: FontWeight.w500),
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            ),
+                            Container(
+                                width: 16.w,
+                                height: 16.w,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: softGrey, width: 1),
+                                    borderRadius: BorderRadius.circular(20.w)),
+                                margin: EdgeInsets.only(left: 20.w),
+                                child: Center(
+                                    child: Text(
+                                  '>',
+                                  style: TextStyle(color: softGrey, fontSize: 12.sp),
+                                )))
+                          ],
+                        ))
                   ],
-                )
-              ]),
-            ),
+                ),
+              )
+              //todo akhir row atas
+            ]),
           )
         : Shimmer.fromColors(
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
               child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue[50]!),
-                    color: Colors.grey[50]),
                 child: Padding(
-                  padding: const EdgeInsets.all(13.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Stack(
                     children: [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Pesan Tukang',
+                              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              'di Kota Anda',
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(height: 18),
+                            Text('Cari Tukang',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline)),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ]),
+                      //)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            'Pesan Tukang',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            'di Kota Anda',
-                            style: TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                          SizedBox(height: 18),
-                          Text('Cari Tukang',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline)),
-
-                          SizedBox(
-                            height: 15,
-                          ),
-                          //
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -433,143 +528,6 @@ class _DibawahBannerState extends State<DibawahBanner> {
             highlightColor: Colors.grey[300]!,
             direction: ShimmerDirection.ltr,
           );
-    //  Container(
-    //    color: Colors.red,
-    //    child: Padding(
-    //        padding: const EdgeInsets.all(18),
-    //        child: ListView(
-    //          shrinkWrap: true,
-    //          physics: NeverScrollableScrollPhysics(),
-    //         children: [
-    //           Column(
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: [
-    //               ListTile(
-    //                 title:Text('Pesan Tukang',style: TextStyle(color:Colors.black,fontSize: 18,fontWeight: FontWeight.w600),),
-    //                 subtitle:Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   children: [
-    //                     Stack(
-    //                       children: [
-    //                         Text('di Kota Anda',style: TextStyle(color:Colors.black,fontWeight: FontWeight.w600),),
-    //                         Padding(
-    //                           padding: const EdgeInsets.only(top:40.0),
-    //                           child: Text('Cari Tukang',style: TextStyle(color:Colors.blue[400],fontWeight: FontWeight.w600,fontSize: 20, decoration:TextDecoration.underline,),),
-    //                         )
-    //                       ],
-    //                     ),
-    //                     SizedBox(height: 30,)
-    //                   ],
-    //                 ),
-    //                 trailing:  Stack(
-    //                   overflow: Overflow.visible,
-    //                   children: [
-    //                     Row(
-    //                      mainAxisSize: MainAxisSize.min,
-    //                       children: [
-    //                         Container(
-    //                                                   width: 60,
-    //                                                   height: 60,
-    //                                                   decoration: BoxDecoration(
-    //                                                     borderRadius: BorderRadius.circular(35),
-    //                                                     image: DecorationImage(
-    //                                                         image: AssetImage('gambar/gambar.png'),
-    //                                                         fit: BoxFit.cover),
-    //                                                   ),
-    //                                                 ),
-
-    //                                                 SizedBox(width:20),
-    //                                                 //
-    //                                                 Container(
-    //                                                   width: 60,
-    //                                                   height: 60,
-    //                                                   decoration: BoxDecoration(
-    //                                                     borderRadius: BorderRadius.circular(35),
-    //                                                     image: DecorationImage(
-    //                                                         image: AssetImage('gambar/gambar1.png'),
-    //                                                         fit: BoxFit.cover),
-    //                                                   ),
-    //                                                 ),
-    //                                                  SizedBox(width:10),
-    //                                                 //
-    //                                                 Text('+3',style: TextStyle(color:Colors.blue[400],fontWeight: FontWeight.w600, decoration:TextDecoration.underline,),),
-    //                       ],
-    //                     ),
-    //                     Positioned(
-    //                       top:60,
-    //                       child: Row(
-    //                         mainAxisSize: MainAxisSize.min,
-    //                         children: [
-    //                           Padding(
-    //                             padding: const EdgeInsets.only(left:8.0),
-    //                             child: Text('Jakarta',style: TextStyle(color:Colors.black,fontWeight: FontWeight.w500,fontSize: 12),),
-    //                           ),
-    //                            SizedBox(width:35),
-    //                           Text('Tangerang',style: TextStyle(color:Colors.black,fontWeight: FontWeight.w500,fontSize: 12),)
-    //                         ],
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //               //
-    //               //
-    //               SizedBox(height: 1,),
-    //               Row(
-    //                 children: [
-    //                   Container(
-    //                     margin: EdgeInsets.only(left:15),
-    //                                                       width: 160,
-    //                                                       height: 160,
-    //                                                       decoration: BoxDecoration(
-    //                                                         borderRadius: BorderRadius.circular(10),
-    //                                                         border: Border.all(color: Colors.grey[200]),
-    //                                                         image: DecorationImage(
-    //                                                             image: AssetImage('gambar/bg.png'),
-    //                                                             fit: BoxFit.cover),
-    //                                                       ),
-    //                                                     ),
-    //                                                     SizedBox(width: 20,),
-    //                                                     //
-    //                                                     Column(
-    //                                                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                                                       children: [
-    //                                                         Text('Tukang Teladan',style: TextStyle(color:Colors.blue[900],fontWeight: FontWeight.w500,fontSize: 15),),
-    //                                                          SizedBox(height: 10,),
-    //                                                          Text('Hariyono Makmur',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16),),
-    //                                                          SizedBox(height: 10,),
-    //                                                          //
-    //                                                           Row(
-    //                                                             children: [
-    //                                                               Container(
-    //                                                       width: 10,
-    //                                                       height: 10,
-    //                                                       decoration: BoxDecoration(
-    //                                                         borderRadius: BorderRadius.circular(10),
-    //                                                         border: Border.all(color: Colors.grey[200]),
-    //                                                         image: DecorationImage(
-    //                                                                 image: AssetImage('gambar/bintang.png'),
-    //                                                                 fit: BoxFit.cover),
-    //                                                       ),
-    //                                                     ),
-    //                                                     SizedBox(width: 5,),
-    //                                                     Text('5.0',style: TextStyle(color: Colors.amber,fontWeight: FontWeight.bold,fontSize: 12),),
-    //                                                     SizedBox(width: 5,),
-    //                                                     Text('Jakarta',style: TextStyle(color: Colors.grey,fontSize: 12),)
-    //                                                             ],
-    //                                                           ),
-    //                                                       ],
-    //                                                     ),
-
-    //                 ],
-    //               ),
-    //                                                 SizedBox(height: 50,)
-    //             ],
-    //           ),
-    //         ],
-    //        ),
-    //      ),
-    //  );
   }
 
   //

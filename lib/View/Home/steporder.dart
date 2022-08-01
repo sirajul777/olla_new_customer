@@ -32,6 +32,11 @@ class _StepOrderState extends State<StepOrder> {
   bool tampil = false;
   late List<bool> _selectedIndex;
   late Timer timer;
+  late DateTime? dateTime = DateTime.parse(workingdate!);
+  // DateTime getDateTime() {
+  //   var now = DateTime.parse(workingdate!);
+  //   return DateTime(now.year, now.month, now.day, now.hour, now.second);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,35 +57,12 @@ class _StepOrderState extends State<StepOrder> {
     } else {
       return Scaffold(
           backgroundColor: white,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    getDataListHome();
-                  },
-                  child: Text(widget.invoice!,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.green.withOpacity(0.7),
-                      )),
-                ),
-              ],
-            ),
-            automaticallyImplyLeading: false,
-            // backgroundColor: Colors.transparent,
-            // shape:
-            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-          ),
+          appBar: null,
           body: SafeArea(
-            // top: false,
+            top: false,
             child: AnnotatedRegion<SystemUiOverlayStyle>(
                 value: SystemUiOverlayStyle(
-                    statusBarColor: blackBlue,
+                    statusBarColor: white,
                     statusBarIconBrightness: Brightness.dark,
                     statusBarBrightness: Brightness.dark),
                 child: Stack(children: [
@@ -89,6 +71,26 @@ class _StepOrderState extends State<StepOrder> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                getDataListHome();
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                                padding: EdgeInsets.all(20),
+                                child: Text(widget.invoice!,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.green.withOpacity(0.7),
+                                    )),
+                              ),
+                            )
+                          ],
+                        ),
                         Center(
                           child: Container(
                             margin: EdgeInsets.only(right: 10.w),
@@ -205,11 +207,18 @@ class _StepOrderState extends State<StepOrder> {
                                                     ),
                                                   ),
                                                   Container(
-                                                    child: Text(
-                                                      '${workingdate!} - ${workingtime!}',
+                                                      child: Row(children: [
+                                                    Text(
+                                                      '${dateTime!.day} '
+                                                      '${_month[dateTime!.month - 1]} '
+                                                      '${dateTime!.year}',
+                                                      style: TextStyle(color: softGrey, fontSize: 11.sp),
+                                                    ),
+                                                    Text(
+                                                      '- ${workingtime!}',
                                                       style: TextStyle(fontSize: 11.sp, color: Colors.grey),
                                                     ),
-                                                  )
+                                                  ]))
                                                 ],
                                               ),
                                             ),
@@ -314,16 +323,19 @@ class _StepOrderState extends State<StepOrder> {
                                               ),
                                             ),
                                             Container(
-                                                padding: EdgeInsets.all(2),
+                                                width: 16,
+                                                height: 16,
+                                                // padding: EdgeInsets.all(2),
                                                 decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(20.w),
                                                     border: Border.all(color: softGrey, width: 1)),
                                                 // padding: EdgeInsets.only(left: 5.w),
-                                                child: Icon(
+                                                child: Center(
+                                                    child: Icon(
                                                   Icons.share,
                                                   color: softGrey,
-                                                  size: 10,
-                                                ))
+                                                  size: 9,
+                                                )))
                                           ])),
                                     ),
                                   ),
@@ -837,7 +849,7 @@ class _StepOrderState extends State<StepOrder> {
                                                       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                                     Flexible(
                                                       child: Text(
-                                                        'Tidak dapat membatalkan pesanan yang sedang berlangasung.',
+                                                        'Tidak dapat membatalkan pesanan yang sedang berlangsung.',
                                                         textAlign: TextAlign.justify,
                                                         style: TextStyle(color: softGrey, fontSize: 11.sp),
                                                       ),
@@ -855,7 +867,7 @@ class _StepOrderState extends State<StepOrder> {
                                                           'i',
                                                           style: TextStyle(
                                                               color: softGrey,
-                                                              fontWeight: FontWeight.bold,
+                                                              // fontWeight: FontWeight.bold,
                                                               fontSize: 12.sp),
                                                         )))
                                                   ])),
@@ -940,7 +952,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                               filled: true,
                                                                               contentPadding: EdgeInsets.only(
                                                                                   left: 10, right: 0, top: 20),
-                                                                              hintText: 'Tulis review disini',
+                                                                              hintText: 'Tulis ulasan kamu disini',
                                                                               hintStyle: TextStyle(
                                                                                   color: Colors.grey, fontSize: 12),
                                                                               border: OutlineInputBorder(
@@ -966,25 +978,25 @@ class _StepOrderState extends State<StepOrder> {
                                                                                 color: Colors.blue[300]),
                                                                             child: Padding(
                                                                               padding: const EdgeInsets.only(
-                                                                                  left: 0,
-                                                                                  right: 0,
+                                                                                  left: 15,
+                                                                                  right: 12,
                                                                                   top: 12,
                                                                                   bottom: 12),
                                                                               child: Row(
                                                                                 mainAxisAlignment:
-                                                                                    MainAxisAlignment.spaceEvenly,
+                                                                                    MainAxisAlignment.spaceBetween,
                                                                                 children: [
                                                                                   Container(
                                                                                     child: Icon(
-                                                                                      Icons.save_outlined,
+                                                                                      Icons.note_add_outlined,
                                                                                       color: white,
-                                                                                      size: 26,
+                                                                                      size: 20,
                                                                                     ),
                                                                                   ),
                                                                                   Text(
                                                                                     'simpan',
                                                                                     style: TextStyle(
-                                                                                        fontWeight: FontWeight.bold,
+                                                                                        // fontWeight: FontWeight.bold,
                                                                                         color: Colors.white,
                                                                                         fontSize: 14),
                                                                                   )
@@ -1098,6 +1110,20 @@ class _StepOrderState extends State<StepOrder> {
     super.dispose();
   }
 
+  List<String> _month = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+  ];
   //
   var partner;
   late String customer;
@@ -1134,7 +1160,7 @@ class _StepOrderState extends State<StepOrder> {
         workingtime = order_summary['schedule']['working_time'];
         partner = converDataToJson['partner'];
         // datalist = converDataToJson;
-
+        // dateTime = order_summary['schedule']['working_date'];
         // ignore: avoid_print
         // print(converDataToJson['payments']['status']);
         print(partner);

@@ -6,6 +6,7 @@ import 'package:customer/Controllers/LocationController.dart';
 import 'package:customer/Models/Lokasi.dart';
 import 'package:customer/Service/API/api.dart';
 import 'package:customer/View/Components/appProperties.dart';
+import 'package:customer/View/Components/emojiText.dart';
 import 'package:customer/View/Home/listhome.dart';
 import 'package:customer/View/Pages/MultiLokasi/PilihLokasi.dart';
 import 'package:customer/View/TabDashboard/blog.dart';
@@ -259,6 +260,7 @@ class _HomeState extends State<Home> {
                                 direction: ShimmerDirection.ltr,
                               ),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 30.0, right: 30, top: 50),
@@ -603,97 +605,6 @@ class _HomeState extends State<Home> {
                                 ],
                               ),
                             ),
-                            // Container(
-                            //         height: MediaQuery.of(context).size.height / 11,
-                            //         decoration: BoxDecoration(
-                            //           borderRadius: BorderRadius.circular(15),
-                            //           border: Border.all(color: Colors.white),
-                            //           color: Colors.white10,
-                            //         ),
-                            //         margin:
-                            //             EdgeInsets.only(left: 20, right: 20, top: 45),
-                            //         child: ListTile(
-
-                            //             horizontalTitleGap: 10,
-                            //             leading: Container(
-                            //               // margin: EdgeInsets.only(
-                            //               //     top: MediaQuery.of(context).size.height / 20),
-                            //               width: 60,
-                            //               height: 60,
-                            //               decoration: BoxDecoration(
-                            //                 image: DecorationImage(
-                            //                   image: AssetImage('gambar/login.png'),
-                            //                 ),
-                            //               ),
-                            //             ),
-                            //             title: Text(
-                            //               'Hallo ${nama ?? ''} !',
-                            //               style: TextStyle(
-                            //                   color: Colors.white,
-                            //                   fontWeight: FontWeight.bold,
-                            //                   fontSize: 14),
-                            //             ),
-                            //             subtitle: Row(
-                            //               children: [
-                            //                 Text(
-                            //                   'Customer -',
-                            //                   style: TextStyle(
-                            //                       color: Colors.white60,
-                            //                       fontWeight: FontWeight.w600,fontSize: 12),
-                            //                 ),
-                            //                 //
-                            //                 SizedBox(
-                            //                   width: 5,
-                            //                 ),
-                            //                 Text(
-                            //                   'Member Gold',
-                            //                   style: TextStyle(
-                            //                       color: Colors.white,
-                            //                       fontWeight: FontWeight.w600,
-                            //                       fontStyle: FontStyle.italic,fontSize: 12),
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //             trailing: GestureDetector(
-                            //               onTap: () {
-                            //                 Navigator.push(
-                            //                     context,
-                            //                     MaterialPageRoute(
-                            //                         builder: (BuildContext context) =>
-                            //                             Notifikasi(name: nama ?? '')));
-                            //               },
-                            //               child: CircleAvatar(
-                            //                 radius: 20,
-                            //                 backgroundColor: Colors.white30,
-                            //                 child: Container(
-                            //                   // margin: EdgeInsets.only(
-                            //                   //     top: MediaQuery.of(context).size.height / 20),
-                            //                   width: 25,
-                            //                   height: 25,
-                            //                   decoration: BoxDecoration(
-                            //                     image: DecorationImage(
-                            //                         image:
-                            //                             AssetImage('gambar/Vector.png'),
-                            //                         fit: BoxFit.fitHeight),
-                            //                   ),
-                            //                 ),
-                            //               ),
-                            //             )),
-                            //       ),
-                            // : Shimmer.fromColors(
-                            //     child: Container(
-                            //       height: MediaQuery.of(context).size.height / 8,
-                            //       decoration: BoxDecoration(
-                            //         borderRadius: BorderRadius.circular(20),
-                            //         color: Colors.grey[500],
-                            //       ),
-                            //       margin:
-                            //           EdgeInsets.only(left: 25, right: 25, top: 50),
-                            //     ),
-                            //     baseColor: Colors.grey[100],
-                            //     highlightColor: Colors.grey,
-                            //     direction: ShimmerDirection.ltr,
-                            //   ),
                             SizedBox(
                               height: 20,
                             ),
@@ -701,17 +612,22 @@ class _HomeState extends State<Home> {
                             SizedBox(
                               height: 20,
                             ),
-                            Center(
-                                child: GestureDetector(
-                                    onTap: () {
-                                      //  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Blog()));
-                                      getDataCustomer();
-                                    },
-                                    child: Text(
-                                      'Pilih Layanan',
-                                      style:
-                                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey[600]),
-                                    ))),
+                            Container(
+                                padding: EdgeInsets.only(left: 20.w, right: 10.w),
+                                child: Text(
+                                  'Pilih Layanan',
+                                  style:
+                                      TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                                )),
+                            Container(
+                                padding: EdgeInsets.only(left: 20.w, right: 10.w, top: 8.w),
+                                child: Column(children: [
+                                  EmojiText(
+                                      size: 12.sp,
+                                      text:
+                                          "Pilih layanan sesuai kebutuhanmu dirumah yah, kami siap datang dengan segera mengatasinya! 😄"),
+                                ])),
+
                             //
                             ListView(
                               shrinkWrap: true,
@@ -864,7 +780,10 @@ class _HomeState extends State<Home> {
                                                       ? Flexible(
                                                           child: Text(
                                                           '${filter[i]['name']}'.toString(),
-                                                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                                                          style: TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight: FontWeight.w600,
+                                                              color: darkGrey),
                                                           textAlign: TextAlign.center,
                                                         ))
                                                       : Shimmer.fromColors(
