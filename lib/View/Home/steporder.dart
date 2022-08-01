@@ -15,6 +15,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sweetalert/sweetalert.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class StepOrder extends StatefulWidget {
@@ -441,15 +442,10 @@ class _StepOrderState extends State<StepOrder> {
                                                   SizedBox(
                                                     height: 3,
                                                   ),
-                                                  isdonekedua == 1
-                                                      ? Text(
-                                                          Address,
-                                                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                        )
-                                                      : Text(
-                                                          'menunggu tukang sampai lokasi anda',
-                                                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                        ),
+                                                  Text(
+                                                    'Menunggu tukang sampai lokasi anda',
+                                                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -553,7 +549,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                         ),
                                                                         Flexible(
                                                                             child: Text(
-                                                                          orderansemua[i]['service_name'],
+                                                                          orderansemua[i]['service_name'] ?? '',
                                                                           style: TextStyle(
                                                                               fontSize: 12.sp, color: darkGrey),
                                                                         )),
@@ -577,7 +573,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                     : softGrey,
                                                                                 thickness: 4),
                                                                             afterLineStyle: LineStyle(
-                                                                                color: orderansemua[i]['steps'][0]
+                                                                                color: orderansemua[i]['steps'][i]
                                                                                             ['is_done'] ==
                                                                                         1
                                                                                     ? Colors.green
@@ -585,7 +581,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                 thickness: 3),
                                                                             indicatorStyle: IndicatorStyle(
                                                                                 indicatorXY: 0.3,
-                                                                                color: orderansemua[i]['steps'][0]
+                                                                                color: orderansemua[i]['steps'][i]
                                                                                             ['is_done'] ==
                                                                                         1
                                                                                     ? Colors.green
@@ -611,15 +607,17 @@ class _StepOrderState extends State<StepOrder> {
                                                                                                   .width /
                                                                                               1.9,
                                                                                           child: Text(
-                                                                                            orderansemua[i]['steps'][0]
-                                                                                                ['step_name'],
+                                                                                            orderansemua[i]['steps'][i]
+                                                                                                    ['step_name'] ??
+                                                                                                '',
                                                                                             style: TextStyle(
                                                                                                 fontSize: 12,
                                                                                                 color: softGrey),
                                                                                           )),
                                                                                       Text(
-                                                                                        orderansemua[i]['steps'][0]
-                                                                                            ['time'],
+                                                                                        orderansemua[i]['steps'][i]
+                                                                                                ['time'] ??
+                                                                                            '',
                                                                                         style: TextStyle(
                                                                                             fontSize: 12,
                                                                                             color: primary),
@@ -629,7 +627,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                   SizedBox(
                                                                                     height: 5,
                                                                                   ),
-                                                                                  orderansemua[i]['steps'][0]
+                                                                                  orderansemua[i]['steps'][i]
                                                                                               ['is_done'] ==
                                                                                           1
                                                                                       ? Container(
@@ -641,9 +639,11 @@ class _StepOrderState extends State<StepOrder> {
                                                                                                     5),
                                                                                             image: DecorationImage(
                                                                                                 image: NetworkImage(
-                                                                                                    orderansemua[i]
-                                                                                                            ['steps'][0]
-                                                                                                        ['images']),
+                                                                                                    orderansemua[i][
+                                                                                                                'steps'][i]
+                                                                                                            [
+                                                                                                            'images'] ??
+                                                                                                        ''),
                                                                                                 fit: BoxFit.cover),
                                                                                           ),
                                                                                         )
@@ -671,7 +671,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                     : softGrey,
                                                                                 thickness: 3),
                                                                             afterLineStyle: LineStyle(
-                                                                                color: orderansemua[i]['steps'][1]
+                                                                                color: orderansemua[i]['steps'][i]
                                                                                             ['is_done'] ==
                                                                                         1
                                                                                     ? Colors.green
@@ -679,7 +679,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                 thickness: 2),
                                                                             indicatorStyle: IndicatorStyle(
                                                                                 indicatorXY: 0.3,
-                                                                                color: orderansemua[i]['steps'][1]
+                                                                                color: orderansemua[i]['steps'][i]
                                                                                             ['is_done'] ==
                                                                                         1
                                                                                     ? Colors.green
@@ -705,14 +705,15 @@ class _StepOrderState extends State<StepOrder> {
                                                                                                   .width /
                                                                                               1.9,
                                                                                           child: Text(
-                                                                                            orderansemua[i]['steps'][1]
-                                                                                                ['step_name'],
+                                                                                            orderansemua[i]['steps'][i]
+                                                                                                    ['step_name'] ??
+                                                                                                '',
                                                                                             style: TextStyle(
                                                                                                 fontSize: 12,
                                                                                                 color: softGrey),
                                                                                           )),
                                                                                       Text(
-                                                                                        orderansemua[i]['steps'][1]
+                                                                                        orderansemua[i]['steps'][i]
                                                                                             ['time'],
                                                                                         style: TextStyle(
                                                                                             fontSize: 12,
@@ -723,7 +724,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                   SizedBox(
                                                                                     height: 5,
                                                                                   ),
-                                                                                  orderansemua[i]['steps'][1]
+                                                                                  orderansemua[i]['steps'][i]
                                                                                               ['is_done'] ==
                                                                                           1
                                                                                       ? Container(
@@ -736,7 +737,7 @@ class _StepOrderState extends State<StepOrder> {
                                                                                             image: DecorationImage(
                                                                                                 image: NetworkImage(
                                                                                                     orderansemua[i]
-                                                                                                            ['steps'][1]
+                                                                                                            ['steps'][i]
                                                                                                         ['images']),
                                                                                                 fit: BoxFit.cover),
                                                                                           ),
@@ -767,65 +768,74 @@ class _StepOrderState extends State<StepOrder> {
                                                             }),
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 30.w, right: 40.w, bottom: 30.w, top: 5),
-                                                      child: Container(
-                                                          width: MediaQuery.of(context).size.width - 30,
-                                                          child: Column(
-                                                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                            children: [
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    _selectedIndex[0] = !_selectedIndex[0];
-                                                                  });
-
-                                                                  print(_selectedIndex);
-                                                                },
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    orderansemua.last['steps'].last['is_done'] == 1
+                                                        ? Padding(
+                                                            padding: EdgeInsets.only(
+                                                                left: 30.w, right: 40.w, bottom: 30.w, top: 5),
+                                                            child: Container(
+                                                                width: MediaQuery.of(context).size.width - 30,
+                                                                child: Column(
+                                                                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                                   children: [
-                                                                    Container(
-                                                                        width: MediaQuery.of(context).size.width / 2,
-                                                                        child: Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                            children: [
-                                                                              Container(
-                                                                                  margin: EdgeInsets.only(right: 5.w),
-                                                                                  width: 20.w,
-                                                                                  height: 20.w,
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: darkYellow,
-                                                                                      borderRadius:
-                                                                                          BorderRadius.circular(20)),
-                                                                                  child: Icon(
-                                                                                    Icons.task_alt,
-                                                                                    size: 14,
-                                                                                    color: white,
-                                                                                  )),
-                                                                              Flexible(
-                                                                                  child: Text(
-                                                                                terakhir[0]['step_name'],
-                                                                                style: TextStyle(
-                                                                                    fontSize: 13, color: darkGrey),
-                                                                              )),
-                                                                            ])),
-                                                                    Container(
-                                                                        child: Text(
-                                                                      terakhir[0]['time'],
-                                                                      style: TextStyle(fontSize: 13, color: primary),
-                                                                    )),
+                                                                    GestureDetector(
+                                                                      onTap: () {
+                                                                        setState(() {
+                                                                          _selectedIndex[0] = !_selectedIndex[0];
+                                                                        });
+
+                                                                        print(_selectedIndex);
+                                                                      },
+                                                                      child: Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Container(
+                                                                              width:
+                                                                                  MediaQuery.of(context).size.width / 2,
+                                                                              child: Row(
+                                                                                  mainAxisAlignment:
+                                                                                      MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Container(
+                                                                                        margin:
+                                                                                            EdgeInsets.only(right: 5.w),
+                                                                                        width: 20.w,
+                                                                                        height: 20.w,
+                                                                                        decoration: BoxDecoration(
+                                                                                            color: darkYellow,
+                                                                                            borderRadius:
+                                                                                                BorderRadius.circular(
+                                                                                                    20)),
+                                                                                        child: Icon(
+                                                                                          Icons.task_alt,
+                                                                                          size: 14,
+                                                                                          color: white,
+                                                                                        )),
+                                                                                    Flexible(
+                                                                                        child: Text(
+                                                                                      terakhir[0]['step_name'] ?? '',
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 13,
+                                                                                          color: darkGrey),
+                                                                                    )),
+                                                                                  ])),
+                                                                          Container(
+                                                                              child: Text(
+                                                                            terakhir[0]['time'] ?? '',
+                                                                            style:
+                                                                                TextStyle(fontSize: 13, color: primary),
+                                                                          )),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+
+                                                                    //
+
+                                                                    //
                                                                   ],
-                                                                ),
-                                                              ),
-
-                                                              //
-
-                                                              //
-                                                            ],
-                                                          )),
-                                                    )
+                                                                )),
+                                                          )
+                                                        : SizedBox()
                                                   ])
                                                 : SizedBox(),
                                             Padding(
@@ -1038,32 +1048,35 @@ class _StepOrderState extends State<StepOrder> {
                                             // SizedBox(
                                             //   height: 5,
                                             // ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 15.0, right: 15, top: 8),
-                                              child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(25),
-                                                    color: redDanger,
+                                            statusorder == 3
+                                                ? Padding(
+                                                    padding: const EdgeInsets.only(left: 15.0, right: 15, top: 8),
+                                                    child: Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(25),
+                                                          color: redDanger,
+                                                        ),
+                                                        width: MediaQuery.of(context).size.width,
+                                                        child: Center(
+                                                            child: Padding(
+                                                          padding: const EdgeInsets.all(15.0),
+                                                          child: Text(
+                                                            'Kirim Laporan',
+                                                            style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w500),
+                                                          ),
+                                                        ))),
+                                                  )
+                                                : SizedBox(
+                                                    height: 40,
                                                   ),
-                                                  width: MediaQuery.of(context).size.width,
-                                                  child: Center(
-                                                      child: Padding(
-                                                    padding: const EdgeInsets.all(15.0),
-                                                    child: Text(
-                                                      'Kirim Laporan',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.w500),
-                                                    ),
-                                                  ))),
-                                            ),
+
+                                            //
                                             SizedBox(
                                               height: 40,
                                             ),
-
-                                            //
-
                                             //
                                           ],
                                         ))
@@ -1134,8 +1147,8 @@ class _StepOrderState extends State<StepOrder> {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
     var response = await http
-        // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
-        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${1066}')), headers: {
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${widget.orderid}')), headers: {
+      // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-detail/${1066}')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
       "Authorization": "Bearer $customer",
@@ -1193,8 +1206,8 @@ class _StepOrderState extends State<StepOrder> {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
     var response = await http
-        // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${widget.orderid}')), headers: {
-        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${1066}')), headers: {
+        .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${widget.orderid}')), headers: {
+      // .get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order-step/${1066}')), headers: {
       "Accept": "application/json",
       "x-token-olla": KEY.APIKEY,
       "Authorization": "Bearer $customer",
@@ -1240,7 +1253,7 @@ class _StepOrderState extends State<StepOrder> {
   }
 
   String location = 'Null, Press Button';
-  String Address = 'Search';
+  // String Address = 'Search';
   Future<Position> _getGeoLocationPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -1279,7 +1292,7 @@ class _StepOrderState extends State<StepOrder> {
         await placemarkFromCoordinates(double.parse(latitudekedua), double.parse(longitudekedua));
     print(placemarks);
     Placemark place = placemarks[0];
-    Address = '${place.street},';
+    // Address = '${place.street},';
     setState(() {});
   }
 
@@ -1314,6 +1327,8 @@ class _StepOrderState extends State<StepOrder> {
 
   //
   addData() async {
+    SweetAlert.show(context, style: SweetAlertStyle.loading);
+
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
     // var random = randomAlphaNumeric(32).toLowerCase();
@@ -1333,143 +1348,7 @@ class _StepOrderState extends State<StepOrder> {
       print(jsonObj);
       Navigator.pushAndRemoveUntil(
           context, MaterialPageRoute(builder: (BuildContext context) => Dashboard()), (Route<dynamic> route) => false);
-      //   if (response.statusCode == 200) {
-      //     // print(jsonObj['customer_id']);
-      //     setState(() {
-      //       // pengenalid = jsonObj['customer_id'];
-      //       // _incrementCounter();
-      //     });
-      //     print(jsonObj);
-
-      //     Navigator.pushAndRemoveUntil(
-      //         context,
-      //         MaterialPageRoute(builder: (BuildContext context) => Dashboard()),
-      //         (Route<dynamic> route) => false);
-      //     // setState(() {
-      //     //   data = '${jsonObj['data']['verification_code']}';
-      //     //   statusinactive = '${jsonObj['data']['status']}';
-      //     //   namauser = '${jsonObj['data']['user_name']}';
-      //     //   emailuser = '${jsonObj['data']['email']}';
-      //     // });
-      //   } else {
-      //     showDialog(
-      //       context: context,
-      //       builder: (BuildContext context) {
-      //         return Dialog(
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(20),
-      //           ),
-      //           elevation: 0,
-      //           backgroundColor: Colors.transparent,
-      //           child: Stack(
-      //             overflow: Overflow.visible,
-      //             children: [
-      //               Container(
-      //                   height: 200,
-      //                   width: double.infinity,
-      //                   margin: EdgeInsets.only(top: 20),
-      //                   decoration: BoxDecoration(
-      //                       color: Colors.white,
-      //                       shape: BoxShape.rectangle,
-      //                       borderRadius: BorderRadius.circular(17),
-      //                       boxShadow: [
-      //                         BoxShadow(
-      //                           color: Colors.black26,
-      //                           blurRadius: 10.0,
-      //                           offset: Offset(0.0, 10.0),
-      //                         ),
-      //                       ]),
-      //                   child: Padding(
-      //                     padding: const EdgeInsets.only(top: 70.0),
-      //                     child: Column(
-      //                       mainAxisSize: MainAxisSize.min,
-      //                       children: [
-      //                         SizedBox(
-      //                           height: 10,
-      //                         ),
-      //                         Text('Maaf!!!',
-      //                             style: TextStyle(
-      //                                 fontFamily: 'Comfortaa',
-      //                                 fontSize: 13,
-      //                                 fontWeight: FontWeight.w900)),
-      //                         SizedBox(
-      //                           height: 10,
-      //                         ),
-      //                         Text('Masukkan Data Anda Dengan Benar',
-      //                             style: TextStyle(
-      //                                 fontFamily: 'Comfortaa',
-      //                                 fontSize: 13,
-      //                                 fontWeight: FontWeight.w900)),
-      //                       ],
-      //                     ),
-      //                   )),
-      //               Positioned(
-      //                 // bottom: 10,
-      //                 top: 0,
-      //                 left: 16,
-      //                 right: 16,
-      //                 child: Container(
-      //                     height: 80,
-      //                     width: 80,
-      //                     child: Image.asset('gambar/login.png')),
-      //               )
-      //             ],
-      //           ),
-      //         );
-      //       },
-      //     );
-      //   }
-      //   // print('$statusinactive');
-      //   // return print('$data');
-      //   //   return showDialog(
-      //   //       context: context,
-      //   //       barrierDismissible: false,
-      //   //       builder: (BuildContext context) {
-      //   //         return WillPopScope(
-      //   //           onWillPop: () async => false,
-      //   //           child: GestureDetector(onTap: () {
-      //   //             Navigator.pop(context);
-      //   //             // Navigator.pushAndRemoveUntil(
-      //   //             //     context,
-      //   //             //     MaterialPageRoute(
-      //   //             //         builder: (BuildContext context) => HomeScreen()),
-      //   //             //     (Route<dynamic> route) => false);
-      //   //           }, child: StatefulBuilder(
-      //   //             builder: (BuildContext context, StateSetter setState) {
-      //   //               return SimpleDialog(
-      //   //                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      //   //                 contentPadding: EdgeInsets.zero,
-      //   //                 titlePadding: EdgeInsets.only(bottom: 0),
-      //   //                 title: Column(
-      //   //                   children: [
-      //   //                     Container(
-      //   //                       decoration: BoxDecoration(
-      //   //                       color:Colors.deepPurple[400],
-      //   //                         borderRadius: BorderRadius.only(topLeft:Radius.circular(10),topRight: Radius.circular(10))
-      //   //                       ),
-      //   //                       height:20,
-      //   //                     ),
-      //   //                     SizedBox(height:15),
-      //   //                     Text('Akun Belum Aktiv'),
-      //   //                     SizedBox(height:15),
-      //   //                     RaisedButton(
-      //   //                       child:Text('Verifikasi Akun'),
-      //   //                       onPressed: (){
-      //   //                         // _launchMap();
-      //   //                       },
-      //   //                     ),
-      //   //                     SizedBox(height:15),
-      //   //                   ],
-      //   //                 )
-      //   //               );
-      //   //             },
-      //   //           )),
-      //   //         );
-      //   //       });
-      //   // } else {}
     });
-//
-//
   }
   //
 

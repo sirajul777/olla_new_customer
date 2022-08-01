@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sweetalert/sweetalert.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CarJson {
@@ -127,6 +128,7 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
   }
 
   addData() async {
+    SweetAlert.show(context, style: SweetAlertStyle.loading);
     String? secreat_code;
     final prefs1 = await SharedPreferences.getInstance();
     secreat_code = prefs1.getString('customer');
