@@ -304,8 +304,8 @@ class _LanjutPembayaranState extends State<LanjutPembayaran> {
 
   _launchURLApp(String url_checkout) async {
     var url = Uri.parse(url_checkout);
-    if (await launchUrl(url, mode: LaunchMode.externalApplication, webViewConfiguration: WebViewConfiguration())) {
-      await launchUrl(url);
+    if (url != '') {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
       throw 'Could not launch $url';
     }

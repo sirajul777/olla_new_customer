@@ -1,5 +1,6 @@
 import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/keranjang.dart';
+import 'package:customer/View/Pages/Inbox.dart';
 import 'package:customer/View/Pages/home.dart';
 import 'package:customer/View/TabDashboard/profile.dart';
 import 'package:customer/View/Pages/transaski.dart';
@@ -20,9 +21,7 @@ class _DashboardState extends State<Dashboard> {
     Home(
       auto: '',
     ),
-    Home(
-      auto: '',
-    ),
+    Inbox(),
     Transaski(),
     Profile(),
     Keranjang()
@@ -122,9 +121,7 @@ class _DashboardState extends State<Dashboard> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                        currentScreen = Home(
-                          auto: '',
-                        );
+                        currentScreen = Inbox();
                         currentTab = 1;
                       });
                     },

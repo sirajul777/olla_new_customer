@@ -32,36 +32,25 @@ class _BerhasilState extends State<Berhasil> {
                   children: [
                     Text(
                       'Pesanan Jasa Service',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(
                       height: 4,
                     ),
                     Text('- ${datalist[index]['message']}',
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black.withOpacity(0.6))),
+                        style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
                     SizedBox(
                       height: 2,
                     ),
                     Row(
                       children: [
-                        Text('- tanggal :',
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black.withOpacity(0.6))),
+                        Text('- tanggal :', style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
                         SizedBox(
                           width: 2,
                         ),
                         Text(
                           datalist[index]['expired_payment'],
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black.withOpacity(0.6),
-                              height: 1.3),
+                          style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
                         ),
                       ],
                     ),
@@ -85,14 +74,11 @@ class _BerhasilState extends State<Berhasil> {
   getDataProses() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response = await http.get(
-        Uri.parse(Uri.encodeFull(
-            'https://olla.ws/api/customer/v1/order?is_finished=1')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-          "Authorization": "Bearer $customer",
-        });
+    var response = await http.get(Uri.parse(Uri.encodeFull('${KEY.BASE_URL}/order?is_finished=1')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer $customer",
+    });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
