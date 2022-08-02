@@ -1,6 +1,5 @@
-import 'package:customer/View/Components/Transaksi/batal.dart';
-import 'package:customer/View/Components/Transaksi/berhasil.dart';
-import 'package:customer/View/Components/Transaksi/proses.dart';
+import 'package:customer/View/Pages/Transaksi/History.dart';
+import 'package:customer/View/Pages/Transaksi/Proses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +21,7 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
         loading = true;
       });
     });
-    _tabController = new TabController(vsync: this, length: 3);
+    _tabController = new TabController(vsync: this, length: 2);
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -105,7 +104,7 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: _tabController.index == 0 ? Colors.blue : Colors.grey)),
                       child: Tab(
-                        text: 'Proses',
+                        text: 'Aktifitas',
                       )),
                   //
                   Container(
@@ -115,18 +114,18 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: _tabController.index == 1 ? Colors.blue : Colors.grey)),
                       child: Tab(
-                        text: 'Berhasil',
+                        text: 'Histori',
                       )),
                   //
-                  Container(
-                      width: double.maxFinite,
-                      height: MediaQuery.of(context).size.height / 20,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: _tabController.index == 2 ? Colors.blue : Colors.grey)),
-                      child: Tab(
-                        text: 'Batal',
-                      )),
+                  //   Container(
+                  //       width: double.maxFinite,
+                  //       height: MediaQuery.of(context).size.height / 20,
+                  //       decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(8),
+                  //           border: Border.all(color: _tabController.index == 2 ? Colors.blue : Colors.grey)),
+                  //       child: Tab(
+                  //         text: 'Batal',
+                  //       )),
                 ],
               ),
             ),
@@ -139,8 +138,8 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
                   Proses(
                     customer: customer,
                   ),
-                  Berhasil(),
-                  Batal(),
+                  History(customer)
+                  // Batal(),
                 ],
               ),
             )

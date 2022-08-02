@@ -3,7 +3,7 @@ import 'package:customer/View/Home/keranjang.dart';
 import 'package:customer/View/Pages/Inbox.dart';
 import 'package:customer/View/Pages/home.dart';
 import 'package:customer/View/TabDashboard/profile.dart';
-import 'package:customer/View/Pages/transaski.dart';
+import 'package:customer/View/Pages/Transaski.dart';
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
