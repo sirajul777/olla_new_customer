@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:customer/Service/API/api.dart';
+import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Pages/Transaksi/History.dart';
 import 'package:customer/View/Pages/Transaksi/Proses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Transaski extends StatefulWidget {
   @override
@@ -10,26 +15,69 @@ class Transaski extends StatefulWidget {
 }
 
 class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  late TabController? _tabController;
 
   @override
   void initState() {
     super.initState();
     getDataorder();
+    getDataProses().whenComplete(() => getHistory().whenComplete(() {
+          getDataFinish();
+          setState(() {
+            loading = true;
+          });
+        }));
     Future.delayed(Duration(seconds: 5), () {
       setState(() {
         loading = true;
       });
     });
-    _tabController = new TabController(vsync: this, length: 2);
-    _tabController.addListener(_handleTabSelection);
+    _tabController = TabController(vsync: this, length: 2);
+    _tabController!.addListener(_handleTabSelection);
   }
 
-  void _handleTabSelection() {
+  Future getDataFinish() async {
+    var response = await http.get(Uri.parse(Uri.encodeFull('${KEY.BASE_URL}/order?is_finished=1')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer ${customer!}",
+    });
+    //
+    setState(() {
+      var converDataToJson = json.decode(response.body);
+      history = converDataToJson['data'];
+      // print(converDataToJson);
+    });
+    // print(datalist);
+    return "Success";
+  }
+
+// data history
+  late List? history;
+  Future getHistory() async {
+    var response =
+        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order?is_canceled=1')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer ${customer!}",
+    });
+    var converDataToJson = json.decode(response.body);
+    if (converDataToJson['data'].length != 0) {
+      setState(() {
+        history!.add(converDataToJson['data']);
+      });
+    } else {
+      print(converDataToJson['data'].length);
+    }
+
+    return "Success";
+  }
+
+  void _handleTabSelection() async {
     setState(() {});
   }
 
-  late String customer;
+  String? customer;
   Future getDataorder() async {
     final prefs1 = await SharedPreferences.getInstance();
     setState(() {
@@ -39,6 +87,27 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
 
   bool loading = false;
   //
+  List? datalist;
+  // get data proses transaksi
+  Future getDataProses() async {
+    final prefs1 = await SharedPreferences.getInstance();
+    customer = prefs1.getString('customer')!;
+    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": "Bearer ${customer!}",
+    });
+    //
+    setState(() {
+      var converDataToJson = json.decode(response.body);
+      datalist = converDataToJson['data'];
+
+      // ignore: avoid_print
+      print(datalist);
+    });
+    return "Success";
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!loading) {
@@ -58,94 +127,103 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
     } else {
       // TabController _tabController = TabController(length: 3, vsync: this);
       return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          title: GestureDetector(
-            onTap: () {
-              // print(datalist);
-            },
-            child: Text(
-              "Transaksi",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontFamily: 'comfortaa',
-              ),
-            ),
-          ),
-          automaticallyImplyLeading: false,
-          // backgroundColor: Colors.transparent,
-          // shape:
-          //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-          // bottom: TabBar(
-          //   tabs:[
-          //     Tab(text:'Proses',),
-          //     Tab(text:'Berhasil'),
-          //     Tab(text:'Batal',),
-          //   ]
-          // ),
-        ),
-        body: ListView(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              child: TabBar(
-                controller: _tabController,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                indicatorColor: Colors.white,
-                tabs: [
-                  Container(
-                      width: double.maxFinite,
-                      height: MediaQuery.of(context).size.height / 20,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: _tabController.index == 0 ? Colors.blue : Colors.grey)),
-                      child: Tab(
-                        text: 'Aktifitas',
-                      )),
-                  //
-                  Container(
-                      width: double.maxFinite,
-                      height: MediaQuery.of(context).size.height / 20,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: _tabController.index == 1 ? Colors.blue : Colors.grey)),
-                      child: Tab(
-                        text: 'Histori',
-                      )),
-                  //
-                  //   Container(
-                  //       width: double.maxFinite,
-                  //       height: MediaQuery.of(context).size.height / 20,
-                  //       decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(8),
-                  //           border: Border.all(color: _tabController.index == 2 ? Colors.blue : Colors.grey)),
-                  //       child: Tab(
-                  //         text: 'Batal',
-                  //       )),
-                ],
-              ),
-            ),
-            Container(
-              width: double.maxFinite,
-              height: MediaQuery.of(context).size.height,
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  Proses(
-                    customer: customer,
+          backgroundColor: white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            centerTitle: true,
+            title: Container(
+                margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                padding: EdgeInsets.only(bottom: 30),
+                child: Column(children: [
+                  GestureDetector(
+                    onTap: () {
+                      // print(datalist);
+                    },
+                    child: Text(
+                      "Transaksi",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'comfortaa',
+                      ),
+                    ),
                   ),
-                  History(customer)
-                  // Batal(),
-                ],
-              ),
-            )
-          ],
-        ),
-      );
+                ])),
+            automaticallyImplyLeading: false,
+            // backgroundColor: Colors.transparent,
+            // shape:
+            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+            // bottom: TabBar(
+            //   tabs:[
+            //     Tab(text:'Proses',),
+            //     Tab(text:'Berhasil'),
+            //     Tab(text:'Batal',),
+            //   ]
+            // ),
+          ),
+          body: NestedScrollView(
+              clipBehavior: Clip.none,
+              headerSliverBuilder: ((context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    backgroundColor: white,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin,
+                      background: Container(
+                        child: TabBar(
+                          controller: _tabController,
+                          labelColor: darkGrey,
+                          unselectedLabelColor: Colors.grey,
+                          indicatorColor: primary,
+                          tabs: [
+                            Container(
+                                width: double.maxFinite,
+                                height: MediaQuery.of(context).size.height / 20,
+                                // decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(8),
+                                //     border: Border.all(color: _tabController!.index == 0 ? Colors.blue : Colors.grey)),
+                                child: Tab(
+                                  text: 'Aktifitas',
+                                )),
+                            //
+                            Container(
+                                width: double.maxFinite,
+                                height: MediaQuery.of(context).size.height / 20,
+                                // decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(8),
+                                //     border: Border.all(color: _tabController!.index == 1 ? Colors.blue : Colors.grey)),
+                                child: Tab(
+                                  text: 'Histori',
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ];
+              }),
+              body: Container(
+                width: double.maxFinite,
+                height: MediaQuery.of(context).size.height,
+                child: TabBarView(
+                  // physics: NeverScrollableScrollPhysics(),
+                  controller: _tabController,
+                  children: [
+                    Proses(
+                      customer: customer,
+                      datalist: datalist,
+                      loading: loading,
+                    ),
+                    History(
+                      customer: customer,
+                      loading: loading,
+                      datahistory: history,
+                    )
+                  ],
+                ),
+              )));
     }
   }
 }

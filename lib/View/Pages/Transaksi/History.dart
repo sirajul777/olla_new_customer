@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class History extends StatefulWidget {
   String? customer;
-  History(this.customer);
+  List? datahistory;
+  bool? loading;
+  History({Key? key, this.customer, this.datahistory, this.loading});
   @override
   State<History> createState() => _HistoryState();
 }
@@ -16,7 +18,7 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
-    if (!loading) {
+    if (!widget.loading!) {
       return Scaffold(
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -32,55 +34,54 @@ class _HistoryState extends State<History> {
       );
     } else {
       return ListView.builder(
+          // controller: _controller,
           // shrinkWrap: true,
-          itemCount: datalist == null ? 0 : datalist!.length,
+          // physics: const AlwaysScrollableScrollPhysics(),
+          clipBehavior: Clip.none,
+          itemCount: widget.datahistory == null ? 0 : widget.datahistory!.length,
           itemBuilder: (BuildContext context, index) {
-            if (datalist![index] == '[]') {
-              return SizedBox();
-            } else {
-              return Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.blue[100]!,
-                      ),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Pesanan Jasa Service',
-                          style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(datalist![index]['message'] ?? '',
-                            style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Row(
-                          children: [
-                            Text('- tanggal :', style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
-                            SizedBox(
-                              width: 2,
-                            ),
-                            Text(
-                              datalist![index]['expired_payment'] ?? '',
-                              style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
-                            ),
-                          ],
-                        ),
-                      ],
+            return Padding(
+              padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue[100]!,
                     ),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pesanan Jasa Service',
+                        style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Text(widget.datahistory![index]['message'] ?? '',
+                          style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
+                      SizedBox(
+                        height: 2,
+                      ),
+                      Row(
+                        children: [
+                          Text('- tanggal :', style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
+                          SizedBox(
+                            width: 2,
+                          ),
+                          Text(
+                            widget.datahistory![index]['expired_payment'] ?? '',
+                            style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              );
-            }
+              ),
+            );
           });
     }
   }
@@ -88,52 +89,5 @@ class _HistoryState extends State<History> {
   @override
   void initState() {
     super.initState();
-    getDataProses().whenComplete(() {
-      return getHistory().whenComplete(() {
-        setState(() {
-          loading = true;
-        });
-      });
-    });
-  }
-
-  bool loading = false;
-
-  //
-  late List? datalist;
-  Future getDataProses() async {
-    var response = await http.get(Uri.parse(Uri.encodeFull('${KEY.BASE_URL}/order?is_finished=1')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-      "Authorization": "Bearer ${widget.customer}",
-    });
-    //
-    setState(() {
-      var converDataToJson = json.decode(response.body);
-      datalist = converDataToJson['data'];
-      // print(converDataToJson);
-    });
-    print(datalist);
-    return "Success";
-  }
-
-  late List? history;
-  Future getHistory() async {
-    var response =
-        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/order?is_canceled=1')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-      "Authorization": "Bearer ${widget.customer}",
-    });
-    //
-    setState(() {
-      var converDataToJson = json.decode(response.body);
-      datalist!.add(converDataToJson['data']);
-
-      // ignore: avoid_print
-      // print(converDataToJson);
-    });
-    print(datalist!.last);
-    return "Success";
   }
 }
