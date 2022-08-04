@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:customer/Service/API/api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
@@ -18,6 +17,29 @@ class Proses extends StatefulWidget {
 }
 
 class _ProsesState extends State<Proses> {
+  static const _pageSize = 7;
+  final PagingController<int, dynamic> _pagingController = PagingController(firstPageKey: 0);
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final newItems = await widget.datalist;
+      final isLastPage = newItems!.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.loading!) {
@@ -35,7 +57,55 @@ class _ProsesState extends State<Proses> {
         ),
       );
     } else {
-      return ListView.builder(
+      return PagedListView<int, dynamic>(
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<dynamic>(itemBuilder: (context, item, index) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue[100]!,
+                  ),
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.datalist![index]['order_id'] ?? '',
+                      style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Text(widget.datalist![index]['message'] ?? '',
+                        style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Row(
+                      children: [
+                        Text('- expired_payment', style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          widget.datalist![index]['expired_payment'] ?? '',
+                          style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
+      );
+
+      ListView.builder(
           clipBehavior: Clip.none,
           shrinkWrap: true,
           itemCount: widget.datalist == null ? 0 : widget.datalist!.length,
@@ -89,6 +159,9 @@ class _ProsesState extends State<Proses> {
 
   @override
   void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     super.initState();
   }
 }
