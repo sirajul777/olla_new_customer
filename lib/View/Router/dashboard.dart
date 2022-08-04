@@ -3,7 +3,7 @@ import 'package:customer/View/Home/keranjang.dart';
 import 'package:customer/View/Pages/Inbox.dart';
 import 'package:customer/View/Pages/home.dart';
 import 'package:customer/View/TabDashboard/profile.dart';
-import 'package:customer/View/Pages/Transaski.dart';
+import 'package:customer/View/Pages/transaski.dart';
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -111,7 +111,10 @@ class _DashboardState extends State<Dashboard> {
                             )),
                         Text(
                           'Home',
-                          style: TextStyle(fontSize: 12.sp, color: currentTab == 0 ? Colors.blue : Colors.grey),
+                          style: TextStyle(
+                              fontSize: 12.sp,
+                              color:
+                                  currentTab == 0 ? Colors.blue : Colors.grey),
                         )
                       ],
                     ),
@@ -137,7 +140,10 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         Text(
                           'Inbox',
-                          style: TextStyle(fontSize: 12.sp, color: currentTab == 1 ? Colors.blue : Colors.grey),
+                          style: TextStyle(
+                              fontSize: 12.sp,
+                              color:
+                                  currentTab == 1 ? Colors.blue : Colors.grey),
                         )
                       ],
                     ),
@@ -170,7 +176,10 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         Text(
                           'Transaksi',
-                          style: TextStyle(fontSize: 12.sp, color: currentTab == 2 ? Colors.blue : Colors.grey),
+                          style: TextStyle(
+                              fontSize: 12.sp,
+                              color:
+                                  currentTab == 2 ? Colors.blue : Colors.grey),
                         )
                       ],
                     ),
@@ -196,7 +205,10 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         Text(
                           'Profil',
-                          style: TextStyle(fontSize: 12.sp, color: currentTab == 3 ? Colors.blue : Colors.grey),
+                          style: TextStyle(
+                              fontSize: 12.sp,
+                              color:
+                                  currentTab == 3 ? Colors.blue : Colors.grey),
                         )
                       ],
                     ),
@@ -265,18 +277,22 @@ class _DashboardState extends State<Dashboard> {
     }
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     print(placemarks);
     Placemark place = placemarks[0];
-    Address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    Address =
+        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
   }
 }
