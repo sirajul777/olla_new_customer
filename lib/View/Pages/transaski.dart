@@ -23,16 +23,15 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
     super.initState();
     getDataorder();
     getDataProses().whenComplete(() => getHistory().whenComplete(() {
-          getDataFinish();
-          setState(() {
-            loading = true;
-          });
+          getDataFinish().whenComplete((() => setState(() {
+                loading = true;
+              })));
         }));
-    Future.delayed(Duration(seconds: 5), () {
-      setState(() {
-        loading = true;
-      });
-    });
+    // Future.delayed(Duration(seconds: 5), () {
+    //   setState(() {
+    //     loading = true;
+    //   });
+    // });
     _tabController = TabController(vsync: this, length: 2);
     _tabController!.addListener(_handleTabSelection);
   }
