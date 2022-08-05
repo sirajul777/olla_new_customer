@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:customer/View/Components/appProperties.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
@@ -128,7 +129,7 @@ class _BlogState extends State<Blog> {
               Flexible(
                   child: Text(
                 data[index]['title'],
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 10, color: darkGrey),
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12.w, color: darkGrey),
               )),
               !loading
                   ? Container(

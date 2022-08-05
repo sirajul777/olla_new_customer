@@ -17,7 +17,7 @@ class Proses extends StatefulWidget {
 }
 
 class _ProsesState extends State<Proses> {
-  static const _pageSize = 7;
+  static const _pageSize = 10;
   final PagingController<int, dynamic> _pagingController = PagingController(firstPageKey: 0);
   Future<void> _fetchPage(int pageKey) async {
     try {
@@ -35,10 +35,18 @@ class _ProsesState extends State<Proses> {
   }
 
   @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
+  void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+    super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   _pagingController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +66,7 @@ class _ProsesState extends State<Proses> {
       );
     } else {
       return PagedListView<int, dynamic>(
+        clipBehavior: Clip.none,
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<dynamic>(itemBuilder: (context, item, index) {
           return Padding(
@@ -155,13 +164,5 @@ class _ProsesState extends State<Proses> {
             );
           });
     }
-  }
-
-  @override
-  void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
-    super.initState();
   }
 }

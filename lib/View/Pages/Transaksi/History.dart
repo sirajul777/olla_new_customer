@@ -37,6 +37,8 @@ class _HistoryState extends State<History> {
           // controller: _controller,
           // shrinkWrap: true,
           // physics: const AlwaysScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
           clipBehavior: Clip.none,
           itemCount: widget.datahistory == null ? 0 : widget.datahistory!.length,
           itemBuilder: (BuildContext context, index) {
