@@ -5,6 +5,7 @@ import 'package:customer/View/Components/appProperties.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer/shimmer.dart';
 
 class Inbox extends StatefulWidget {
   Inbox({Key? key}) : super(key: key);
@@ -135,9 +136,6 @@ class _InboxState extends State<Inbox> {
                                                   child: Text(
                                                       data![index]
                                                           ['description'],
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      maxLines: 3,
                                                       style: TextStyle(
                                                         color: Colors.black,
                                                       )),
