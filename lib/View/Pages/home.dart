@@ -9,6 +9,7 @@ import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Components/emojiText.dart';
 import 'package:customer/View/Home/listhome.dart';
 import 'package:customer/View/Pages/MultiLokasi/PilihLokasi.dart';
+import 'package:customer/View/Pages/transaski.dart';
 import 'package:customer/View/TabDashboard/blog.dart';
 import 'package:customer/View/TabDashboard/dibawabanner.dart';
 import 'package:customer/View/TabDashboard/slidebanneratas.dart';
@@ -650,7 +651,9 @@ class _HomeState extends State<Home> {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (BuildContext context) => Notifikasi(name: nama!)));
+                                                        builder: (BuildContext context) =>
+                                                            // Notifikasi(name: nama!)
+                                                            Transaski()));
                                               },
                                               child: Container(
                                                 // margin: EdgeInsets.only(

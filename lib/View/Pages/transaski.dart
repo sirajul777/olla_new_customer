@@ -6,6 +6,7 @@ import 'package:customer/View/Pages/Transaksi/History.dart';
 import 'package:customer/View/Pages/Transaksi/Proses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -103,7 +104,7 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
       datalist = converDataToJson['data'];
 
       // ignore: avoid_print
-      print(datalist);
+      // print(datalist);
     });
     return "Success";
   }
@@ -127,115 +128,96 @@ class _TransaskiState extends State<Transaski> with SingleTickerProviderStateMix
     } else {
       // TabController _tabController = TabController(length: 3, vsync: this);
       // a
-      return Scaffold(
-          backgroundColor: white,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            title: Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                padding: EdgeInsets.only(bottom: 15),
-                child: Column(children: [
-                  GestureDetector(
-                    onTap: () {
-                      // print(datalist);
-                    },
-                    child: Text(
-                      "Transaksi",
-                      style: TextStyle(
-                        color: darkGrey,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ])),
-            // automaticallyImplyLeading: false,
-            // backgroundColor: Colors.transparent,
-            // shape:
-            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-            // bottom: TabBar(
-            //   tabs:[
-            //     Tab(text:'Proses',),
-            //     Tab(text:'Berhasil'),
-            //     Tab(text:'Batal',),
-            //   ]
-            // ),
-          ),
-          body: SafeArea(
-              maintainBottomViewPadding: true,
-              top: false,
-              bottom: false,
-              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle(
-                      statusBarColor: white,
-                      statusBarIconBrightness: Brightness.light,
-                      statusBarBrightness: Brightness.dark),
-                  child: Container(
-                      // constraints: BoxConstraints(
-                      //   minHeight: double.infinity,
-                      // ),
-                      // height: double.infinity,
-                      child: NestedScrollView(
-                    // scrollBehavior: ScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.glow),
-                    clipBehavior: Clip.none,
-                    headerSliverBuilder: ((context, innerBoxIsScrolled) {
-                      return [
-                        SliverAppBar(
-                          backgroundColor: white,
-                          pinned: true,
-                          flexibleSpace: FlexibleSpaceBar(
-                            collapseMode: CollapseMode.pin,
-                            background: Container(
-                              child: TabBar(
+      return Center(
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                statusBarColor: white,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.dark,
+              ),
+              child: Scaffold(
+                  appBar: null,
+                  body: SingleChildScrollView(
+                      clipBehavior: Clip.none,
+                      child: Column(children: [
+                        Container(
+                          color: white,
+                          margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                          padding: EdgeInsets.all(15),
+                          child: Center(
+                              child: Text(
+                            'Transaksi',
+                            style: TextStyle(color: darkGrey, fontSize: 18.sp),
+                          )),
+                        ),
+                        Container(
+                            height: MediaQuery.of(context).size.height,
+                            // constraints: BoxConstraints(
+                            //   minHeight: double.infinity,
+                            // ),
+                            // height: double.infinity,
+
+                            child: NestedScrollView(
+                              // scrollBehavior: ScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.glow),
+                              clipBehavior: Clip.none,
+                              headerSliverBuilder: ((context, innerBoxIsScrolled) {
+                                return [
+                                  SliverAppBar(
+                                    backgroundColor: white,
+                                    pinned: true,
+                                    flexibleSpace: FlexibleSpaceBar(
+                                      collapseMode: CollapseMode.pin,
+                                      background: Container(
+                                        child: TabBar(
+                                          controller: _tabController,
+                                          labelColor: darkGrey,
+                                          unselectedLabelColor: Colors.grey,
+                                          indicatorColor: primary,
+                                          tabs: [
+                                            Container(
+                                                // width: double.maxFinite,
+                                                // height: MediaQuery.of(context).size.height / 40,
+                                                // decoration: BoxDecoration(
+                                                //     borderRadius: BorderRadius.circular(8),
+                                                //     border: Border.all(color: _tabController!.index == 0 ? Colors.blue : Colors.grey)),
+                                                child: Tab(
+                                              text: 'Aktifitas',
+                                            )),
+                                            //
+                                            Container(
+                                                // width: double.maxFinite,
+                                                // height: MediaQuery.of(context).size.height / 40,
+                                                // decoration: BoxDecoration(
+                                                //     borderRadius: BorderRadius.circular(8),
+                                                //     border: Border.all(color: _tabController!.index == 1 ? Colors.blue : Colors.grey)),
+                                                child: Tab(
+                                              text: 'Histori',
+                                            )),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ];
+                              }),
+                              body: TabBarView(
+                                // physics: NeverScrollableScrollPhysics(),
                                 controller: _tabController,
-                                labelColor: darkGrey,
-                                unselectedLabelColor: Colors.grey,
-                                indicatorColor: primary,
-                                tabs: [
-                                  Container(
-                                      width: double.maxFinite,
-                                      height: MediaQuery.of(context).size.height / 20,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(8),
-                                      //     border: Border.all(color: _tabController!.index == 0 ? Colors.blue : Colors.grey)),
-                                      child: Tab(
-                                        text: 'Aktifitas',
-                                      )),
-                                  //
-                                  Container(
-                                      width: double.maxFinite,
-                                      height: MediaQuery.of(context).size.height / 20,
-                                      // decoration: BoxDecoration(
-                                      //     borderRadius: BorderRadius.circular(8),
-                                      //     border: Border.all(color: _tabController!.index == 1 ? Colors.blue : Colors.grey)),
-                                      child: Tab(
-                                        text: 'Histori',
-                                      )),
+                                children: [
+                                  Proses(
+                                    customer: customer,
+                                    datalist: datalist,
+                                    loading: loading,
+                                  ),
+                                  History(
+                                    customer: customer,
+                                    loading: loading,
+                                    datahistory: history,
+                                  )
                                 ],
                               ),
-                            ),
-                          ),
-                        )
-                      ];
-                    }),
-                    body: TabBarView(
-                      // physics: NeverScrollableScrollPhysics(),
-                      controller: _tabController,
-                      children: [
-                        Proses(
-                          customer: customer,
-                          datalist: datalist,
-                          loading: loading,
-                        ),
-                        History(
-                          customer: customer,
-                          loading: loading,
-                          datahistory: history,
-                        )
-                      ],
-                    ),
-                  )))));
+                            ))
+                      ])))));
     }
   }
 }
