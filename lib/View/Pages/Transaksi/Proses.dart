@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:customer/Service/API/api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,17 +19,51 @@ class Proses extends StatefulWidget {
 }
 
 class _ProsesState extends State<Proses> {
-  static const _pageSize = 10;
+  int _pageSize = 6;
+  int _start = 0;
   final PagingController<int, dynamic> _pagingController = PagingController(firstPageKey: 0);
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems = await widget.datalist;
-      final isLastPage = newItems!.length < _pageSize;
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
+      var newItems = await widget.datalist!.getRange(_start, _pageSize);
+      // var isLastPage = ;
+      print(widget.datalist!.length);
+      print("size page" + '$_pageSize');
+      if (_pageSize == widget.datalist!.length) {
+        _pagingController.appendLastPage(newItems.toList());
+        // _start = _pageSize;
+
+        // showDialog(
+        //     context: context,
+        //     builder: (context) {
+        //       return Positioned(
+        //           child: Center(
+        //         child: SpinKitFadingCircle(
+        //           color: Colors.blue,
+        //           size: 60.0,
+        //         ),
+        //       ));
+        //     });
+        // Future.delayed(Duration(seconds: 3), (() {}));
+        setState(() {});
+        print(newItems.length);
       } else {
-        final nextPageKey = pageKey + newItems.length;
-        _pagingController.appendPage(newItems, nextPageKey);
+        Positioned(
+            child: Center(
+          child: SpinKitFadingCircle(
+            color: Colors.blue,
+            size: 60.0,
+          ),
+        ));
+
+        Future.delayed(Duration(seconds: 3), (() {
+          var nextPageKey = pageKey + newItems.length;
+          _pagingController.appendPage(newItems.toList(), nextPageKey);
+
+          setState(() {
+            _pageSize += _start + newItems.length;
+          });
+        }));
+        print(newItems.length);
       }
     } catch (error) {
       _pagingController.error = error;
@@ -42,11 +78,11 @@ class _ProsesState extends State<Proses> {
     super.initState();
   }
 
-  // @override
-  // void dispose() {
-  //   _pagingController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,54 +101,91 @@ class _ProsesState extends State<Proses> {
         ),
       );
     } else {
-      return PagedListView<int, dynamic>(
-        clipBehavior: Clip.none,
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<dynamic>(itemBuilder: (context, item, index) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.blue[100]!,
-                  ),
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.datalist![index]['order_id'] ?? '',
-                      style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text(widget.datalist![index]['message'] ?? '',
-                        style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
-                    SizedBox(
-                      height: 2,
-                    ),
-                    Row(
-                      children: [
-                        Text('- expired_payment', style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          widget.datalist![index]['expired_payment'] ?? '',
-                          style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+      return RefreshIndicator(
+          onRefresh: () => Future.sync(
+                () => _pagingController.refresh(),
               ),
-            ),
-          );
-        }),
-      );
+          child: PagedListView<int, dynamic>(
+            // shrinkWrap: true,
+            // clipBehavior: Clip.none,
+            // loadingListingBuilder: (
+            //   context,
+            //   itemBuilder,
+            //   itemCount,
+            //   progressIndicatorBuilder,
+            // ) =>
+            //     SliverGrid(
+            //   gridDelegate: gridDelegate,
+            //   delegate: _buildSliverDelegate(
+            //     itemBuilder,
+            //     itemCount,
+            //     statusIndicatorBuilder: progressIndicatorBuilder,
+            //   ),
+            // ),
+            // errorListingBuilder: (
+            //   context,
+            //   itemBuilder,
+            //   itemCount,
+            //   errorIndicatorBuilder,
+            // ) =>
+            //     SliverGrid(
+            //   gridDelegate: gridDelegate,
+            //   delegate: _buildSliverDelegate(
+            //     itemBuilder,
+            //     itemCount,
+            //     statusIndicatorBuilder: errorIndicatorBuilder,
+            //   ),
+            // ),
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                // newPageProgressIndicatorBuilder:,
+                animateTransitions: true,
+                itemBuilder: (context, item, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20, top: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.blue[100]!,
+                          ),
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item!['order_id'] ?? '',
+                              style: TextStyle(fontSize: 13, color: Colors.blue, fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Text(item!['message'] ?? '',
+                                style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
+                            SizedBox(
+                              height: 2,
+                            ),
+                            Row(
+                              children: [
+                                Text('- expired_payment',
+                                    style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6))),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  item!['expired_payment'] ?? '',
+                                  style: TextStyle(fontSize: 12, color: Colors.black.withOpacity(0.6), height: 1.3),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+          ));
 
       ListView.builder(
           clipBehavior: Clip.none,
