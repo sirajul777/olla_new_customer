@@ -1,6 +1,6 @@
 import 'package:customer/View/Auth/Login/landingAuth.dart';
 import 'package:customer/View/Components/appProperties.dart';
-import 'package:customer/View/TabDashboard/edit_akun.dart';
+import 'package:customer/View/Profile/edit_akun.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

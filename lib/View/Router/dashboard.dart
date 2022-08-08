@@ -2,7 +2,7 @@ import 'package:customer/View/Components/appProperties.dart';
 import 'package:customer/View/Home/keranjang.dart';
 import 'package:customer/View/Pages/Inbox.dart';
 import 'package:customer/View/Pages/home.dart';
-import 'package:customer/View/TabDashboard/profile.dart';
+import 'package:customer/View/Profile/profile.dart';
 import 'package:customer/View/Pages/transaski.dart';
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
