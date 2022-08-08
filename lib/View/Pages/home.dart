@@ -41,12 +41,14 @@ class _HomeState extends State<Home> {
 
   late ScrollController _controller;
   _scrollListener() {
-    if (_controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange) {
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+        !_controller.position.outOfRange) {
       setState(() {
         //you can do anything here
       });
     }
-    if (_controller.offset <= _controller.position.minScrollExtent && !_controller.position.outOfRange) {
+    if (_controller.offset <= _controller.position.minScrollExtent &&
+        !_controller.position.outOfRange) {
       setState(() {
         //you can do anything here
       });
@@ -55,12 +57,14 @@ class _HomeState extends State<Home> {
 
   late List? datablog;
   Future getDatablog() async {
-    var response =
-        await http.get(Uri.parse(Uri.encodeFull('https://master.olla.co.id/api/landingpage/blog')), headers: {
-      "Accept": "application/json",
-      "x-token-olla":
-          'ab2a492367bc1f4fdbf9fe81d26b77488a0125858dcf61a21e33e86db0279840d46fa2cdeb011956b62691c8bb51ca8340c8a562f0f89e764d51f4df6948f2c7',
-    });
+    var response = await http.get(
+        Uri.parse(
+            Uri.encodeFull('https://master.olla.co.id/api/landingpage/blog')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla":
+              'ab2a492367bc1f4fdbf9fe81d26b77488a0125858dcf61a21e33e86db0279840d46fa2cdeb011956b62691c8bb51ca8340c8a562f0f89e764d51f4df6948f2c7',
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -75,10 +79,12 @@ class _HomeState extends State<Home> {
 
   List? databanner;
   Future getDataSlidBanner() async {
-    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/slide-banner')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-    });
+    var response = await http.get(
+        Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/slide-banner')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla": KEY.APIKEY,
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -167,12 +173,14 @@ class _HomeState extends State<Home> {
   Future getDataCustomer() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response =
-        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/customer-profile')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-      "Authorization": 'Bearer {$customer}',
-    });
+    var response = await http.get(
+        Uri.parse(
+            Uri.encodeFull('https://olla.ws/api/customer/v1/customer-profile')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla": KEY.APIKEY,
+          "Authorization": 'Bearer {$customer}',
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
@@ -194,15 +202,20 @@ class _HomeState extends State<Home> {
   List? gabung = [];
   List? filter = [];
   Future getDataList() async {
-    var response = await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/service-list')), headers: {
-      "Accept": "application/json",
-      "x-token-olla": KEY.APIKEY,
-    });
+    var response = await http.get(
+        Uri.parse(
+            Uri.encodeFull('https://olla.ws/api/customer/v1/service-list')),
+        headers: {
+          "Accept": "application/json",
+          "x-token-olla": KEY.APIKEY,
+        });
     //
     setState(() {
       var converDataToJson = json.decode(response.body);
       datalist = converDataToJson['data'];
-      filter!.addAll(datalist!.where((element) => element.containsValue("aktif")).toList());
+      filter!.addAll(datalist!
+          .where((element) => element.containsValue("aktif"))
+          .toList());
     });
     return "Success";
   }
@@ -239,7 +252,8 @@ class _HomeState extends State<Home> {
         setState(() {
           listlokasi = lokasi!.ress!;
           Address = lokasi!.ress![0].address!;
-          idalamatutama = List<bool>.filled(lokasi!.ress!.length, false, growable: true);
+          idalamatutama =
+              List<bool>.filled(lokasi!.ress!.length, false, growable: true);
         });
         // print(lokasi);
       } else {
@@ -251,10 +265,13 @@ class _HomeState extends State<Home> {
       }
     } on SocketException catch (_) {
       return SweetAlert.show(context,
-          subtitle: "No Internet Connection!", style: SweetAlertStyle.confirm, showCancelButton: false);
+          subtitle: "No Internet Connection!",
+          style: SweetAlertStyle.confirm,
+          showCancelButton: false);
       // throw Failed(code: 101, response: "no connection");r
     } on TimeoutException {
-      return SweetAlert.show(context, style: SweetAlertStyle.confirm, showCancelButton: false);
+      return SweetAlert.show(context,
+          style: SweetAlertStyle.confirm, showCancelButton: false);
     }
   }
 
@@ -298,22 +315,26 @@ class _HomeState extends State<Home> {
                         children: [
                           loading
                               ? Container(
-                                  height: MediaQuery.of(context).size.height / 3.3,
+                                  height:
+                                      MediaQuery.of(context).size.height / 3.3,
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
                                     color: darkBlue,
                                     borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+                                        bottomLeft: Radius.circular(0),
+                                        bottomRight: Radius.circular(0)),
                                   ),
                                 )
                               : Shimmer.fromColors(
                                   child: Container(
-                                    height: MediaQuery.of(context).size.height / 3.5,
+                                    height: MediaQuery.of(context).size.height /
+                                        3.5,
                                     width: MediaQuery.of(context).size.width,
                                     decoration: BoxDecoration(
                                       color: Colors.grey[500],
                                       borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+                                          bottomLeft: Radius.circular(0),
+                                          bottomRight: Radius.circular(0)),
                                     ),
                                   ),
                                   baseColor: Colors.grey[100]!,
@@ -324,7 +345,8 @@ class _HomeState extends State<Home> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 30.0, right: 30, top: 50),
+                                padding: const EdgeInsets.only(
+                                    left: 30.0, right: 30, top: 50),
                                 child: Column(
                                   children: [
                                     GestureDetector(
@@ -332,126 +354,165 @@ class _HomeState extends State<Home> {
                                         showModalBottomSheet(
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+                                                    topLeft:
+                                                        Radius.circular(20),
+                                                    topRight:
+                                                        Radius.circular(20))),
                                             context: context,
                                             builder: (context) {
                                               return Container(
                                                   // mainAxisSize: MainAxisSize.min,
                                                   // height: MediaQuery.of(context).size.width-50,
                                                   child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Container(
-                                                    padding: EdgeInsets.only(top: 30, left: 20),
+                                                    padding: EdgeInsets.only(
+                                                        top: 30, left: 20),
                                                     child: Text(
                                                       'Alamat yang Anda gunakan sekarang',
-                                                      style: TextStyle(fontWeight: FontWeight.bold, color: darkGrey),
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: darkGrey),
                                                     ),
                                                   ),
                                                   Container(
-                                                    padding: EdgeInsets.only(top: 2, bottom: 20, left: 20),
+                                                    padding: EdgeInsets.only(
+                                                        top: 2,
+                                                        bottom: 20,
+                                                        left: 20),
                                                     child: Text(
                                                       'Kamu bisa pilih alamat yang di simpan',
-                                                      style: TextStyle(color: softGrey, fontSize: 12.sp),
+                                                      style: TextStyle(
+                                                          color: softGrey,
+                                                          fontSize: 12.sp),
                                                     ),
                                                   ),
                                                   SingleChildScrollView(
-                                                    scrollDirection: Axis.horizontal,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
                                                     child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: <Widget>[
                                                         Container(
-                                                          margin: EdgeInsets.symmetric(vertical: 8.0),
-                                                          height: MediaQuery.of(context).size.width / 2,
-                                                          child: ListView.builder(
-                                                              controller: _controller,
-                                                              shrinkWrap: true,
-                                                              itemCount: listlokasi != null ? listlokasi!.length : 0,
-                                                              scrollDirection: Axis.horizontal,
-                                                              itemBuilder: (context, index) {
-                                                                return loading
-                                                                    ? GestureDetector(
-                                                                        onTap: () {
-                                                                          setLokasiUtama(
-                                                                              lokasi!.ress![index].id!, index);
-                                                                        },
-                                                                        child: InkWell(
-                                                                          child: Container(
-                                                                            margin: EdgeInsets.only(left: 15, right: 5),
-                                                                            padding: EdgeInsets.all(8.w),
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width / 2,
-                                                                            height:
-                                                                                MediaQuery.of(context).size.width / 2,
-                                                                            decoration: BoxDecoration(
-                                                                                borderRadius:
-                                                                                    BorderRadius.circular(25.w),
-                                                                                border: Border.all(
-                                                                                    color: idalamatutama![index]
-                                                                                        ? primary
-                                                                                        : Color.fromARGB(
-                                                                                            255, 196, 196, 196),
-                                                                                    width: 1)),
-                                                                            child: Column(
-                                                                              mainAxisAlignment:
-                                                                                  MainAxisAlignment.start,
-                                                                              children: [
-                                                                                Container(
-                                                                                  margin: EdgeInsets.only(top: 10.w),
-                                                                                  child: Center(
-                                                                                      child: new Icon(
-                                                                                    Icons.location_pin,
-                                                                                    color: Color.fromARGB(
-                                                                                        255, 255, 107, 97),
-                                                                                    size: 45,
-                                                                                  )),
+                                                          margin: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical:
+                                                                      8.0),
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              2,
+                                                          child:
+                                                              ListView.builder(
+                                                                  controller:
+                                                                      _controller,
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemCount: listlokasi !=
+                                                                          null
+                                                                      ? listlokasi!
+                                                                          .length
+                                                                      : 0,
+                                                                  scrollDirection:
+                                                                      Axis
+                                                                          .horizontal,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    return loading
+                                                                        ? GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              setLokasiUtama(lokasi!.ress![index].id!, index);
+                                                                            },
+                                                                            child:
+                                                                                InkWell(
+                                                                              child: Container(
+                                                                                margin: EdgeInsets.only(left: 15, right: 5),
+                                                                                padding: EdgeInsets.all(8.w),
+                                                                                width: MediaQuery.of(context).size.width / 2,
+                                                                                height: MediaQuery.of(context).size.width / 2,
+                                                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.w), border: Border.all(color: idalamatutama![index] ? primary : Color.fromARGB(255, 196, 196, 196), width: 1)),
+                                                                                child: Column(
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      margin: EdgeInsets.only(top: 10.w),
+                                                                                      child: Center(
+                                                                                          child: new Icon(
+                                                                                        Icons.location_pin,
+                                                                                        color: Color.fromARGB(255, 255, 107, 97),
+                                                                                        size: 45,
+                                                                                      )),
+                                                                                    ),
+                                                                                    Container(
+                                                                                        margin: EdgeInsets.only(top: 10.w),
+                                                                                        child: new Text(
+                                                                                          lokasi!.ress![index].customerName!,
+                                                                                          style: TextStyle(color: darkGrey, fontWeight: FontWeight.bold, fontSize: 12.sp, overflow: TextOverflow.clip),
+                                                                                        )),
+                                                                                    new Text(
+                                                                                      lokasi!.ress![index].address!,
+                                                                                      style: TextStyle(fontSize: 12.sp, color: softGrey, overflow: TextOverflow.clip),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      height: 15,
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
-                                                                                Container(
-                                                                                    margin: EdgeInsets.only(top: 10.w),
-                                                                                    child: new Text(
-                                                                                      lokasi!
-                                                                                          .ress![index].customerName!,
-                                                                                      style: TextStyle(
-                                                                                          color: darkGrey,
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                          fontSize: 12.sp,
-                                                                                          overflow: TextOverflow.clip),
-                                                                                    )),
-                                                                                new Text(
-                                                                                  lokasi!.ress![index].address!,
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 12.sp,
-                                                                                      color: softGrey,
-                                                                                      overflow: TextOverflow.clip),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 15,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ))
-                                                                    : SizedBox();
-                                                              }),
+                                                                              ),
+                                                                            ))
+                                                                        : SizedBox();
+                                                                  }),
                                                         ),
                                                         GestureDetector(
                                                             onTap: () {
                                                               Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                      builder: (BuildContext context) =>
+                                                                      builder: (BuildContext
+                                                                              context) =>
                                                                           PilihLokasi()));
                                                             },
                                                             child: Container(
-                                                              margin: EdgeInsets.only(left: 15),
-                                                              padding: EdgeInsets.all(10.w),
-                                                              width: MediaQuery.of(context).size.width / 2,
-                                                              height: MediaQuery.of(context).size.width / 2,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(25.w),
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                      left: 15),
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.w),
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            25.w),
                                                                 border: Border.all(
-                                                                    color: Color.fromARGB(255, 196, 196, 196),
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            196,
+                                                                            196,
+                                                                            196),
                                                                     width: 1),
                                                               ),
                                                               child: Center(
@@ -460,16 +521,19 @@ class _HomeState extends State<Home> {
                                                                       height: 60.w,
                                                                       // height: 20.w,
                                                                       padding: EdgeInsets.all(5.w),
-                                                                      decoration: BoxDecoration(
-                                                                          border: Border.all(color: softGrey, width: 3),
-                                                                          borderRadius: BorderRadius.circular(30.w)),
+                                                                      decoration: BoxDecoration(border: Border.all(color: softGrey, width: 3), borderRadius: BorderRadius.circular(30.w)),
                                                                       child: Center(
-                                                                        child: Text(
+                                                                        child:
+                                                                            Text(
                                                                           '+',
-                                                                          style: TextStyle(
-                                                                            color: softGrey,
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 30.sp,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                softGrey,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            fontSize:
+                                                                                30.sp,
                                                                           ),
                                                                         ),
                                                                       ))),
@@ -485,31 +549,57 @@ class _HomeState extends State<Home> {
                                                   ),
                                                   Center(
                                                       child: Container(
-                                                    margin: EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 2),
-                                                    color: Color.fromARGB(255, 196, 196, 196),
+                                                    margin: EdgeInsets.only(
+                                                        left: 5,
+                                                        right: 5,
+                                                        top: 15,
+                                                        bottom: 2),
+                                                    color: Color.fromARGB(
+                                                        255, 196, 196, 196),
                                                     height: 1,
-                                                    width: MediaQuery.of(context).size.width - 30.w,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width -
+                                                            30.w,
                                                   )),
                                                   SizedBox(
                                                     height: 8.w,
                                                   ),
                                                   Container(
-                                                      padding: EdgeInsets.only(top: 5, bottom: 10, left: 20),
+                                                      padding: EdgeInsets.only(
+                                                          top: 5,
+                                                          bottom: 10,
+                                                          left: 20),
                                                       child: Flexible(
                                                         child: Text(
                                                             'Kamu juga bisa cari lokasi dulu kalau ke alamat lain',
                                                             style: TextStyle(
                                                                 color: softGrey,
-                                                                overflow: TextOverflow.clip,
-                                                                fontSize: 12.w)),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .clip,
+                                                                fontSize:
+                                                                    12.w)),
                                                       )),
                                                   Container(
-                                                    margin: EdgeInsets.only(left: 15.w, right: 15.w),
-                                                    width: MediaQuery.of(context).size.width,
-                                                    height: MediaQuery.of(context).size.height / 15,
+                                                    margin: EdgeInsets.only(
+                                                        left: 15.w,
+                                                        right: 15.w),
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            15,
                                                     decoration: BoxDecoration(
                                                         // color: Colors.blue[50],
-                                                        borderRadius: BorderRadius.circular(25)),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(25)),
                                                     child: TextFormField(
                                                       // controller: email,
                                                       // onChanged: (vale) {
@@ -527,22 +617,36 @@ class _HomeState extends State<Home> {
 
                                                       // textAlign: TextAlign.left,
                                                       // ignore: unnecessary_new
-                                                      decoration: new InputDecoration(
-                                                        fillColor: Colors.grey[200],
+                                                      decoration:
+                                                          new InputDecoration(
+                                                        fillColor:
+                                                            Colors.grey[200],
                                                         filled: true,
-                                                        contentPadding: EdgeInsets.only(left: 20, right: 20, top: 5),
+                                                        contentPadding:
+                                                            EdgeInsets.only(
+                                                                left: 20,
+                                                                right: 20,
+                                                                top: 5),
                                                         hintText: 'Cari lokasi',
-                                                        hintStyle: TextStyle(color: softGrey),
+                                                        hintStyle: TextStyle(
+                                                            color: softGrey),
                                                         prefixIcon: Icon(
                                                           Icons.search,
                                                           size: 30,
                                                           color: softGrey,
                                                         ),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius: const BorderRadius.all(
-                                                              Radius.circular(25.0),
-                                                            ),
-                                                            borderSide: BorderSide.none),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          25.0),
+                                                                ),
+                                                                borderSide:
+                                                                    BorderSide
+                                                                        .none),
                                                       ),
                                                     ),
                                                   ),
@@ -568,9 +672,13 @@ class _HomeState extends State<Home> {
                                         Flexible(
                                           child: RichText(
                                             overflow: TextOverflow.ellipsis,
-                                            strutStyle: StrutStyle(fontSize: 12.0),
+                                            strutStyle:
+                                                StrutStyle(fontSize: 12.0),
                                             text: TextSpan(
-                                                style: TextStyle(color: Colors.white, fontSize: 11.sp), text: Address),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 11.sp),
+                                                text: Address),
                                           ),
                                         ),
                                         Icon(
@@ -587,9 +695,11 @@ class _HomeState extends State<Home> {
                                         color: Colors.white10,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 15, right: 15, top: 3),
+                                        padding: const EdgeInsets.only(
+                                            left: 15, right: 15, top: 3),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             //
                                             Row(
@@ -599,7 +709,8 @@ class _HomeState extends State<Home> {
                                                   height: 50,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                      image: AssetImage('gambar/login.png'),
+                                                      image: AssetImage(
+                                                          'gambar/login.png'),
                                                     ),
                                                   ),
                                                 ),
@@ -607,15 +718,18 @@ class _HomeState extends State<Home> {
                                                   width: 10,
                                                 ),
                                                 Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       'Hallo ${namauser!} !',
                                                       style: TextStyle(
                                                           color: Colors.white,
-                                                          fontWeight: FontWeight.bold,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                           fontSize: 15),
-                                                      overflow: TextOverflow.clip,
+                                                      overflow:
+                                                          TextOverflow.clip,
                                                     ),
                                                     //
                                                     Row(
@@ -623,8 +737,11 @@ class _HomeState extends State<Home> {
                                                         Text(
                                                           'Customer -',
                                                           style: TextStyle(
-                                                              color: Colors.white60,
-                                                              fontWeight: FontWeight.w600,
+                                                              color: Colors
+                                                                  .white60,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
                                                               fontSize: 12),
                                                         ),
                                                         //
@@ -634,9 +751,14 @@ class _HomeState extends State<Home> {
                                                         Text(
                                                           'Member Gold',
                                                           style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontWeight: FontWeight.w600,
-                                                              fontStyle: FontStyle.italic,
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontStyle:
+                                                                  FontStyle
+                                                                      .italic,
                                                               fontSize: 12),
                                                         ),
                                                       ],
@@ -651,7 +773,8 @@ class _HomeState extends State<Home> {
                                                 Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (BuildContext context) =>
+                                                        builder: (BuildContext
+                                                                context) =>
                                                             // Notifikasi(name: nama!)
                                                             Transaski()));
                                               },
@@ -662,7 +785,10 @@ class _HomeState extends State<Home> {
                                                 padding: EdgeInsets.all(5),
                                                 height: 30,
                                                 decoration: BoxDecoration(
-                                                    color: lightBlue, borderRadius: BorderRadius.circular(30)),
+                                                    color: lightBlue,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30)),
                                                 child: Center(
                                                     child: Icon(
                                                   Icons.notifications_outlined,
@@ -686,14 +812,18 @@ class _HomeState extends State<Home> {
                                 height: 20,
                               ),
                               Container(
-                                  padding: EdgeInsets.only(left: 20.w, right: 10.w),
+                                  padding:
+                                      EdgeInsets.only(left: 20.w, right: 10.w),
                                   child: Text(
                                     'Pilih Layanan',
                                     style: TextStyle(
-                                        fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey[600]),
                                   )),
                               Container(
-                                  padding: EdgeInsets.only(left: 20.w, right: 10.w, top: 8.w),
+                                  padding: EdgeInsets.only(
+                                      left: 20.w, right: 10.w, top: 8.w),
                                   child: Column(children: [
                                     EmojiText(
                                         size: 12.sp,
@@ -707,31 +837,39 @@ class _HomeState extends State<Home> {
                                 physics: NeverScrollableScrollPhysics(),
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 5.0, right: 5),
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5),
                                     child: Container(
                                       // color: Colors.red,
                                       child: Center(
                                         child: Padding(
-                                          padding: const EdgeInsets.only(left: 1, top: 0.0, right: 1),
+                                          padding: const EdgeInsets.only(
+                                              left: 1, top: 0.0, right: 1),
                                           child: GridView.builder(
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 4,
-                                                  mainAxisSpacing: 0,
-                                                  // childAspectRatio: 1 / 1,
-                                                  crossAxisSpacing: 0),
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 4,
+                                                      mainAxisSpacing: 0,
+                                                      // childAspectRatio: 1 / 1,
+                                                      crossAxisSpacing: 0),
                                               shrinkWrap: true,
-                                              physics: NeverScrollableScrollPhysics(),
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
                                               // ignore: prefer_if_null_operators
-                                              itemCount: filter == null ? 0 : filter!.length,
+                                              itemCount: filter == null
+                                                  ? 0
+                                                  : filter!.length,
                                               // datalist == null
                                               //     ? 0
                                               //     : (datalist.length > 8 ? 8 : datalist.length),
                                               // data == null
                                               //                 ? 0
                                               //                 : data!.length,
-                                              itemBuilder: (BuildContext context, i) {
+                                              itemBuilder:
+                                                  (BuildContext context, i) {
                                                 return Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
@@ -798,26 +936,42 @@ class _HomeState extends State<Home> {
                                                             // },
                                                             pageBuilder: (context, animation, animationTime) {
                                                           return ListHome(
-                                                              id: '${filter![i]['id']}',
-                                                              nama: filter![i]['name'],
-                                                              gambar: filter![i]['images']);
+                                                              id:
+                                                                  '${filter![i]['id']}',
+                                                              nama: filter![i]
+                                                                  ['name'],
+                                                              gambar: filter![i]
+                                                                  ['images']);
                                                         }));
                                                       },
                                                       child: loading
                                                           ? Container(
                                                               decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(10),
-                                                                  color: Colors.blue[100]!.withOpacity(0.3)),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  color: Colors
+                                                                      .blue[
+                                                                          100]!
+                                                                      .withOpacity(
+                                                                          0.3)),
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(5.0),
-                                                                child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    Container(
                                                                   width: 40,
                                                                   height: 40,
-                                                                  decoration: BoxDecoration(
+                                                                  decoration:
+                                                                      BoxDecoration(
                                                                     image: DecorationImage(
-                                                                        image: NetworkImage(
-                                                                            '${filter![i]['images']}'.toString()),
-                                                                        fit: BoxFit.cover),
+                                                                        image: NetworkImage('${filter![i]['images']}'
+                                                                            .toString()),
+                                                                        fit: BoxFit
+                                                                            .cover),
                                                                   ),
                                                                 ),
                                                               ),
@@ -825,25 +979,40 @@ class _HomeState extends State<Home> {
                                                           : Shimmer.fromColors(
                                                               child: Container(
                                                                 decoration: BoxDecoration(
-                                                                    borderRadius: BorderRadius.circular(10),
-                                                                    color: Colors.blue[50]),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        50]),
                                                                 child: Padding(
-                                                                  padding: const EdgeInsets.all(5.0),
-                                                                  child: Container(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          5.0),
+                                                                  child:
+                                                                      Container(
                                                                     width: 40,
                                                                     height: 40,
-                                                                    decoration: BoxDecoration(
+                                                                    decoration:
+                                                                        BoxDecoration(
                                                                       image: DecorationImage(
-                                                                          image: NetworkImage(
-                                                                              '${filter![i]['images']}'.toString()),
-                                                                          fit: BoxFit.cover),
+                                                                          image: NetworkImage('${filter![i]['images']}'
+                                                                              .toString()),
+                                                                          fit: BoxFit
+                                                                              .cover),
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                              baseColor: Colors.grey[100]!,
-                                                              highlightColor: Colors.grey[300]!,
-                                                              direction: ShimmerDirection.ltr,
+                                                              baseColor: Colors
+                                                                  .grey[100]!,
+                                                              highlightColor:
+                                                                  Colors.grey[
+                                                                      300]!,
+                                                              direction:
+                                                                  ShimmerDirection
+                                                                      .ltr,
                                                             ),
                                                     ),
                                                     SizedBox(
@@ -852,24 +1021,38 @@ class _HomeState extends State<Home> {
                                                     loading
                                                         ? Flexible(
                                                             child: Text(
-                                                            '${filter![i]['name']}'.toString(),
+                                                            '${filter![i]['name']}'
+                                                                .toString(),
                                                             style: TextStyle(
                                                                 fontSize: 10,
-                                                                fontWeight: FontWeight.w600,
-                                                                color: darkGrey),
-                                                            textAlign: TextAlign.center,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color:
+                                                                    darkGrey),
+                                                            textAlign: TextAlign
+                                                                .center,
                                                           ))
                                                         : Shimmer.fromColors(
                                                             child: Container(
                                                               decoration: BoxDecoration(
-                                                                  color: Colors.grey,
-                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10)),
                                                               height: 10,
                                                               width: 50,
                                                             ),
-                                                            baseColor: Colors.grey[100]!,
-                                                            highlightColor: Colors.grey[300]!,
-                                                            direction: ShimmerDirection.ltr,
+                                                            baseColor: Colors
+                                                                .grey[100]!,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .grey[300]!,
+                                                            direction:
+                                                                ShimmerDirection
+                                                                    .ltr,
                                                           ),
                                                   ],
                                                 );
@@ -889,24 +1072,40 @@ class _HomeState extends State<Home> {
                                     height: 15,
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 10.0, right: 10),
+                                    padding: EdgeInsets.only(
+                                        left: 20.w, right: 10.w, top: 8.w),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'Info & Berita',
-                                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: darkGrey),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: darkGrey),
                                         ),
                                         Text('Lihat Semua',
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w700,
                                               color: Colors.greenAccent,
-                                              decoration: TextDecoration.underline,
+                                              decoration:
+                                                  TextDecoration.underline,
                                             ))
                                       ],
                                     ),
                                   ),
+                                  Container(
+                                      padding: EdgeInsets.only(
+                                          left: 20.w, right: 10.w, top: 8.w),
+                                      child: Column(children: [
+                                        EmojiText(
+                                            size: 12.sp,
+                                            text:
+                                                "Kamu dapat melihat informasi terbaru dari kami, jadi jangan sampai ketinggalan tetap Stay Tune! 😄"),
+                                      ])),
+
                                   SizedBox(
                                     height: 15,
                                   ),

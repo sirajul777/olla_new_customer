@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EmojiText extends StatelessWidget {
-  EmojiText({
-    Key? key,
-    @required this.size,
-    @required this.text,
-  })  : assert(text != null),
+  EmojiText(
+      {Key? key,
+      @required this.size,
+      @required this.text,
+      @required this.fontStyle})
+      : assert(text != null),
         super(key: key);
   double? size;
   String? text;
+  FontStyle? fontStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,11 @@ class EmojiText extends StatelessWidget {
       children.add(
         TextSpan(
           text: String.fromCharCodes(chunk),
-          style: TextStyle(fontFamily: isEmoji ? 'EmojiOne' : null, color: softGrey, fontSize: size),
+          style: TextStyle(
+              fontFamily: isEmoji ? 'EmojiOne' : null,
+              color: softGrey,
+              fontStyle: fontStyle,
+              fontSize: size),
         ),
       );
     }

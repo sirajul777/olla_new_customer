@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class Introscreen extends StatefulWidget {
@@ -15,139 +16,6 @@ class Introscreen extends StatefulWidget {
 
 class _IntroscreenState extends State<Introscreen> {
   final introscreendate = GetStorage();
-
-  final List<PageViewModel> listPagesViewModel = [
-    PageViewModel(
-      title: '',
-      bodyWidget: SafeArea(
-          top: false,
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: const SystemUiOverlayStyle(
-                statusBarColor: white,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.dark),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(color: white),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 3.5.h, bottom: 3.5.h),
-                          width: 94,
-                          height: 94,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('gambar/login.png'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 5.h),
-                  padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                  child: const Image(
-                    alignment: Alignment.center,
-                    image: AssetImage('image/ac.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Text(
-                  'Pilih Apa Yang Kamu Mau Perbaiki',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.w,
-                  ),
-                ),
-                SizedBox(
-                  height: 7.h,
-                ),
-                Text(
-                  'Kami siap melayani dan datang ke rumah Anda untuk memperbaiki kerusakan yang Ada',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12.w,
-                  ),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          )),
-    ),
-    PageViewModel(
-      title: '',
-      bodyWidget: SafeArea(
-          top: false,
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: const SystemUiOverlayStyle(
-                statusBarColor: white,
-                statusBarIconBrightness: Brightness.dark,
-                statusBarBrightness: Brightness.dark),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(color: white),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 3.5.h, bottom: 3.5.h),
-                          width: 94,
-                          height: 94,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('image/login.png'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 5.h),
-                  padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                  child: const Image(
-                    alignment: Alignment.center,
-                    image: AssetImage('gambar/air.png'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Text(
-                  'Cari Tukang Yang Jelas',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.w,
-                  ),
-                ),
-                SizedBox(
-                  height: 7.h,
-                ),
-                Text(
-                  'Pilih tukang terbaik recommendasi kami untuk menyelesaikan masalah Anda',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12.w,
-                  ),
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ),
-          )),
-    ),
-  ];
 
   void endIntroPge(context) {
     Navigator.pushAndRemoveUntil(
@@ -161,7 +29,144 @@ class _IntroscreenState extends State<Introscreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<PageViewModel> listPagesViewModel = [
+      PageViewModel(
+        title: '',
+        bodyWidget: SafeArea(
+            top: false,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                  statusBarColor: white,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.dark),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(color: white),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 3.5.h, bottom: 3.5.h),
+                            width: 94,
+                            height: 94,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('gambar/login.png'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    height: MediaQuery.of(context).size.width / 1.5,
+                    margin: EdgeInsets.only(top: 5.h),
+                    padding: EdgeInsets.only(left: 5.w, right: 5.w),
+                    child: const Image(
+                      alignment: Alignment.center,
+                      image: AssetImage('image/ac.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Text(
+                    'Pilih Apa Yang Kamu Mau Perbaiki',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.w,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 7.h,
+                  ),
+                  Text(
+                    'Kami siap melayani dan datang ke rumah Anda untuk memperbaiki kerusakan yang Ada',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12.w,
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            )),
+      ),
+      PageViewModel(
+          title: '',
+          bodyWidget: SafeArea(
+            top: false,
+            child: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                  statusBarColor: white,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.dark),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(color: white),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 3.5.h, bottom: 3.5.h),
+                            width: 94,
+                            height: 94,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('image/login.png'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    height: MediaQuery.of(context).size.width / 1.5,
+                    margin: EdgeInsets.only(top: 5.h),
+                    padding: EdgeInsets.only(left: 5.w, right: 5.w),
+                    child: const Image(
+                      alignment: Alignment.center,
+                      image: AssetImage('image/air.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Text(
+                    'Cari Tukang Yang Jelas',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.w,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 7.h,
+                  ),
+                  Text(
+                    'Pilih tukang terbaik recommendasi kami untuk menyelesaikan masalah Anda',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12.w,
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            ),
+          )),
+    ];
     return IntroductionScreen(
+      globalBackgroundColor: white,
       pages: listPagesViewModel,
       onDone: () {
         // When done button is press

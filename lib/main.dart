@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
+        // designSize: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
         builder: (context, Widget) => GetMaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Localizations Sample App',
