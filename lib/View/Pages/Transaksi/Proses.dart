@@ -29,39 +29,40 @@ class _ProsesState extends State<Proses> {
       print(widget.datalist!.length);
       print("size page" + '$_pageSize');
       if (_pageSize == widget.datalist!.length) {
-        _pagingController.appendLastPage(newItems.toList());
-        // _start = _pageSize;
+        Positioned(
+            bottom: 0,
+            top: 0,
+            child: Center(
+              child: SpinKitFadingCircle(
+                color: Colors.blue,
+                size: 60.0,
+              ),
+            ));
+        Future.delayed(Duration(seconds: 3), (() {
+          _pagingController.appendLastPage(newItems.toList());
+          // _start = _pageSize;
+        }));
 
-        // showDialog(
-        //     context: context,
-        //     builder: (context) {
-        //       return Positioned(
-        //           child: Center(
-        //         child: SpinKitFadingCircle(
-        //           color: Colors.blue,
-        //           size: 60.0,
-        //         ),
-        //       ));
-        //     });
-        // Future.delayed(Duration(seconds: 3), (() {}));
-        setState(() {});
         print(newItems.length);
       } else {
         Positioned(
+            bottom: 0,
+            top: 0,
             child: Center(
-          child: SpinKitFadingCircle(
-            color: Colors.blue,
-            size: 60.0,
-          ),
-        ));
+              child: SpinKitFadingCircle(
+                color: Colors.blue,
+                size: 60.0,
+              ),
+            ));
 
         Future.delayed(Duration(seconds: 3), (() {
           var nextPageKey = pageKey + newItems.length;
           _pagingController.appendPage(newItems.toList(), nextPageKey);
 
-          setState(() {
-            _pageSize += _start + newItems.length;
-          });
+          // setState(() {
+          //   _start += _pageSize;
+          //   _pageSize += _start + newItems.length;
+          // });
         }));
         print(newItems.length);
       }

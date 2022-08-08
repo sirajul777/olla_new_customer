@@ -1,6 +1,6 @@
 import 'package:customer/View/Auth/Login/landingAuth.dart';
 import 'package:customer/View/Components/appProperties.dart';
-import 'package:customer/View/TabDashboard/edit_akun.dart';
+import 'package:customer/View/Profile/edit_akun.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -62,10 +62,7 @@ class _ProfileState extends State<Profile> {
                     children: [
                       Text(
                         'Customer -',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                            color: darkGrey),
+                        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12, color: darkGrey),
                       ),
                       //
                       SizedBox(
@@ -74,10 +71,7 @@ class _ProfileState extends State<Profile> {
                       Text(
                         'Member Gold',
                         style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 12,
-                            color: darkGrey),
+                            fontWeight: FontWeight.w600, fontStyle: FontStyle.italic, fontSize: 12, color: darkGrey),
                       ),
                     ],
                   ),
@@ -88,8 +82,7 @@ class _ProfileState extends State<Profile> {
               padding: const EdgeInsets.only(left: 20.0, right: 20, top: 15),
               child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.blue[50]!)),
+                      borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.blue[50]!)),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 15.0),
                     child: Column(
@@ -101,10 +94,7 @@ class _ProfileState extends State<Profile> {
                             children: [
                               Text(
                                 'Saldo Saya',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: darkGrey),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: darkGrey),
                               ),
                               Text(
                                 'Riwayat',
@@ -122,9 +112,7 @@ class _ProfileState extends State<Profile> {
                           leading: Container(
                               width: 40.w,
                               height: 40.w,
-                              decoration: BoxDecoration(
-                                  color: darkYellow,
-                                  borderRadius: BorderRadius.circular(20)),
+                              decoration: BoxDecoration(color: darkYellow, borderRadius: BorderRadius.circular(20)),
                               child: Icon(
                                 Icons.account_balance_wallet_outlined,
                                 size: 22,
@@ -136,8 +124,7 @@ class _ProfileState extends State<Profile> {
                           ),
                           subtitle: Text(
                             'Rp 0',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 12.sp),
+                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.sp),
                           ),
                           trailing: Container(
                             decoration: BoxDecoration(
@@ -145,15 +132,12 @@ class _ProfileState extends State<Profile> {
                               color: Colors.blue,
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 40, right: 40, top: 13),
+                              padding: const EdgeInsets.only(left: 40, right: 40, top: 13),
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 15.0),
                                 child: Text(
                                   'Cairkan',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800),
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
                                 ),
                               ),
                             ),
@@ -171,19 +155,14 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.only(left: 0.0, right: 0, top: 8),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => EditAkun()));
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditAkun()));
                     },
                     child: Container(
                       child: ListTile(
                         leading: Container(
                           width: 40,
                           height: 40,
-                          decoration: BoxDecoration(
-                              color: lightBlue,
-                              borderRadius: BorderRadius.circular(25)),
+                          decoration: BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(25)),
                           child: Center(
                               child: Icon(
                             Icons.person_outline,
@@ -192,10 +171,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         title: Text(
                           'Edit Akun',
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              color: darkGrey),
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: darkGrey),
                         ),
                         trailing: Icon(
                           Icons.arrow_forward_ios_outlined,
@@ -213,9 +189,7 @@ class _ProfileState extends State<Profile> {
                       leading: Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(
-                            color: lightBlue,
-                            borderRadius: BorderRadius.circular(25)),
+                        decoration: BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(25)),
                         child: Center(
                             child: Icon(
                           Icons.settings_outlined,
@@ -224,10 +198,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       title: Text(
                         'Pengaturan Aplikasi',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: darkGrey),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: darkGrey),
                       ),
                       trailing: Icon(
                         Icons.arrow_forward_ios_outlined,
@@ -245,9 +216,7 @@ class _ProfileState extends State<Profile> {
                       leading: Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(
-                            color: lightBlue,
-                            borderRadius: BorderRadius.circular(25)),
+                        decoration: BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(25)),
                         child: Center(
                             child: Icon(
                           Icons.info_outline,
@@ -256,10 +225,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       title: Text(
                         'Syarat dan Ketentuan Aplikasi',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: darkGrey),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: darkGrey),
                       ),
                       trailing: Icon(
                         Icons.arrow_forward_ios_outlined,
@@ -277,9 +243,7 @@ class _ProfileState extends State<Profile> {
                       leading: Container(
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(
-                            color: lightBlue,
-                            borderRadius: BorderRadius.circular(25)),
+                        decoration: BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(25)),
                         child: Center(
                             child: Icon(
                           Icons.help_outline,
@@ -288,10 +252,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       title: Text(
                         'Bantuan',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: darkGrey),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: darkGrey),
                       ),
                       trailing: Icon(
                         Icons.arrow_forward_ios_outlined,
@@ -312,16 +273,13 @@ class _ProfileState extends State<Profile> {
                         showCancelButton: true, onPress: (bool isConfirm) {
                       if (isConfirm) {
                         // SweetAlert.show(context, style: SweetAlertStyle.loading,subtitle: 'Loading...');
-                        SweetAlert.show(context,
-                            style: SweetAlertStyle.success);
+                        SweetAlert.show(context, style: SweetAlertStyle.success);
 
                         new Future.delayed(new Duration(seconds: 2), () {
                           out();
                           Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      LandingAuth()),
+                              MaterialPageRoute(builder: (BuildContext context) => LandingAuth()),
                               (Route<dynamic> route) => true);
 
                           //  Navigator.pushAndRemoveUntil(
@@ -357,9 +315,7 @@ class _ProfileState extends State<Profile> {
                         leading: Container(
                           width: 40,
                           height: 40,
-                          decoration: BoxDecoration(
-                              color: lightBlue,
-                              borderRadius: BorderRadius.circular(25)),
+                          decoration: BoxDecoration(color: lightBlue, borderRadius: BorderRadius.circular(25)),
                           child: Center(
                               child: Icon(
                             Icons.logout_outlined,
@@ -368,10 +324,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         title: Text(
                           'Keluar',
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              color: darkGrey),
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: darkGrey),
                         ),
                         trailing: Icon(
                           Icons.arrow_forward_ios_outlined,
