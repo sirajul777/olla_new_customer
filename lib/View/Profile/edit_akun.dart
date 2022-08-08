@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sweetalert/sweetalert.dart';
 
 class EditAkun extends StatefulWidget {
   @override
@@ -171,20 +172,44 @@ class _EditAkunState extends State<EditAkun> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        decoration: BoxDecoration(
-                            color: primary,
-                            borderRadius: BorderRadius.circular(25)),
-                        child: Center(
-                            child: Text('Simpan',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500))),
+                    GestureDetector(
+                      onTap: () async {
+                        var response = await http.post(
+                            Uri.parse(Uri.encodeFull(
+                                KEY.BASE_URL + '/customer-profile')),
+                            headers: {
+                              "Accept": "application/json",
+                              "x-token-olla": KEY.APIKEY,
+                              "Authorization": 'Bearer $customer',
+                            },
+                            body: {
+                              "name": nameController.text,
+                              "email": emailController.text,
+                              "mobile_phone": phoneController.text,
+                            });
+                        if (response.statusCode == 200) {
+                          var jsonObs = json.decode(response.body);
+                          SweetAlert.show(context,
+                              subtitle: jsonObs['message'],
+                              style: SweetAlertStyle.success);
+                        }
+                        print(response.body);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          decoration: BoxDecoration(
+                              color: primary,
+                              borderRadius: BorderRadius.circular(25)),
+                          child: Center(
+                              child: Text('Simpan',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500))),
+                        ),
                       ),
                     ),
                     GestureDetector(
