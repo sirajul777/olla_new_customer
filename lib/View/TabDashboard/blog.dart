@@ -41,7 +41,7 @@ class _BlogState extends State<Blog> {
 
                   scrollDirection: Axis.horizontal,
 
-                  height: MediaQuery.of(context).size.height / 4.1,
+                  height: MediaQuery.of(context).size.width / 2,
                 ),
                 itemCount: widget.data! == null ? 0 : widget.data!.length,
                 itemBuilder: (context, index, realIndex) {
@@ -97,7 +97,8 @@ class _BlogState extends State<Blog> {
             Flexible(
                 child: Text(
               widget.data![index]['title'],
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12.w, color: darkGrey),
+              style: TextStyle(
+                  fontWeight: FontWeight.w800, fontSize: 12.w, color: darkGrey),
             )),
             // Container(
             //   height: MediaQuery.of(context).size.height,

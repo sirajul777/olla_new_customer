@@ -21,6 +21,7 @@ class _EditAkunState extends State<EditAkun> {
   List? data;
   bool loading = false;
   late String customer;
+
   Future getCustomer() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
@@ -37,6 +38,9 @@ class _EditAkunState extends State<EditAkun> {
       setState(() {
         var converDataToJson = json.decode(response.body);
         data = converDataToJson['data']['profile'];
+        nameController!.text = data![0]['name'];
+        phoneController!.text = data![0]['mobile_phone'];
+        emailController!.text = data![0]['email'];
       });
     }
     return "Success";
@@ -49,6 +53,10 @@ class _EditAkunState extends State<EditAkun> {
           loading = true;
         }));
   }
+
+  TextEditingController? nameController = TextEditingController();
+  TextEditingController? phoneController = TextEditingController();
+  TextEditingController? emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +75,6 @@ class _EditAkunState extends State<EditAkun> {
         ),
       );
     } else {
-      final nameController = TextEditingController(text: data![0]['name']);
-      final phoneController =
-          TextEditingController(text: data![0]['mobile_phone']);
-      final emailController = TextEditingController(text: data![0]['email']);
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -183,15 +187,16 @@ class _EditAkunState extends State<EditAkun> {
                               "Authorization": 'Bearer $customer',
                             },
                             body: {
-                              "name": nameController.text,
-                              "email": emailController.text,
-                              "mobile_phone": phoneController.text,
+                              "name": nameController!.text,
+                              "email": emailController!.text,
+                              "mobile_phone": phoneController!.text,
                             });
                         if (response.statusCode == 200) {
                           var jsonObs = json.decode(response.body);
                           SweetAlert.show(context,
                               subtitle: jsonObs['message'],
                               style: SweetAlertStyle.success);
+                          getCustomer();
                         }
                         print(response.body);
                       },
