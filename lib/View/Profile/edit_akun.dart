@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:http/retry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sweetalert/sweetalert.dart';
 
@@ -24,14 +25,12 @@ class _EditAkunState extends State<EditAkun> {
   Future getCustomer() async {
     final prefs1 = await SharedPreferences.getInstance();
     customer = prefs1.getString('customer')!;
-    var response = await http.get(
-        Uri.parse(
-            Uri.encodeFull('https://olla.ws/api/customer/v1/customer-profile')),
-        headers: {
-          "Accept": "application/json",
-          "x-token-olla": KEY.APIKEY,
-          "Authorization": 'Bearer $customer',
-        });
+    var response =
+        await http.get(Uri.parse(Uri.encodeFull('https://olla.ws/api/customer/v1/customer-profile')), headers: {
+      "Accept": "application/json",
+      "x-token-olla": KEY.APIKEY,
+      "Authorization": 'Bearer $customer',
+    });
 
     if (response.statusCode == 200) {
       setState(() {
@@ -48,6 +47,10 @@ class _EditAkunState extends State<EditAkun> {
     getCustomer().whenComplete(() => setState(() {
           loading = true;
         }));
+  }
+
+  goBack(dynamic value) {
+    setState(() {});
   }
 
   @override
@@ -68,8 +71,7 @@ class _EditAkunState extends State<EditAkun> {
       );
     } else {
       final nameController = TextEditingController(text: data![0]['name']);
-      final phoneController =
-          TextEditingController(text: data![0]['mobile_phone']);
+      final phoneController = TextEditingController(text: data![0]['mobile_phone']);
       final emailController = TextEditingController(text: data![0]['email']);
       return Scaffold(
         appBar: AppBar(
@@ -79,7 +81,7 @@ class _EditAkunState extends State<EditAkun> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop(goBack);
                 },
                 child: Container(
                   height: MediaQuery.of(context).size.height / 25,
@@ -121,113 +123,111 @@ class _EditAkunState extends State<EditAkun> {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
           child: Padding(
               padding: const EdgeInsets.all(30),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        hintText: "Nama Lengkap Anda",
-                        border: InputBorder.none,
-                        prefixIcon: Padding(
-                          padding:
-                              EdgeInsets.only(), // add padding to adjust icon
-                          child: Icon(
-                            FeatherIcons.user,
-                            color: Colors.black,
-                          ),
-                        ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                TextFormField(
+                  autocorrect: false,
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: "Nama Lengkap Anda",
+                    border: InputBorder.none,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(), // add padding to adjust icon
+                      child: Icon(
+                        FeatherIcons.user,
+                        color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 15),
-                    TextFormField(
-                      controller: phoneController,
-                      decoration: InputDecoration(
-                        hintText: "Nomor Handphone",
-                        border: InputBorder.none,
-                        prefixIcon: Padding(
-                          padding:
-                              EdgeInsets.only(), // add padding to adjust icon
-                          child: Icon(
-                            FeatherIcons.phone,
-                            color: Colors.black,
-                          ),
-                        ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  autocorrect: false,
+                  controller: phoneController,
+                  decoration: InputDecoration(
+                    hintText: "Nomor Handphone",
+                    border: InputBorder.none,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(), // add padding to adjust icon
+                      child: Icon(
+                        FeatherIcons.phone,
+                        color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 15),
-                    TextFormField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        hintText: "Email",
-                        border: InputBorder.none,
-                        prefixIcon: Padding(
-                          padding:
-                              EdgeInsets.only(), // add padding to adjust icon
-                          child: Icon(
-                            FeatherIcons.mail,
-                            color: Colors.black,
-                          ),
-                        ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextFormField(
+                  autocorrect: false,
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    hintText: "Email",
+                    border: InputBorder.none,
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(), // add padding to adjust icon
+                      child: Icon(
+                        FeatherIcons.mail,
+                        color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 15),
-                    GestureDetector(
-                      onTap: () async {
-                        var response = await http.post(
-                            Uri.parse(Uri.encodeFull(
-                                KEY.BASE_URL + '/customer-profile')),
-                            headers: {
-                              "Accept": "application/json",
-                              "x-token-olla": KEY.APIKEY,
-                              "Authorization": 'Bearer $customer',
-                            },
-                            body: {
-                              "name": nameController.text,
-                              "email": emailController.text,
-                              "mobile_phone": phoneController.text,
-                            });
-                        if (response.statusCode == 200) {
-                          var jsonObs = json.decode(response.body);
-                          SweetAlert.show(context,
-                              subtitle: jsonObs['message'],
-                              style: SweetAlertStyle.success);
-                        }
-                        print(response.body);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.08,
-                          decoration: BoxDecoration(
-                              color: primary,
-                              borderRadius: BorderRadius.circular(25)),
-                          child: Center(
-                              child: Text('Simpan',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500))),
-                        ),
-                      ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                GestureDetector(
+                  onTap: () async {
+                    var response =
+                        await http.post(Uri.parse(Uri.encodeFull(KEY.BASE_URL + '/customer-profile')), headers: {
+                      "Accept": "application/json",
+                      "x-token-olla": KEY.APIKEY,
+                      "Authorization": 'Bearer $customer',
+                    }, body: {
+                      "name": nameController.text,
+                      "email": emailController.text,
+                      "mobile_phone": phoneController.text,
+                    });
+                    if (response.statusCode == 200) {
+                      final setname = await SharedPreferences.getInstance();
+                      var jsonObs = json.decode(response.body);
+
+                      setState(() {
+                        setname.setString('nama', nameController.text);
+                      });
+                      SweetAlert.show(context, subtitle: jsonObs['message'], style: SweetAlertStyle.success,
+                          onPress: (bool vale) {
+                        // Navigator.of(context).pop(goBack);
+                        setState(() {});
+                        return true;
+                      });
+                    }
+                    print(response.body);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      decoration: BoxDecoration(color: primary, borderRadius: BorderRadius.circular(25)),
+                      child: Center(
+                          child: Text('Simpan',
+                              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500))),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Dashboard()),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text('Ganti Password'),
-                        ),
-                      ),
-                    )
-                  ])),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Dashboard()),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: Text('Ganti Password'),
+                    ),
+                  ),
+                )
+              ])),
         ),
       );
     }
