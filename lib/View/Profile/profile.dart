@@ -155,7 +155,9 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.only(left: 0.0, right: 0, top: 8),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => EditAkun()));
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (BuildContext context) => EditAkun()))
+                          .then((value) => setState(() {}));
                     },
                     child: Container(
                       child: ListTile(
