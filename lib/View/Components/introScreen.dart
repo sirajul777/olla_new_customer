@@ -76,7 +76,7 @@ class _IntroscreenState extends State<Introscreen> {
                   Text(
                     'Pilih Apa Yang Kamu Mau Perbaiki',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: darkGrey,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.w,
                     ),
@@ -87,7 +87,7 @@ class _IntroscreenState extends State<Introscreen> {
                   Text(
                     'Kami siap melayani dan datang ke rumah Anda untuk memperbaiki kerusakan yang Ada',
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: softGrey,
                       fontWeight: FontWeight.normal,
                       fontSize: 12.w,
                     ),
@@ -143,7 +143,7 @@ class _IntroscreenState extends State<Introscreen> {
                   Text(
                     'Cari Tukang Yang Jelas',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: darkGrey,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.w,
                     ),
@@ -154,7 +154,7 @@ class _IntroscreenState extends State<Introscreen> {
                   Text(
                     'Pilih tukang terbaik recommendasi kami untuk menyelesaikan masalah Anda',
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: softGrey,
                       fontWeight: FontWeight.normal,
                       fontSize: 12.w,
                     ),
